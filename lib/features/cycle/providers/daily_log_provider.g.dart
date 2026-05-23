@@ -24,6 +24,24 @@ final dailyLogsStreamProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DailyLogsStreamRef = AutoDisposeStreamProviderRef<List<DailyLog>>;
+String _$currentCycleLogsHash() => r'385dfe83538aae099c78d754486da5eacb1a20c9';
+
+/// See also [currentCycleLogs].
+@ProviderFor(currentCycleLogs)
+final currentCycleLogsProvider =
+    AutoDisposeStreamProvider<List<DailyLog>>.internal(
+      currentCycleLogs,
+      name: r'currentCycleLogsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$currentCycleLogsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CurrentCycleLogsRef = AutoDisposeStreamProviderRef<List<DailyLog>>;
 String _$todayLogHash() => r'30d31aae4d54f7806ab426e7b32b31b9f393dcbd';
 
 /// See also [todayLog].

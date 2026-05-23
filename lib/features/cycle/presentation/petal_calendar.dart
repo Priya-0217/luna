@@ -3,21 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:her/core/constants/app_colors.dart';
 import 'package:her/core/constants/app_typography.dart';
 import 'package:her/features/home/domain/cycle_phase.dart';
+import 'package:her/features/home/domain/cycle_calculator.dart';
 
-class PetalCalendar extends StatelessWidget {
+class PetalCalendar extends StatefulWidget {
   final int currentDay;
+  final int selectedDay;
   final int cycleLength;
   final int periodDuration;
+  final double size;
   final ValueChanged<int> onDaySelected;
+  final VoidCallback? onCenterTap;
 
   const PetalCalendar({
     super.key,
     required this.currentDay,
+    required this.selectedDay,
     required this.cycleLength,
     required this.periodDuration,
+    this.size = 280,
     required this.onDaySelected,
+    this.onCenterTap,
   });
 
+  @override
+  State<PetalCalendar> createState() => _PetalCalendarState();
+}
+
+class _PetalCalendarState extends State<PetalCalendar> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -27,8 +39,8 @@ class PetalCalendar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            width: 280,
-            height: 280,
+            width: widget.size,
+            height: widget.size,
             child: GestureDetector(
               onTapDown: (details) {
                 // Determine which day segment was clicked based on angles
@@ -38,31 +50,41 @@ class PetalCalendar extends StatelessWidget {
                 final dx = localPosition.dx - center.dx;
                 final dy = localPosition.dy - center.dy;
 
+                // Check if tap is in center area
+                final distance = math.sqrt(dx * dx + dy * dy);
+                if (distance < widget.size * 0.2 && widget.onCenterTap != null) {
+                  widget.onCenterTap!();
+                  return;
+                }
+
                 // Calculate angle from -pi to pi, shift to 0 to 2pi
                 var angle = math.atan2(dy, dx) + math.pi / 2;
                 if (angle < 0) angle += 2 * math.pi;
 
                 // Segment index: angle maps to cycleLength segments
-                final segmentSize = (2 * math.pi) / cycleLength;
+                final segmentSize = (2 * math.pi) / widget.cycleLength;
                 var tappedDay = (angle / segmentSize).round() + 1;
-                if (tappedDay > cycleLength) tappedDay = 1;
+                if (tappedDay > widget.cycleLength) tappedDay = 1;
 
-                onDaySelected(tappedDay);
+                widget.onDaySelected(tappedDay);
               },
               child: CustomPaint(
                 painter: _PetalCalendarPainter(
-                  currentDay: currentDay,
-                  cycleLength: cycleLength,
-                  periodDuration: periodDuration,
+                  currentDay: widget.currentDay,
+                  selectedDay: widget.selectedDay,
+                  cycleLength: widget.cycleLength,
+                  periodDuration: widget.periodDuration,
                   isDark: isDark,
                 ),
-                size: const Size(280, 280),
+                size: Size(widget.size, widget.size),
               ),
             ),
           ),
           const SizedBox(height: 12),
           Text(
-            'Tap a segment to explore predictions 💕',
+            widget.selectedDay == widget.currentDay 
+                ? 'Your cycle today 💕 (Tap center for journey)'
+                : 'Day ${widget.selectedDay} predictions 🌙 (Tap center for journey)',
             style: AppTypography.bodySmall.copyWith(
               color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
             ),
@@ -75,12 +97,14 @@ class PetalCalendar extends StatelessWidget {
 
 class _PetalCalendarPainter extends CustomPainter {
   final int currentDay;
+  final int selectedDay;
   final int cycleLength;
   final int periodDuration;
   final bool isDark;
 
   _PetalCalendarPainter({
     required this.currentDay,
+    required this.selectedDay,
     required this.cycleLength,
     required this.periodDuration,
     required this.isDark,
@@ -100,19 +124,11 @@ class _PetalCalendarPainter extends CustomPainter {
   }
 
   CyclePhase _getPhaseForDay(int day) {
-    final ovulationDay = cycleLength - 14;
-    if (day >= 1 && day <= periodDuration) {
-      return CyclePhase.menstrual;
-    }
-    final ovulationStart = ovulationDay - 3;
-    final ovulationEnd = ovulationDay + 1;
-    if (day >= ovulationStart && day <= ovulationEnd) {
-      return CyclePhase.ovulation;
-    }
-    if (day > periodDuration && day < ovulationStart) {
-      return CyclePhase.follicular;
-    }
-    return CyclePhase.luteal;
+    return CycleCalculator.calculatePhase(
+      cycleDay: day,
+      cycleLength: cycleLength,
+      periodDuration: periodDuration,
+    );
   }
 
   @override
@@ -148,6 +164,7 @@ class _PetalCalendarPainter extends CustomPainter {
       final endAngle = startAngle + segmentAngle;
 
       final isToday = day == currentDay;
+      final isSelected = day == selectedDay;
 
       // Petal height varies to give a flower bloom look
       // Menstrual days have taller petals for easy visualization, follicular standard, ovulation gold glows
@@ -156,6 +173,10 @@ class _PetalCalendarPainter extends CustomPainter {
         petalLength = baseRadius + maxPetalLength * 0.95;
       } else if (phase == CyclePhase.ovulation) {
         petalLength = baseRadius + maxPetalLength * 0.85;
+      }
+      
+      if (isSelected) {
+        petalLength += 12; // Pronounced expansion for selected petal
       }
 
       // Draw segment path (bloom petal)
@@ -179,7 +200,7 @@ class _PetalCalendarPainter extends CustomPainter {
       path.close();
 
       final petalPaint = Paint()
-        ..color = isToday
+        ..color = isSelected || isToday
             ? phaseColor
             : phaseColor.withOpacity(isDark ? 0.35 : 0.25)
         ..style = PaintingStyle.fill;
@@ -188,11 +209,11 @@ class _PetalCalendarPainter extends CustomPainter {
 
       // Draw segment outline dividers
       final dividerPaint = Paint()
-        ..color = isToday
+        ..color = isSelected || isToday
             ? phaseColor
             : (isDark ? AppColors.darkBorder : AppColors.white.withOpacity(0.9))
         ..style = PaintingStyle.stroke
-        ..strokeWidth = isToday ? 2.5 : 1.0;
+        ..strokeWidth = isSelected || isToday ? 2.5 : 1.0;
 
       canvas.drawPath(path, dividerPaint);
 
@@ -212,7 +233,7 @@ class _PetalCalendarPainter extends CustomPainter {
 
     // Draw "Day"
     textPainter.text = TextSpan(
-      text: 'Today',
+      text: selectedDay == currentDay ? 'Today' : 'Exploring',
       style: AppTypography.bodySmall.copyWith(
         fontSize: 12,
         color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
@@ -227,7 +248,7 @@ class _PetalCalendarPainter extends CustomPainter {
 
     // Draw active day number
     textPainter.text = TextSpan(
-      text: 'Day $currentDay',
+      text: 'Day $selectedDay',
       style: AppTypography.displayMedium.copyWith(
         fontSize: 22,
         fontWeight: FontWeight.bold,
@@ -245,6 +266,7 @@ class _PetalCalendarPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PetalCalendarPainter oldDelegate) {
     return oldDelegate.currentDay != currentDay ||
+        oldDelegate.selectedDay != selectedDay ||
         oldDelegate.cycleLength != cycleLength ||
         oldDelegate.periodDuration != periodDuration ||
         oldDelegate.isDark != isDark;

@@ -86,6 +86,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     // 2. Local caching
     final box = Hive.box('settings');
+    debugPrint('Onboarding: Saving to Hive: name=$name, cycle=$_cycleLength, period=$_periodDuration, date=$_lastPeriodDate');
     await box.putAll({
       'onboarding_completed': true,
       'username': name,

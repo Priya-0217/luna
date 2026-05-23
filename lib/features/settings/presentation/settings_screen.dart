@@ -46,7 +46,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     
     final appUser = ref.read(authProvider).valueOrNull;
     final cycleRepo = ref.read(cycleRepositoryProvider);
+    
+    final allEntries = await cycleRepo.getAllEntries();
+    debugPrint('SettingsScreen: Found ${allEntries.length} cycle entries:');
+    for (var e in allEntries) {
+      debugPrint('  - ID: ${e.id}, Start: ${e.startDate}, End: ${e.endDate}');
+    }
+
     final latestCycle = await cycleRepo.getLatestEntry();
+    debugPrint('SettingsScreen: Latest cycle entry according to repo: ${latestCycle?.startDate}');
+    
+    // Safety check: If we have multiple active cycles, the UI might get confused.
+    // Cleanup any duplicates that might be causing the "reverting" behavior.
+    if (allEntries.where((e) => e.endDate == null).length > 1) {
+      debugPrint('SettingsScreen: Found multiple active cycles, cleaning up...');
+      final active = allEntries.where((e) => e.endDate == null).toList();
+      // Keep only the one with the latest start date (or the one the user just set)
+      active.sort((a, b) => b.startDate.compareTo(a.startDate));
+      for (int i = 1; i < active.length; i++) {
+        debugPrint('SettingsScreen: Removing duplicate active cycle ${active[i].id}');
+        await cycleRepo.deleteCycleEntry(active[i].id);
+      }
+    }
     
     setState(() {
       _remindersEnabled = box.get('notifications_enabled', defaultValue: true);
@@ -77,13 +98,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _save() async {
     HapticFeedback.mediumImpact();
+    debugPrint('SettingsScreen: Saving preferences...');
+    
     final box = Hive.box('settings');
-    await box.put('notifications_enabled', _remindersEnabled);
-    await box.put('disguise_mode_enabled', _disguiseEnabled);
-    await box.put('cycle_length', _cycleLength.toInt());
-    await box.put('period_duration', _periodDuration.toInt());
-    await box.put('username', _nameController.text.trim());
-    await box.put('last_period_date', _lastPeriodDate.toIso8601String());
+    debugPrint('SettingsScreen: Updating local Hive with: name=${_nameController.text.trim()}, cycle=$_cycleLength, period=$_periodDuration, date=$_lastPeriodDate');
+    await box.putAll({
+      'notifications_enabled': _remindersEnabled,
+      'disguise_mode_enabled': _disguiseEnabled,
+      'cycle_length': _cycleLength.toInt(),
+      'period_duration': _periodDuration.toInt(),
+      'username': _nameController.text.trim(),
+      'last_period_date': _lastPeriodDate.toIso8601String(),
+    });
     
     final appUser = ref.read(authProvider).valueOrNull;
     if (appUser != null) {
@@ -91,31 +117,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       final cycleRepo = ref.read(cycleRepositoryProvider);
 
       try {
+        debugPrint('SettingsScreen: Updating Firebase profile...');
         await authNotifier.updateProfile(appUser.copyWith(
           displayName: _nameController.text.trim(),
           cycleAverageLength: _cycleLength.toInt(),
           periodAverageLength: _periodDuration.toInt(),
         ));
-        
-        // Update local settings immediately
-        await box.put('username', _nameController.text.trim());
-        await box.put('cycle_length', _cycleLength.toInt());
-        await box.put('period_duration', _periodDuration.toInt());
       } catch (e) {
-        debugPrint('Error updating profile in settings: $e');
+        debugPrint('SettingsScreen: Profile update failed: $e');
       }
       
       try {
-        // ALWAYS update the cycle start date if it changed, not just if it's "different" in a vague way
-        // This ensures onboarding and settings stay in sync
+        debugPrint('SettingsScreen: Force cleaning all active cycles to prevent reverts...');
+        final currentEntries = await cycleRepo.getAllEntries();
+        final active = currentEntries.where((e) => e.endDate == null).toList();
+        for (var e in active) {
+          await cycleRepo.deleteCycleEntry(e.id);
+        }
+        
+        debugPrint('SettingsScreen: Setting single active cycle to $_lastPeriodDate');
         await cycleRepo.startPeriod(_lastPeriodDate);
-        await box.put('last_period_date', _lastPeriodDate.toIso8601String());
       } catch (e) {
-        debugPrint('Error adjusting period in settings: $e');
+        debugPrint('SettingsScreen: Cycle update failed: $e');
       }
       
-      // Refresh Dashboard Provider to reflect new settings immediately
+      debugPrint('SettingsScreen: Invalidating dashboard for recalculation');
       ref.invalidate(dashboardProvider);
+    } else {
+      debugPrint('SettingsScreen: No authenticated user, only local Hive updated.');
     }
 
     if (mounted) {

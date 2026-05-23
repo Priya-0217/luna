@@ -38,13 +38,18 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouterHelperProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  // Use a Listenable that triggers when auth state changes
+  // We don't watch authProvider directly here to avoid rebuilding the GoRouter object
+  // which causes GlobalKey conflicts.
+  final authNotifier = ref.read(authProvider.notifier);
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: '/login',
+    refreshListenable: _AuthListenable(ref),
     // Redirect logic: If logged in, redirect away from auth screens
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
       final user = authState.valueOrNull;
       final isLoggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
 
@@ -206,3 +211,22 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
+/// A simple Listenable that notifies GoRouter when the Auth state changes.
+class _AuthListenable extends ChangeNotifier {
+  _AuthListenable(Ref ref) {
+    _subscription = ref.listen(authProvider, (previous, next) {
+      if (previous != next) {
+        notifyListeners();
+      }
+    });
+  }
+
+  late final ProviderSubscription _subscription;
+
+  @override
+  void dispose() {
+    _subscription.close();
+    super.dispose();
+  }
+}

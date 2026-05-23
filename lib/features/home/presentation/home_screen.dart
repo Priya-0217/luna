@@ -450,27 +450,42 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   children: [
                     PhaseRing(
                       phase: data.phase,
-                      progress: data.cycleDay / 28.0,
+                      progress: data.cycleDay / data.cycleLength.toDouble(),
                       cycleDay: data.cycleDay,
                       size: 80,
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      data.daysUntilPeriod > 0 ? 'Period in' : 'Overdue by',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: isDark
-                            ? AppColors.warmGray400
-                            : AppColors.warmGray600,
+                    if (data.phase == CyclePhase.menstrual) ...[
+                      Text(
+                        'Period Day',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '${data.daysUntilPeriod.abs()} Days',
-                      style: AppTypography.displayMedium.copyWith(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? AppColors.darkText : AppColors.roseDark,
+                      Text(
+                        'Day ${data.cycleDay}',
+                        style: AppTypography.displayMedium.copyWith(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? AppColors.darkText : AppColors.roseDark,
+                        ),
                       ),
-                    ),
+                    ] else ...[
+                      Text(
+                        data.daysUntilPeriod >= 0 ? 'Next Period in' : 'Overdue by',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
+                        ),
+                      ),
+                      Text(
+                        '${data.daysUntilPeriod.abs()} Days',
+                        style: AppTypography.displayMedium.copyWith(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? AppColors.darkText : AppColors.roseDark,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 4),
                     Text(
                       data.isFertile

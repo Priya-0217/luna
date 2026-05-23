@@ -11,10 +11,10 @@ class CycleHistory extends _$CycleHistory {
     return ref.watch(cycleRepositoryProvider).getAllEntries();
   }
 
-  Future<void> startPeriod() async {
+  Future<void> startPeriod([DateTime? startDate]) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      await ref.read(cycleRepositoryProvider).startPeriod();
+      await ref.read(cycleRepositoryProvider).startPeriod(startDate);
       return ref.read(cycleRepositoryProvider).getAllEntries();
     });
   }
@@ -31,4 +31,14 @@ class CycleHistory extends _$CycleHistory {
 @riverpod
 Future<CycleEntry?> latestCycleEntry(LatestCycleEntryRef ref) async {
   return ref.watch(cycleRepositoryProvider).getLatestEntry();
+}
+
+@riverpod
+Stream<CycleEntry?> cycleLatestEntry(CycleLatestEntryRef ref) {
+  return ref.watch(cycleRepositoryProvider).watchLatestEntry();
+}
+
+@riverpod
+Stream<List<CycleEntry>> cycleEntriesStream(CycleEntriesStreamRef ref) {
+  return ref.watch(cycleRepositoryProvider).watchCycleEntries();
 }

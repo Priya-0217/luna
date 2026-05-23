@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:her/features/cycle/providers/cycle_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:her/features/auth/providers/auth_provider.dart';
@@ -18,6 +20,8 @@ class DashboardData {
   final double sleep;
   final int cycleLength;
   final int periodDuration;
+  final bool isIrregular;
+  final double cycleStdDev;
 
   DashboardData({
     required this.username,
@@ -29,6 +33,8 @@ class DashboardData {
     required this.sleep,
     required this.cycleLength,
     required this.periodDuration,
+    required this.isIrregular,
+    required this.cycleStdDev,
   });
 }
 
@@ -37,6 +43,7 @@ class Dashboard extends _$Dashboard {
   @override
   FutureOr<DashboardData> build() async {
     final box = Hive.box('settings');
+    debugPrint('Dashboard: Rebuilding dashboard data...');
 
     // Use real username from Firebase auth, fall back to Hive cache
     final authUser = ref.watch(authProvider).valueOrNull;
@@ -44,19 +51,45 @@ class Dashboard extends _$Dashboard {
         ? authUser!.displayName
         : box.get('username', defaultValue: 'Love') as String;
 
-    final int cycleLength = authUser?.cycleAverageLength ?? 28;
-    final int periodDuration = authUser?.periodAverageLength ?? 5;
+    // Fetch all cycle entries to calculate real averages
+    final allEntries = await ref.watch(cycleEntriesStreamProvider.future);
+    final stats = CycleCalculator.calculateStats(allEntries);
+
+    final int cycleLength = stats.averageCycleLength.round();
+    final int periodDuration = stats.averagePeriodDuration.round();
     
-    // Fetch real last period date from CycleRepository
-    final cycleRepo = ref.read(cycleRepositoryProvider);
-    final latestCycle = await cycleRepo.getLatestEntry();
+    debugPrint('Dashboard: Calculated stats - avgCycle: $cycleLength, avgPeriod: $periodDuration, isIrregular: ${stats.isIrregular}');
+
+    // Fetch real last period date from CycleRepository reactively
+    final latestCycle = await ref.watch(cycleLatestEntryProvider.future);
     
-    final lastPeriodDate = latestCycle?.startDate ?? 
-        DateTime.now().subtract(const Duration(days: 10));
+    // Fallback order:
+    // 1. Latest cycle entry from DB
+    // 2. Saved preference in Hive
+    // 3. 10 days ago (absolute last resort)
+    DateTime lastPeriodDate;
+    if (latestCycle != null) {
+      lastPeriodDate = latestCycle.startDate;
+      debugPrint('Dashboard: Using latest cycle from DB: $lastPeriodDate');
+    } else {
+      final savedDate = box.get('last_period_date');
+      if (savedDate != null) {
+        lastPeriodDate = DateTime.parse(savedDate);
+        debugPrint('Dashboard: Using last period from Hive: $lastPeriodDate');
+      } else {
+        lastPeriodDate = DateTime.now().subtract(const Duration(days: 10));
+        debugPrint('Dashboard: Using fallback 10 days ago: $lastPeriodDate');
+      }
+    }
+    
+    // Ensure lastPeriodDate has no time component for cleaner calculations
+    lastPeriodDate = DateTime(lastPeriodDate.year, lastPeriodDate.month, lastPeriodDate.day);
 
     final today = DateTime.now();
     final cycleDay =
         CycleCalculator.calculateCycleDay(lastPeriodDate, today, cycleLength);
+
+    debugPrint('Dashboard: Today: $today, lastPeriodDate: $lastPeriodDate, calculated cycleDay: $cycleDay');
 
     final phase = CycleCalculator.calculatePhase(
       cycleDay: cycleDay,
@@ -88,6 +121,8 @@ class Dashboard extends _$Dashboard {
       sleep: selfCare.sleepHours,
       cycleLength: cycleLength,
       periodDuration: periodDuration,
+      isIrregular: stats.isIrregular,
+      cycleStdDev: stats.cycleStdDev,
     );
   }
 

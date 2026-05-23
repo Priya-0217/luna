@@ -221,12 +221,21 @@ class AppDatabase extends _$AppDatabase {
             ..limit(1))
           .getSingleOrNull();
 
+  Stream<CycleRow?> watchLatestCycleEntry() =>
+      (select(cycleEntries)
+            ..orderBy([(t) => OrderingTerm.desc(t.startDate)])
+            ..limit(1))
+          .watchSingleOrNull();
+
   Future<List<CycleRow>> getUnsyncedCycleEntries() =>
       (select(cycleEntries)..where((t) => t.synced.equals(false))).get();
 
   Future<void> markCycleEntrySynced(String id) =>
       (update(cycleEntries)..where((t) => t.id.equals(id)))
           .write(const CycleEntriesCompanion(synced: Value(true)));
+
+  Future<int> deleteCycleEntry(String id) =>
+      (delete(cycleEntries)..where((t) => t.id.equals(id))).go();
 }
 
 // ─── Database Riverpod provider (defined here, used by sync_service) ─────────

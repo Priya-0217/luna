@@ -24,7 +24,44 @@ final latestCycleEntryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LatestCycleEntryRef = AutoDisposeFutureProviderRef<CycleEntry?>;
-String _$cycleHistoryHash() => r'5f544c77b566725df509817740aaa7e545a2e05b';
+String _$cycleLatestEntryHash() => r'439e42fb39183cb54108f0ec14552314b08f64ea';
+
+/// See also [cycleLatestEntry].
+@ProviderFor(cycleLatestEntry)
+final cycleLatestEntryProvider =
+    AutoDisposeStreamProvider<CycleEntry?>.internal(
+      cycleLatestEntry,
+      name: r'cycleLatestEntryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$cycleLatestEntryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CycleLatestEntryRef = AutoDisposeStreamProviderRef<CycleEntry?>;
+String _$cycleEntriesStreamHash() =>
+    r'e9d934688c53e8f9318fc3173be4cbfc5e329477';
+
+/// See also [cycleEntriesStream].
+@ProviderFor(cycleEntriesStream)
+final cycleEntriesStreamProvider =
+    AutoDisposeStreamProvider<List<CycleEntry>>.internal(
+      cycleEntriesStream,
+      name: r'cycleEntriesStreamProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$cycleEntriesStreamHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CycleEntriesStreamRef = AutoDisposeStreamProviderRef<List<CycleEntry>>;
+String _$cycleHistoryHash() => r'8eb5a3a29239e7adfa2f22d6260b7e566fe399b5';
 
 /// See also [CycleHistory].
 @ProviderFor(CycleHistory)

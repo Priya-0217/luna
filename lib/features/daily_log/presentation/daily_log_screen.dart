@@ -9,8 +9,11 @@ import 'package:her/core/widgets/luna_card.dart';
 import 'package:her/features/daily_log/presentation/mood_selector.dart';
 import 'package:her/features/daily_log/presentation/flow_slider.dart';
 import 'package:her/features/daily_log/presentation/symptom_chip_grid.dart';
+import 'package:her/features/cycle/domain/daily_log.dart';
+import 'package:her/features/cycle/providers/daily_log_provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:her/features/home/providers/dashboard_provider.dart';
-import 'package:her/features/daily_log/providers/daily_log_provider.dart';
 
 class DailyLogScreen extends ConsumerStatefulWidget {
   const DailyLogScreen({super.key});
@@ -40,12 +43,12 @@ class _DailyLogScreenState extends ConsumerState<DailyLogScreen> {
 
   Future<void> _loadExistingLog() async {
     try {
-      final entry = await ref.read(dailyLogProvider.future);
+      final entry = await ref.read(todayLogProvider.future);
       if (entry != null && mounted) {
         setState(() {
           _selectedMood = entry.mood;
-          _selectedFlow = entry.flowLevel;
-          _selectedSymptoms = entry.symptoms;
+          _selectedFlow = entry.flow;
+          _selectedSymptoms = entry.symptoms.split(', ').where((s) => s.isNotEmpty).toList();
           _notesController.text = entry.notes ?? '';
         });
       }
@@ -60,13 +63,20 @@ class _DailyLogScreenState extends ConsumerState<DailyLogScreen> {
 
     try {
       final body = _notesController.text.trim();
-      await ref.read(dailyLogProvider.notifier).save(
-            mood: _selectedMood,
-            flowLevel: _selectedFlow,
-            symptoms: _selectedSymptoms,
-            notes: body.isEmpty ? null : body,
-            energyLevel: 3, // Normal default energy level
-          );
+      final now = DateTime.now();
+      final log = DailyLog(
+        id: const Uuid().v4(),
+        userId: FirebaseAuth.instance.currentUser?.uid ?? '',
+        date: DateTime(now.year, now.month, now.day),
+        mood: _selectedMood,
+        flow: _selectedFlow,
+        symptoms: _selectedSymptoms.join(', '),
+        notes: body.isEmpty ? null : body,
+        energyLevel: 3,
+        createdAt: now,
+      );
+
+      await ref.read(dailyLogControllerProvider.notifier).saveLog(log);
 
       // Invalidate dashboard provider so that changes display immediately
       ref.invalidate(dashboardProvider);

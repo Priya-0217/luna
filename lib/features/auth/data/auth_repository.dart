@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:her/core/services/auth_service.dart';
 import 'package:her/core/services/firestore_service.dart';
@@ -22,20 +23,24 @@ class AuthRepository {
   User? get currentFirebaseUser => _auth.currentUser;
 
   Future<AppUser> signIn(String email, String password) async {
+    debugPrint('AuthRepository: Signing in $email');
     final cred = await _auth.signIn(email: email, password: password);
     final fbUser = cred.user!;
     final data = await _firestore.getUserProfile();
+    debugPrint('AuthRepository: Firestore data for $email: $data');
     return AppUser(
       uid: fbUser.uid,
       email: fbUser.email ?? '',
       displayName: fbUser.displayName ?? data?['displayName'] ?? '',
       cycleAverageLength: (data?['cycleAverageLength'] as int?) ?? 28,
       periodAverageLength: (data?['periodAverageLength'] as int?) ?? 5,
+      isOnboarded: (data?['isOnboarded'] as bool?) ?? false,
     );
   }
 
   Future<AppUser> signUp(
       String name, String email, String password) async {
+    debugPrint('AuthRepository: Signing up $email as $name');
     final cred = await _auth.createAccount(
         name: name, email: email, password: password);
     final fbUser = cred.user!;
@@ -47,6 +52,7 @@ class AuthRepository {
   }
 
   Future<void> updateProfile(AppUser user) async {
+    debugPrint('AuthRepository: Updating profile for ${user.email} in Firestore');
     await _firestore.saveUserProfile({
       'uid': user.uid,
       'email': user.email,
@@ -57,6 +63,7 @@ class AuthRepository {
     });
     await FirebaseAuth.instance.currentUser
         ?.updateDisplayName(user.displayName);
+    debugPrint('AuthRepository: Profile update complete for ${user.email}');
   }
 
   Future<void> signOut() => _auth.signOut();

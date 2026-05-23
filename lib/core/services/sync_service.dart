@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:her/core/services/database.dart';
 import 'package:her/core/services/firestore_service.dart';
@@ -47,13 +48,15 @@ class SyncService {
       try {
         final dateKey = FirestoreService.dateKey(log.date);
         await _firestore.saveDailyLog(dateKey, {
+          'id': log.id,
           'userId': _uid,
-          'date': log.date.toIso8601String(),
+          'date': Timestamp.fromDate(log.date),
           'mood': log.mood,
-          'flowLevel': log.flow,
+          'flow': log.flow,
           'symptoms': log.symptoms,
           'notes': log.notes,
           'energyLevel': log.energyLevel,
+          'createdAt': Timestamp.fromDate(log.date), // log doesn't have createdAt, using date as fallback
         });
         await _db.markLogSynced(log.id);
       } catch (_) {}
@@ -98,10 +101,10 @@ class SyncService {
       try {
         await _firestore.saveCycleEntry(entry.id, {
           'userId': _uid,
-          'startDate': entry.startDate.toIso8601String(),
-          'endDate': entry.endDate?.toIso8601String(),
+          'startDate': Timestamp.fromDate(entry.startDate),
+          'endDate': entry.endDate != null ? Timestamp.fromDate(entry.endDate!) : null,
           'cycleLength': entry.cycleLength,
-          'createdAt': entry.createdAt.toIso8601String(),
+          'createdAt': Timestamp.fromDate(entry.createdAt),
         });
         await _db.markCycleEntrySynced(entry.id);
       } catch (_) {}

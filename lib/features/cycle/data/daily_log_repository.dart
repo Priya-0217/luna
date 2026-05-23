@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:her/core/services/database.dart';
 import 'package:her/core/services/firestore_service.dart';
 import 'package:her/features/cycle/domain/daily_log.dart';
@@ -55,21 +56,23 @@ class DailyLogRepository {
   void _syncLog(DailyLog log) async {
     try {
       final dateKey = FirestoreService.dateKey(log.date);
+      debugPrint('DailyLogRepository: Syncing log $dateKey to Firestore');
       await _firestore.saveDailyLog(dateKey, {
         'id': log.id,
         'userId': log.userId,
         'date': Timestamp.fromDate(log.date),
         'mood': log.mood,
-        'flow': log.flow,
-        'symptoms': log.symptoms,
+        'flow': log.flow, // Standardized field name
+        'symptoms': log.symptoms, // Standardized to String (joined by ', ')
         'notes': log.notes,
         'energyLevel': log.energyLevel,
         'createdAt': Timestamp.fromDate(log.createdAt),
       });
       // Mark as synced locally
       await _db.markLogSynced(log.id);
+      debugPrint('DailyLogRepository: Sync complete for $dateKey');
     } catch (e) {
-      print('Error syncing daily log: $e');
+      debugPrint('DailyLogRepository: Error syncing daily log: $e');
     }
   }
 
@@ -84,17 +87,29 @@ class DailyLogRepository {
         .map((snapshot) {
       return snapshot.docs.map((doc) {
         final data = doc.data();
+        
+        // Handle potential legacy field names or types
+        final dateValue = data['date'];
+        final date = dateValue is String 
+            ? DateTime.parse(dateValue) 
+            : FirestoreService.tsToDate(dateValue);
+            
+        final symptomsValue = data['symptoms'];
+        final symptoms = symptomsValue is List 
+            ? symptomsValue.join(', ') 
+            : (symptomsValue ?? '');
+
         return DailyLog(
           id: data['id'] ?? doc.id,
           userId: data['userId'] ?? _uid,
-          date: FirestoreService.tsToDate(data['date']),
+          date: date,
           mood: data['mood'] ?? 'calm',
-          flow: data['flow'] ?? 0,
-          symptoms: data['symptoms'] ?? '',
+          flow: data['flow'] ?? data['flowLevel'] ?? 0, // Handle both
+          symptoms: symptoms,
           notes: data['notes'],
           energyLevel: data['energyLevel'] ?? 3,
           synced: true,
-          createdAt: FirestoreService.tsToDate(data['createdAt']),
+          createdAt: FirestoreService.tsToDate(data['createdAt'] ?? data['date']),
         );
       }).toList();
     });

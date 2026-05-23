@@ -1,0 +1,576 @@
+﻿│   ├── 📁 .dart_tool
+│   ├── 📁 .idea
+│   ├── 📁 android
+│   ├── 📁 assets
+│   ├── 📁 build
+│   ├── 📁 ios
+│   ├── 📁 lib
+│   ├── 📁 macos
+│   ├── 📁 output_icons
+│   ├── 📁 test
+│   ├── 📁 web
+│   ├── 📄 .flutter-plugins-dependencies
+│   ├── 📄 .gitignore
+│   ├── 📄 .metadata
+│   ├── 📄 analysis_options.yaml
+│   ├── 📄 app_icon.png
+│   ├── 📄 dgd
+│   ├── 📄 firebase.json
+│   ├── 📄 her.iml
+│   ├── 📄 plan.md
+│   ├── 📄 plan_version_2.md
+│   ├── 📄 project_structure.txt
+│   ├── 📄 pubspec.lock
+│   ├── 📄 pubspec.yaml
+│   ├── 📄 README.md
+│   │   ├── 📁 .gradle
+│   │   ├── 📁 .kotlin
+│   │   ├── 📁 app
+│   │   ├── 📁 build
+│   │   ├── 📁 gradle
+│   │   ├── 📄 .gitignore
+│   │   ├── 📄 build.gradle.kts
+│   │   ├── 📄 gradle.properties
+│   │   ├── 📄 gradlew
+│   │   ├── 📄 gradlew.bat
+│   │   ├── 📄 her_android.iml
+│   │   ├── 📄 local.properties
+│   │   ├── 📄 settings.gradle.kts
+│   │   │   ├── 📁 errors
+│   │   │   ├── 📁 sessions
+│   │   │   │   ├── 📄 errors-1779485574399.log
+│   │   │   │   ├── 📄 errors-1779485574459.log
+│   │   │   │   ├── 📄 errors-1779485574513.log
+│   │   │   │   ├── 📄 errors-1779485574555.log
+│   │   │   │   ├── 📄 errors-1779485574572.log
+│   │   │   │   ├── 📄 errors-1779485574591.log
+│   │   │   │   ├── 📄 errors-1779485574632.log
+│   │   │   │   ├── 📄 errors-1779486473714.log
+│   │   │   │   ├── 📄 errors-1779486473766.log
+│   │   │   │   ├── 📄 errors-1779486473834.log
+│   │   │   │   ├── 📄 errors-1779486473888.log
+│   │   │   │   ├── 📄 errors-1779486473900.log
+│   │   │   │   ├── 📄 errors-1779486473913.log
+│   │   │   │   ├── 📄 errors-1779486473939.log
+│   │   │   ├── 📁 src
+│   │   │   ├── 📄 build.gradle.kts
+│   │   │   ├── 📄 google-services.json
+│   │   │   │   ├── 📁 debug
+│   │   │   │   ├── 📁 main
+│   │   │   │   ├── 📁 profile
+│   │   │   │   │   ├── 📄 AndroidManifest.xml
+│   │   │   │   │   ├── 📁 java
+│   │   │   │   │   ├── 📁 kotlin
+│   │   │   │   │   ├── 📁 res
+│   │   │   │   │   ├── 📄 AndroidManifest.xml
+│   │   │   │   │   │   ├── 📁 io
+│   │   │   │   │   │   │   ├── 📁 flutter
+│   │   │   │   │   │   │   │   ├── 📁 plugins
+│   │   │   │   │   │   │   │   │   ├── 📄 GeneratedPluginRegistrant.java
+│   │   │   │   │   │   ├── 📁 com
+│   │   │   │   │   │   │   ├── 📁 example
+│   │   │   │   │   │   │   │   ├── 📁 luna
+│   │   │   │   │   │   │   │   │   ├── 📁 her
+│   │   │   │   │   │   │   │   │   │   ├── 📄 MainActivity.kt
+│   │   │   │   │   │   ├── 📁 drawable
+│   │   │   │   │   │   ├── 📁 drawable-v21
+│   │   │   │   │   │   ├── 📁 mipmap-hdpi
+│   │   │   │   │   │   ├── 📁 mipmap-mdpi
+│   │   │   │   │   │   ├── 📁 mipmap-xhdpi
+│   │   │   │   │   │   ├── 📁 mipmap-xxhdpi
+│   │   │   │   │   │   ├── 📁 mipmap-xxxhdpi
+│   │   │   │   │   │   ├── 📁 values
+│   │   │   │   │   │   ├── 📁 values-night
+│   │   │   │   │   │   │   ├── 📄 launch_background.xml
+│   │   │   │   │   │   │   ├── 📄 launch_background.xml
+│   │   │   │   │   │   │   ├── 📄 ic_launcher.png
+│   │   │   │   │   │   │   ├── 📄 launcher_icon.png
+│   │   │   │   │   │   │   ├── 📄 ic_launcher.png
+│   │   │   │   │   │   │   ├── 📄 launcher_icon.png
+│   │   │   │   │   │   │   ├── 📄 ic_launcher.png
+│   │   │   │   │   │   │   ├── 📄 launcher_icon.png
+│   │   │   │   │   │   │   ├── 📄 ic_launcher.png
+│   │   │   │   │   │   │   ├── 📄 launcher_icon.png
+│   │   │   │   │   │   │   ├── 📄 ic_launcher.png
+│   │   │   │   │   │   │   ├── 📄 launcher_icon.png
+│   │   │   │   │   │   │   ├── 📄 styles.xml
+│   │   │   │   │   │   │   ├── 📄 styles.xml
+│   │   │   │   │   ├── 📄 AndroidManifest.xml
+│   │   │   ├── 📁 wrapper
+│   │   │   │   ├── 📄 gradle-wrapper.jar
+│   │   │   │   ├── 📄 gradle-wrapper.properties
+│   │   ├── 📁 illustrations
+│   │   │   ├── 📄 char_angry.png
+│   │   │   ├── 📄 char_anxious.png
+│   │   │   ├── 📄 char_back_pain.png
+│   │   │   ├── 📄 char_baking.png
+│   │   │   ├── 📄 char_bath_time.png
+│   │   │   ├── 📄 char_beach_day.png
+│   │   │   ├── 📄 char_bloating.png
+│   │   │   ├── 📄 char_cheerful.png
+│   │   │   ├── 📄 char_cleaning.png
+│   │   │   ├── 📄 char_content.png
+│   │   │   ├── 📄 char_cooking.png
+│   │   │   ├── 📄 char_cozy.png
+│   │   │   ├── 📄 char_cramps.png
+│   │   │   ├── 📄 char_creative.png
+│   │   │   ├── 📄 char_crying.png
+│   │   │   ├── 📄 char_date_night.png
+│   │   │   ├── 📄 char_deep_breath.png
+│   │   │   ├── 📄 char_disappointed.png
+│   │   │   ├── 📄 char_dizzy.png
+│   │   │   ├── 📄 char_excited.png
+│   │   │   ├── 📄 char_festival.png
+│   │   │   ├── 📄 char_feverish.png
+│   │   │   ├── 📄 char_focused.png
+│   │   │   ├── 📄 char_frustrated.png
+│   │   │   ├── 📄 char_good_night.png
+│   │   │   ├── 📄 char_grateful.png
+│   │   │   ├── 📄 char_hair_care.png
+│   │   │   ├── 📄 char_happy.png
+│   │   │   ├── 📄 char_headache.png
+│   │   │   ├── 📄 char_hello.png
+│   │   │   ├── 📄 char_in_love.png
+│   │   │   ├── 📄 char_in_pain.png
+│   │   │   ├── 📄 char_irritated.png
+│   │   │   ├── 📄 char_journaling.png
+│   │   │   ├── 📄 char_laughing.png
+│   │   │   ├── 📄 char_low_energy.png
+│   │   │   ├── 📄 char_meditating.png
+│   │   │   ├── 📄 char_movie_time.png
+│   │   │   ├── 📄 char_music_time.png
+│   │   │   ├── 📄 char_nature_love.png
+│   │   │   ├── 📄 char_nauseous.png
+│   │   │   ├── 📄 char_overwhelmed.png
+│   │   │   ├── 📄 char_party_time.png
+│   │   │   ├── 📄 char_peaceful.png
+│   │   │   ├── 📄 char_planning.png
+│   │   │   ├── 📄 char_productive.png
+│   │   │   ├── 📄 char_rainy_day.png
+│   │   │   ├── 📄 char_reading.png
+│   │   │   ├── 📄 char_relaxed.png
+│   │   │   ├── 📄 char_sad.png
+│   │   │   ├── 📄 char_self_care.png
+│   │   │   ├── 📄 char_shy.png
+│   │   │   ├── 📄 char_skin_care.png
+│   │   │   ├── 📄 char_sleepy.png
+│   │   │   ├── 📄 char_spa_day.png
+│   │   │   ├── 📄 char_stressed.png
+│   │   │   ├── 📄 char_studying.png
+│   │   │   ├── 📄 char_sunny_day.png
+│   │   │   ├── 📄 char_tired.png
+│   │   │   ├── 📄 char_traveling.png
+│   │   │   ├── 📄 char_waking_up.png
+│   │   │   ├── 📄 char_warm.png
+│   │   │   ├── 📄 char_working.png
+│   │   ├── 📁 Flutter
+│   │   ├── 📁 Runner
+│   │   ├── 📁 Runner.xcodeproj
+│   │   ├── 📁 Runner.xcworkspace
+│   │   ├── 📁 RunnerTests
+│   │   ├── 📄 .gitignore
+│   │   │   ├── 📁 ephemeral
+│   │   │   ├── 📄 AppFrameworkInfo.plist
+│   │   │   ├── 📄 Debug.xcconfig
+│   │   │   ├── 📄 flutter_export_environment.sh
+│   │   │   ├── 📄 Generated.xcconfig
+│   │   │   ├── 📄 Release.xcconfig
+│   │   │   │   ├── 📄 flutter_lldbinit
+│   │   │   │   ├── 📄 flutter_lldb_helper.py
+│   │   │   ├── 📁 Assets.xcassets
+│   │   │   ├── 📁 Base.lproj
+│   │   │   ├── 📄 AppDelegate.swift
+│   │   │   ├── 📄 GeneratedPluginRegistrant.h
+│   │   │   ├── 📄 GeneratedPluginRegistrant.m
+│   │   │   ├── 📄 Info.plist
+│   │   │   ├── 📄 Runner-Bridging-Header.h
+│   │   │   ├── 📄 SceneDelegate.swift
+│   │   │   │   ├── 📁 AppIcon.appiconset
+│   │   │   │   ├── 📁 LaunchImage.imageset
+│   │   │   │   │   ├── 📄 Contents.json
+│   │   │   │   │   ├── 📄 Icon-App-1024x1024@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-20x20@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-20x20@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-20x20@3x.png
+│   │   │   │   │   ├── 📄 Icon-App-29x29@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-29x29@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-29x29@3x.png
+│   │   │   │   │   ├── 📄 Icon-App-40x40@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-40x40@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-40x40@3x.png
+│   │   │   │   │   ├── 📄 Icon-App-50x50@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-50x50@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-57x57@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-57x57@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-60x60@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-60x60@3x.png
+│   │   │   │   │   ├── 📄 Icon-App-72x72@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-72x72@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-76x76@1x.png
+│   │   │   │   │   ├── 📄 Icon-App-76x76@2x.png
+│   │   │   │   │   ├── 📄 Icon-App-83.5x83.5@2x.png
+│   │   │   │   │   ├── 📄 Contents.json
+│   │   │   │   │   ├── 📄 LaunchImage.png
+│   │   │   │   │   ├── 📄 LaunchImage@2x.png
+│   │   │   │   │   ├── 📄 LaunchImage@3x.png
+│   │   │   │   │   ├── 📄 README.md
+│   │   │   │   ├── 📄 LaunchScreen.storyboard
+│   │   │   │   ├── 📄 Main.storyboard
+│   │   │   ├── 📁 project.xcworkspace
+│   │   │   ├── 📁 xcshareddata
+│   │   │   ├── 📄 project.pbxproj
+│   │   │   │   ├── 📁 xcshareddata
+│   │   │   │   ├── 📄 contents.xcworkspacedata
+│   │   │   │   │   ├── 📄 IDEWorkspaceChecks.plist
+│   │   │   │   │   ├── 📄 WorkspaceSettings.xcsettings
+│   │   │   │   ├── 📁 xcschemes
+│   │   │   │   │   ├── 📄 Runner.xcscheme
+│   │   │   ├── 📁 xcshareddata
+│   │   │   ├── 📄 contents.xcworkspacedata
+│   │   │   │   ├── 📄 IDEWorkspaceChecks.plist
+│   │   │   │   ├── 📄 WorkspaceSettings.xcsettings
+│   │   │   ├── 📄 RunnerTests.swift
+│   │   ├── 📁 core
+│   │   ├── 📁 features
+│   │   ├── 📄 app.dart
+│   │   ├── 📄 firebase_options.dart
+│   │   ├── 📄 main.dart
+│   │   ├── 📄 project_structure.txt
+│   │   │   ├── 📁 constants
+│   │   │   ├── 📁 providers
+│   │   │   ├── 📁 router
+│   │   │   ├── 📁 services
+│   │   │   ├── 📁 widgets
+│   │   │   │   ├── 📄 app_colors.dart
+│   │   │   │   ├── 📄 app_illustrations.dart
+│   │   │   │   ├── 📄 app_radius.dart
+│   │   │   │   ├── 📄 app_shadows.dart
+│   │   │   │   ├── 📄 app_spacing.dart
+│   │   │   │   ├── 📄 app_typography.dart
+│   │   │   │   ├── 📄 database_provider.dart
+│   │   │   │   ├── 📄 app_router.dart
+│   │   │   │   ├── 📄 app_routes.dart
+│   │   │   │   ├── 📄 ai_service.dart
+│   │   │   │   ├── 📄 ai_service.g.dart
+│   │   │   │   ├── 📄 analytics_service.dart
+│   │   │   │   ├── 📄 analytics_service.g.dart
+│   │   │   │   ├── 📄 auth_service.dart
+│   │   │   │   ├── 📄 auth_service.g.dart
+│   │   │   │   ├── 📄 database.dart
+│   │   │   │   ├── 📄 database.g.dart
+│   │   │   │   ├── 📄 encryption_service.dart
+│   │   │   │   ├── 📄 firestore_service.dart
+│   │   │   │   ├── 📄 firestore_service.g.dart
+│   │   │   │   ├── 📄 notification_service.dart
+│   │   │   │   ├── 📄 notification_service.g.dart
+│   │   │   │   ├── 📄 storage_service.dart
+│   │   │   │   ├── 📄 storage_service.g.dart
+│   │   │   │   ├── 📄 suggestion_service.dart
+│   │   │   │   ├── 📄 sync_service.dart
+│   │   │   │   ├── 📄 sync_service.g.dart
+│   │   │   │   ├── 📄 animated_gradient_bg.dart
+│   │   │   │   ├── 📄 floating_particles.dart
+│   │   │   │   ├── 📄 illustrated_card.dart
+│   │   │   │   ├── 📄 luna_avatar.dart
+│   │   │   │   ├── 📄 luna_bottom_sheet.dart
+│   │   │   │   ├── 📄 luna_button.dart
+│   │   │   │   ├── 📄 luna_card.dart
+│   │   │   │   ├── 📄 luna_chip.dart
+│   │   │   │   ├── 📄 luna_dialog.dart
+│   │   │   │   ├── 📄 luna_empty_state.dart
+│   │   │   │   ├── 📄 luna_loading.dart
+│   │   │   │   ├── 📄 luna_text_field.dart
+│   │   │   │   ├── 📄 particle_background.dart
+│   │   │   │   ├── 📄 phase_ring.dart
+│   │   │   ├── 📁 auth
+│   │   │   ├── 📁 cycle
+│   │   │   ├── 📁 daily_log
+│   │   │   ├── 📁 from_him
+│   │   │   ├── 📁 home
+│   │   │   ├── 📁 insights
+│   │   │   ├── 📁 journal
+│   │   │   ├── 📁 mood_garden
+│   │   │   ├── 📁 onboarding
+│   │   │   ├── 📁 self_care
+│   │   │   ├── 📁 settings
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 auth_repository.dart
+│   │   │   │   │   ├── 📄 auth_repository.g.dart
+│   │   │   │   │   ├── 📄 app_user.dart
+│   │   │   │   │   ├── 📄 app_user.freezed.dart
+│   │   │   │   │   ├── 📄 app_user.g.dart
+│   │   │   │   │   ├── 📄 login_screen.dart
+│   │   │   │   │   ├── 📄 signup_screen.dart
+│   │   │   │   │   ├── 📄 auth_provider.dart
+│   │   │   │   │   ├── 📄 auth_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 cycle_repository.dart
+│   │   │   │   │   ├── 📄 cycle_repository.g.dart
+│   │   │   │   │   ├── 📄 daily_log_repository.dart
+│   │   │   │   │   ├── 📄 daily_log_repository.g.dart
+│   │   │   │   │   ├── 📄 cycle_entry.dart
+│   │   │   │   │   ├── 📄 cycle_entry.freezed.dart
+│   │   │   │   │   ├── 📄 cycle_entry.g.dart
+│   │   │   │   │   ├── 📄 daily_log.dart
+│   │   │   │   │   ├── 📄 daily_log.freezed.dart
+│   │   │   │   │   ├── 📄 daily_log.g.dart
+│   │   │   │   │   ├── 📄 cycle_screen.dart
+│   │   │   │   │   ├── 📄 petal_calendar.dart
+│   │   │   │   │   ├── 📄 cycle_provider.dart
+│   │   │   │   │   ├── 📄 cycle_provider.g.dart
+│   │   │   │   │   ├── 📄 daily_log_provider.dart
+│   │   │   │   │   ├── 📄 daily_log_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 log_repository.dart
+│   │   │   │   │   ├── 📄 log_repository.g.dart
+│   │   │   │   │   ├── 📄 daily_log_entry.dart
+│   │   │   │   │   ├── 📄 daily_log_entry.freezed.dart
+│   │   │   │   │   ├── 📄 daily_log_entry.g.dart
+│   │   │   │   │   ├── 📄 mood.dart
+│   │   │   │   │   ├── 📄 symptom.dart
+│   │   │   │   │   ├── 📄 daily_log_screen.dart
+│   │   │   │   │   ├── 📄 flow_slider.dart
+│   │   │   │   │   ├── 📄 mood_selector.dart
+│   │   │   │   │   ├── 📄 symptom_chip_grid.dart
+│   │   │   │   │   ├── 📄 daily_log_provider.dart
+│   │   │   │   │   ├── 📄 daily_log_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 from_him_repository.dart
+│   │   │   │   │   ├── 📄 from_him_repository.g.dart
+│   │   │   │   │   ├── 📄 love_message.dart
+│   │   │   │   │   ├── 📄 love_message.freezed.dart
+│   │   │   │   │   ├── 📄 love_message.g.dart
+│   │   │   │   │   ├── 📄 memory_photo.dart
+│   │   │   │   │   ├── 📄 memory_photo.freezed.dart
+│   │   │   │   │   ├── 📄 memory_photo.g.dart
+│   │   │   │   │   ├── 📄 message_trigger.dart
+│   │   │   │   │   ├── 📄 voice_note.dart
+│   │   │   │   │   ├── 📄 voice_note.freezed.dart
+│   │   │   │   │   ├── 📄 voice_note.g.dart
+│   │   │   │   │   ├── 📄 comfort_playlist_screen.dart
+│   │   │   │   │   ├── 📄 envelope_open_screen.dart
+│   │   │   │   │   ├── 📄 from_him_screen.dart
+│   │   │   │   │   ├── 📄 memory_gallery_screen.dart
+│   │   │   │   │   ├── 📄 voice_playback_screen.dart
+│   │   │   │   │   ├── 📄 from_him_provider.dart
+│   │   │   │   │   ├── 📄 from_him_provider.g.dart
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 cycle_calculator.dart
+│   │   │   │   │   ├── 📄 cycle_phase.dart
+│   │   │   │   │   ├── 📄 home_screen.dart
+│   │   │   │   │   ├── 📄 dashboard_provider.dart
+│   │   │   │   │   ├── 📄 dashboard_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 insights_repository.dart
+│   │   │   │   │   ├── 📄 insights_repository.g.dart
+│   │   │   │   │   ├── 📄 insight.dart
+│   │   │   │   │   ├── 📄 insight.freezed.dart
+│   │   │   │   │   ├── 📄 insight.g.dart
+│   │   │   │   │   ├── 📄 wellness_trend.dart
+│   │   │   │   │   ├── 📄 insights_screen.dart
+│   │   │   │   │   ├── 📄 insights_provider.dart
+│   │   │   │   │   ├── 📄 insights_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 journal_repository.dart
+│   │   │   │   │   ├── 📄 journal_repository.g.dart
+│   │   │   │   │   ├── 📄 journal_entry.dart
+│   │   │   │   │   ├── 📄 journal_entry.freezed.dart
+│   │   │   │   │   ├── 📄 journal_entry.g.dart
+│   │   │   │   │   ├── 📄 journal_screen.dart
+│   │   │   │   │   ├── 📄 journal_write_screen.dart
+│   │   │   │   │   ├── 📄 journal_provider.dart
+│   │   │   │   │   ├── 📄 journal_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 chat_repository.dart
+│   │   │   │   │   ├── 📄 chat_repository.g.dart
+│   │   │   │   │   ├── 📄 garden_repository.dart
+│   │   │   │   │   ├── 📄 garden_repository.g.dart
+│   │   │   │   │   ├── 📄 llm_service.dart
+│   │   │   │   │   ├── 📄 mock_llm_service.dart
+│   │   │   │   │   ├── 📄 universal_llm_service.dart
+│   │   │   │   │   ├── 📄 chat_message.dart
+│   │   │   │   │   ├── 📄 chat_message.freezed.dart
+│   │   │   │   │   ├── 📄 chat_message.g.dart
+│   │   │   │   │   ├── 📄 garden_element.dart
+│   │   │   │   │   ├── 📄 garden_state.dart
+│   │   │   │   │   ├── 📄 garden_state.freezed.dart
+│   │   │   │   │   ├── 📄 garden_state.g.dart
+│   │   │   │   │   ├── 📄 llm_config.dart
+│   │   │   │   │   ├── 📄 companion_screen.dart
+│   │   │   │   │   ├── 📄 garden_canvas.dart
+│   │   │   │   │   ├── 📄 mood_garden_screen.dart
+│   │   │   │   │   ├── 📄 chat_provider.dart
+│   │   │   │   │   ├── 📄 chat_provider.g.dart
+│   │   │   │   │   ├── 📄 garden_provider.dart
+│   │   │   │   │   ├── 📄 garden_provider.g.dart
+│   │   │   │   │   ├── 📄 llm_provider.dart
+│   │   │   │   │   ├── 📄 llm_provider.g.dart
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   │   ├── 📄 onboarding_screen.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 self_care_repository.dart
+│   │   │   │   │   ├── 📄 self_care_repository.g.dart
+│   │   │   │   │   ├── 📄 hydration_log.dart
+│   │   │   │   │   ├── 📄 hydration_log.freezed.dart
+│   │   │   │   │   ├── 📄 hydration_log.g.dart
+│   │   │   │   │   ├── 📄 sleep_log.dart
+│   │   │   │   │   ├── 📄 sleep_log.freezed.dart
+│   │   │   │   │   ├── 📄 sleep_log.g.dart
+│   │   │   │   │   ├── 📄 self_care_screen.dart
+│   │   │   │   │   ├── 📄 self_care_provider.dart
+│   │   │   │   │   ├── 📄 self_care_provider.g.dart
+│   │   │   │   ├── 📁 data
+│   │   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📁 providers
+│   │   │   │   │   ├── 📄 settings_repository.dart
+│   │   │   │   │   ├── 📄 settings_repository.g.dart
+│   │   │   │   │   ├── 📄 app_settings.dart
+│   │   │   │   │   ├── 📄 app_settings.freezed.dart
+│   │   │   │   │   ├── 📄 app_settings.g.dart
+│   │   │   │   │   ├── 📄 app_lock_screen.dart
+│   │   │   │   │   ├── 📄 profile_tab.dart
+│   │   │   │   │   ├── 📄 settings_screen.dart
+│   │   │   │   │   ├── 📄 settings_provider.dart
+│   │   │   │   │   ├── 📄 settings_provider.g.dart
+│   │   ├── 📁 Flutter
+│   │   ├── 📁 Runner
+│   │   ├── 📁 Runner.xcodeproj
+│   │   ├── 📁 Runner.xcworkspace
+│   │   ├── 📁 RunnerTests
+│   │   ├── 📄 .gitignore
+│   │   │   ├── 📄 Flutter-Debug.xcconfig
+│   │   │   ├── 📄 Flutter-Release.xcconfig
+│   │   │   ├── 📄 GeneratedPluginRegistrant.swift
+│   │   │   ├── 📁 Assets.xcassets
+│   │   │   ├── 📁 Base.lproj
+│   │   │   ├── 📁 Configs
+│   │   │   ├── 📄 AppDelegate.swift
+│   │   │   ├── 📄 DebugProfile.entitlements
+│   │   │   ├── 📄 Info.plist
+│   │   │   ├── 📄 MainFlutterWindow.swift
+│   │   │   ├── 📄 Release.entitlements
+│   │   │   │   ├── 📁 AppIcon.appiconset
+│   │   │   │   │   ├── 📄 app_icon_1024.png
+│   │   │   │   │   ├── 📄 app_icon_128.png
+│   │   │   │   │   ├── 📄 app_icon_16.png
+│   │   │   │   │   ├── 📄 app_icon_256.png
+│   │   │   │   │   ├── 📄 app_icon_32.png
+│   │   │   │   │   ├── 📄 app_icon_512.png
+│   │   │   │   │   ├── 📄 app_icon_64.png
+│   │   │   │   │   ├── 📄 Contents.json
+│   │   │   │   ├── 📄 MainMenu.xib
+│   │   │   │   ├── 📄 AppInfo.xcconfig
+│   │   │   │   ├── 📄 Debug.xcconfig
+│   │   │   │   ├── 📄 Release.xcconfig
+│   │   │   │   ├── 📄 Warnings.xcconfig
+│   │   │   ├── 📁 project.xcworkspace
+│   │   │   ├── 📁 xcshareddata
+│   │   │   ├── 📄 project.pbxproj
+│   │   │   │   ├── 📁 xcshareddata
+│   │   │   │   │   ├── 📄 IDEWorkspaceChecks.plist
+│   │   │   │   ├── 📁 xcschemes
+│   │   │   │   │   ├── 📄 Runner.xcscheme
+│   │   │   ├── 📁 xcshareddata
+│   │   │   ├── 📄 contents.xcworkspacedata
+│   │   │   │   ├── 📄 IDEWorkspaceChecks.plist
+│   │   │   ├── 📄 RunnerTests.swift
+│   │   ├── 📄 angry.png
+│   │   ├── 📄 anxious.png
+│   │   ├── 📄 back_pain.png
+│   │   ├── 📄 baking.png
+│   │   ├── 📄 bath_time.png
+│   │   ├── 📄 beach_day.png
+│   │   ├── 📄 bloating.png
+│   │   ├── 📄 cheerful.png
+│   │   ├── 📄 cleaning.png
+│   │   ├── 📄 content.png
+│   │   ├── 📄 cooking.png
+│   │   ├── 📄 cozy.png
+│   │   ├── 📄 cramps.png
+│   │   ├── 📄 creative.png
+│   │   ├── 📄 crying.png
+│   │   ├── 📄 date_night.png
+│   │   ├── 📄 deep_breath.png
+│   │   ├── 📄 disappointed.png
+│   │   ├── 📄 dizzy.png
+│   │   ├── 📄 excited.png
+│   │   ├── 📄 festival.png
+│   │   ├── 📄 feverish.png
+│   │   ├── 📄 focused.png
+│   │   ├── 📄 frustrated.png
+│   │   ├── 📄 good_night.png
+│   │   ├── 📄 grateful.png
+│   │   ├── 📄 hair_care.png
+│   │   ├── 📄 happy.png
+│   │   ├── 📄 headache.png
+│   │   ├── 📄 hello.png
+│   │   ├── 📄 in_love.png
+│   │   ├── 📄 in_pain.png
+│   │   ├── 📄 irritated.png
+│   │   ├── 📄 journaling.png
+│   │   ├── 📄 laughing.png
+│   │   ├── 📄 low_energy.png
+│   │   ├── 📄 meditating.png
+│   │   ├── 📄 movie_time.png
+│   │   ├── 📄 music_time.png
+│   │   ├── 📄 nature_love.png
+│   │   ├── 📄 nauseous.png
+│   │   ├── 📄 overwhelmed.png
+│   │   ├── 📄 party_time.png
+│   │   ├── 📄 peaceful.png
+│   │   ├── 📄 planning.png
+│   │   ├── 📄 productive.png
+│   │   ├── 📄 rainy_day.png
+│   │   ├── 📄 reading.png
+│   │   ├── 📄 relaxed.png
+│   │   ├── 📄 sad.png
+│   │   ├── 📄 self_care.png
+│   │   ├── 📄 shy.png
+│   │   ├── 📄 skin_care.png
+│   │   ├── 📄 sleepy.png
+│   │   ├── 📄 spa_day.png
+│   │   ├── 📄 stressed.png
+│   │   ├── 📄 studying.png
+│   │   ├── 📄 sunny_day.png
+│   │   ├── 📄 tired.png
+│   │   ├── 📄 traveling.png
+│   │   ├── 📄 waking_up.png
+│   │   ├── 📄 warm.png
+│   │   ├── 📄 working.png
+│   │   ├── 📄 cycle_calculator_test.dart
+│   │   ├── 📄 widget_test.dart
+│   │   ├── 📁 icons
+│   │   ├── 📄 favicon.png
+│   │   ├── 📄 index.html
+│   │   ├── 📄 manifest.json
+│   │   │   ├── 📄 Icon-192.png
+│   │   │   ├── 📄 Icon-512.png
+│   │   │   ├── 📄 Icon-maskable-192.png
+│   │   │   ├── 📄 Icon-maskable-512.png

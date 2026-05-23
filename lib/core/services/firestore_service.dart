@@ -64,6 +64,9 @@ class FirestoreService {
           {...data, 'updatedAt': FieldValue.serverTimestamp()},
           SetOptions(merge: true));
 
+  Future<void> deleteCycleEntry(String entryId) =>
+      _userCol('cycleEntries').doc(entryId).delete();
+
   Future<List<Map<String, dynamic>>> getCycleEntries({int limit = 24}) async {
     final snap = await _userCol('cycleEntries')
         .orderBy('startDate', descending: true)
