@@ -1,0 +1,1994 @@
+# 🌸 LUNA — Complete Build Plan for AI Agent (v2)
+> **"Someone who truly cares about me made this for me."**
+> A deeply personal period tracker + emotional companion app.
+> Stack: Flutter · Riverpod · GoRouter · Firebase
+
+---
+
+## 📋 TABLE OF CONTENTS
+1. [Vision & Emotional Core](#1-vision--emotional-core)
+2. [Visual Design Identity](#2-visual-design-identity)
+3. [Illustrated Character System](#3-illustrated-character-system)
+4. [Tech Stack](#4-tech-stack)
+5. [Folder Structure (Feature-First)](#5-folder-structure-feature-first)
+6. [Design System](#6-design-system)
+7. [Firebase Schema](#7-firebase-schema)
+8. [App Architecture](#8-app-architecture)
+9. [Navigation — GoRouter](#9-navigation--gorouter)
+10. [Complete Feature List](#10-complete-feature-list)
+11. [Screen-by-Screen Spec](#11-screen-by-screen-spec)
+12. [Animation System](#12-animation-system)
+13. [Notification System](#13-notification-system)
+14. [Security & Privacy](#14-security--privacy)
+15. [Flutter Packages](#15-flutter-packages)
+16. [Agent Build Order (Phased)](#16-agent-build-order-phased)
+17. [Do's and Don'ts](#17-dos-and-donts)
+18. [Special Widget Specs](#18-special-widget-specs)
+
+---
+
+## 1. VISION & EMOTIONAL CORE
+
+### What Luna IS
+- A gift from a boyfriend to his girlfriend — she knows he built it
+- A comfort space she opens when she feels low, anxious, or in pain
+- A period + mood tracker that feels like a warm hug, never a medical dashboard
+- A capsule of his love: messages, voice notes, memories, scheduled surprises
+- A self-care ritual and emotional companion she returns to daily
+- A mood garden that grows with her consistency and care
+
+### The Golden Rule
+Every screen, every widget, every empty state must feel like:
+**"Someone who truly cares about me made this for me."**
+
+If it feels clinical, cold, or generic — rebuild it.
+
+### Emotional Design Principles
+1. **Warm first** — colors, copy, layout = hug energy
+2. **Personal always** — use her name on every screen, multiple times
+3. **Never empty** — every zero-state has a message from him or a soft illustration
+4. **Animate with care** — transitions breathe, they don't snap
+5. **Data feels gentle** — numbers live inside warm card contexts, never raw
+6. **His presence lingers** — she should feel him in the details: copy, micro-text, illustrations
+
+---
+
+## 2. VISUAL DESIGN IDENTITY
+
+### Design Reference
+The primary design reference is the **MY PITA app** (image provided):
+- Soft pink/blush palette — warm dusty rose, NOT bubblegum
+- Illustrated kawaii-style girl character throughout every screen
+- Rounded cards (radius 20px) with soft rose shadows
+- Clean white card surfaces with rose pink accents
+- Feature cards with embedded girl illustrations
+- Data presented warmly in illustrated card contexts
+- Soft gradient backgrounds (not flat colors)
+- Line-art style icons matching the illustration style
+
+### Aesthetic Direction
+```
+Style:        Kawaii-premium / soft editorial
+NOT:          Medical dashboard / generic pink overload / childish
+Feels like:   A luxury journal app made by someone who loves design
+References:   MY PITA app + Calm app + Apple Health smoothness + Pinterest aesthetics
+```
+
+### Color Palette
+
+```dart
+// PRIMARY — Warm Dusty Rose (from MY PITA reference)
+roseLight:     #FFF0F3   // page backgrounds
+roseSoft:      #FFD6DE   // card tints, chip backgrounds
+roseMid:       #FFB3C1   // borders, dividers, unselected
+rosePrimary:   #FF6B8A   // primary CTAs, selected states, icons
+roseDeep:      #E84D6F   // active/pressed states
+roseDark:      #B5294B   // text on light rose backgrounds
+
+// SECONDARY — Warm Mauve / Plum
+mauveSoft:     #F5EEF8
+mauveMid:      #D7A8E0
+mauvePrimary:  #B36CC8
+mauveDeep:     #8B3FA8
+
+// ACCENT — Warm Gold (From Him section, special moments)
+goldSoft:      #FFF8E7
+goldMid:       #FFD97D
+goldPrimary:   #FFB830
+goldDeep:      #E09200
+
+// NEUTRALS — Warm Ivory (card surfaces)
+white:         #FFFFFF
+ivory:         #FFFBF7
+cream:         #FFF5EE
+warmGray100:   #F7F0EC
+warmGray200:   #EDE4DE
+warmGray400:   #BFB0A8
+warmGray600:   #8C7D76
+warmGray800:   #4A3D38
+charcoal:      #2D2420
+
+// SEMANTIC
+success:       #6DBF8A   // soft green (streak, saved)
+warning:       #FFB347   // warm amber
+error:         #FF6B6B   // soft red
+info:          #6BB8FF   // soft blue
+
+// CYCLE PHASE COLORS (sky background shifts to these)
+phaseMenstrual:  #FF6B8A   // rose
+phaseFollicular: #FFB3C1   // light rose / peach
+phaseOvulation:  #FFD97D   // golden
+phaseLuteal:     #D7A8E0   // mauve
+
+// DARK THEME
+darkBackground:  #1A0F14   // deep plum-black
+darkSurface:     #2D1B26   // dark plum
+darkCard:        #3D2535   // card surface
+darkBorder:      #5C3A4A   // subtle border
+darkText:        #F5E6EC   // soft warm white
+darkAccent:      #FF8FAA   // rose on dark
+```
+
+### Typography
+
+```dart
+// Font families — add to pubspec.yaml assets:
+// - Cormorant Garamond (emotional display/headings) — Google Fonts
+// - DM Sans (clean readable body) — Google Fonts  
+// - Caveat (handwritten feel — "from him" notes, personal messages) — Google Fonts
+
+displayLarge:  CormorantGaramond, 40px, w300, letterSpacing -0.5
+displayMedium: CormorantGaramond, 32px, w400
+headlineLarge: CormorantGaramond, 26px, w500
+headlineMed:   CormorantGaramond, 22px, w400, italic option for emotional moments
+titleLarge:    DMSans, 18px, w500
+titleMedium:   DMSans, 16px, w500
+bodyLarge:     DMSans, 16px, w400, height 1.6
+bodyMedium:    DMSans, 14px, w400, height 1.5
+bodySmall:     DMSans, 12px, w400, height 1.4
+labelMedium:   DMSans, 13px, w500, letterSpacing 0.2
+handwritten:   Caveat, 18px, w400, height 1.5   ← "from him" messages
+handwrittenSm: Caveat, 15px, w400, height 1.4
+handwrittenLg: Caveat, 24px, w600, height 1.3   ← big emotional moments
+```
+
+### Spacing & Radius
+
+```dart
+// Spacing
+xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48
+
+// Border Radius
+sm: 8, md: 12, lg: 16, xl: 24, card: 20, pill: 100
+```
+
+### Shadows
+
+```dart
+// Rose-tinted soft shadows throughout (NOT gray shadows)
+cardShadow:     BoxShadow(color: #FF6B8A at 8%, blur 20, offset 0,6)
+elevatedShadow: BoxShadow(color: #FF6B8A at 12%, blur 32, offset 0,12, spread -4)
+subtleShadow:   BoxShadow(color: #FF6B8A at 4%, blur 10, offset 0,2)
+goldShadow:     BoxShadow(color: #FFB830 at 15%, blur 20, offset 0,6)  ← From Him cards
+```
+
+---
+
+## 3. ILLUSTRATED CHARACTER SYSTEM
+
+### Overview
+The app uses a **kawaii-style illustrated girl character** (line-art, pink dress, white/blonde hair)
+that appears throughout the app to represent her emotional state, cycle phase, and activity.
+
+This is the single most important design element — it makes the app feel alive and personal.
+
+### Character Illustration Set (Image 2 — Full Label Reference)
+
+The following illustrations are available as assets. The AI agent building the app
+will receive these as labeled PNG/SVG files. Reference them by their label name:
+
+**EMOTIONAL STATES (Positive)**
+- `char_happy` — girl with plants/flowers, happy expression
+- `char_in_love` — hearts around her, loving expression  
+- `char_laughing` — laughing expression
+- `char_excited` — excited, energetic pose
+- `char_shy` — shy, blushing
+- `char_grateful` — hands clasped, grateful
+- `char_warm` — holding warm cup, cozy
+- `char_hello` — waving hello
+- `char_cheerful` — cheerful, bright
+
+**CALM & REST STATES**
+- `char_tired` — tired, low battery visual
+- `char_sleepy` — sleepy, heavy eyes
+- `char_waking_up` — stretching, waking up
+- `char_cozy` — cozy with hot drink
+- `char_relaxed` — relaxed, listening to music
+- `char_peaceful` — eyes closed, peaceful
+- `char_meditating` — meditation pose
+- `char_deep_breath` — taking a deep breath
+- `char_content` — content with plants
+
+**DIFFICULT EMOTIONS**
+- `char_sad` — sad, rain cloud above
+- `char_crying` — crying
+- `char_anxious` — anxious expression
+- `char_stressed` — stressed, hands on head
+- `char_overwhelmed` — overwhelmed
+- `char_angry` — angry
+- `char_frustrated` — frustrated
+- `char_irritated` — irritated
+- `char_disappointed` — disappointed
+
+**PHYSICAL SYMPTOMS (Critical for period tracking)**
+- `char_in_pain` — pain indicator
+- `char_cramps` — holding abdomen (cramps)
+- `char_bloating` — bloating expression
+- `char_headache` — holding head (headache)
+- `char_back_pain` — back pain pose
+- `char_nauseous` — nauseous
+- `char_dizzy` — dizzy expression
+- `char_feverish` — feverish, thermometer
+- `char_low_energy` — low energy, battery icon
+
+**ACTIVITIES**
+- `char_studying` — studying with books
+- `char_working` — working on laptop
+- `char_focused` — focused, determined
+- `char_planning` — planning with notes
+- `char_productive` — productive, checkmark thought
+- `char_creative` — creative, lightbulb
+- `char_cooking` — cooking with spatula
+- `char_baking` — baking a cake
+- `char_cleaning` — cleaning
+
+**SELF-CARE (Key for self-care features)**
+- `char_self_care` — face mask, self care
+- `char_skin_care` — skincare routine
+- `char_hair_care` — hair care
+- `char_bath_time` — bath time, towel
+- `char_spa_day` — spa day, cucumber eyes
+- `char_journaling` — writing in journal
+- `char_reading` — reading a book
+- `char_music_time` — listening to music, headphones
+- `char_movie_time` — watching movie, popcorn
+
+**SPECIAL / SEASONAL**
+- `char_rainy_day` — rainy day, umbrella
+- `char_sunny_day` — sunny day
+- `char_nature_love` — loving nature
+- `char_traveling` — traveling with bags
+- `char_beach_day` — beach day
+- `char_festival` — festival, sparklers
+- `char_party_time` — party hat
+- `char_date_night` — date night, heart
+- `char_good_night` — good night, moon
+
+### How Character Illustrations Are Used
+
+```
+HOME SCREEN:
+  → Shows character matching current mood log (e.g., char_happy, char_tired)
+  → If no mood logged yet: char_hello (waving good morning)
+  → During period: char_cozy or char_cramps based on logged symptoms
+  → Ovulation phase: char_happy or char_excited
+
+DAILY LOG SCREEN:
+  → Mood selector shows character thumbnails instead of just emojis
+  → Selecting "tired" shows char_tired as preview
+  → Selecting "cramps" symptom highlights char_cramps
+
+FROM HIM SCREEN:
+  → char_in_love as hero illustration
+  → When opening envelope: char_shy or char_excited
+  → After reading message: char_grateful
+
+CYCLE SCREEN:
+  → Phase-specific character:
+    Menstrual: char_cozy or char_cramps
+    Follicular: char_waking_up
+    Ovulation: char_excited or char_happy
+    Luteal: char_deep_breath or char_content
+
+MOOD GARDEN:
+  → Garden has mini character version tending flowers
+  → Character shows char_content when garden is thriving
+  → char_sad when no logs for 3+ days
+
+EMPTY STATES:
+  → char_hello for first-time screens
+  → char_journaling for empty journal
+  → char_planning for empty cycle data
+
+ONBOARDING:
+  → Sequence: char_hello → char_happy → char_in_love (final reveal screen)
+
+AI COMPANION:
+  → Companion avatar cycles through relevant characters during chat
+  → Responding to cramps: char_cozy + warmth suggestions
+  → Responding to sadness: char_in_love + his message preview
+
+SELF-CARE SECTION:
+  → char_bath_time for bath suggestions
+  → char_skin_care for skincare
+  → char_music_time for music recommendations
+  → char_meditating for meditation mode
+
+INSIGHTS / REPORTS:
+  → char_productive when streaks are good
+  → char_content when cycle is regular
+```
+
+### Character Asset Implementation
+
+```dart
+// lib/core/constants/app_illustrations.dart
+class AppIllustrations {
+  static const String basePath = 'assets/illustrations/';
+
+  // Emotional states
+  static const String happy        = '${basePath}char_happy.png';
+  static const String inLove       = '${basePath}char_in_love.png';
+  static const String laughing     = '${basePath}char_laughing.png';
+  static const String excited      = '${basePath}char_excited.png';
+  static const String shy          = '${basePath}char_shy.png';
+  static const String grateful     = '${basePath}char_grateful.png';
+  static const String warm         = '${basePath}char_warm.png';
+  static const String hello        = '${basePath}char_hello.png';
+  static const String cheerful     = '${basePath}char_cheerful.png';
+
+  // Calm states
+  static const String tired        = '${basePath}char_tired.png';
+  static const String sleepy       = '${basePath}char_sleepy.png';
+  static const String wakingUp     = '${basePath}char_waking_up.png';
+  static const String cozy         = '${basePath}char_cozy.png';
+  static const String relaxed      = '${basePath}char_relaxed.png';
+  static const String peaceful     = '${basePath}char_peaceful.png';
+  static const String meditating   = '${basePath}char_meditating.png';
+  static const String deepBreath   = '${basePath}char_deep_breath.png';
+  static const String content      = '${basePath}char_content.png';
+
+  // Difficult emotions
+  static const String sad          = '${basePath}char_sad.png';
+  static const String crying       = '${basePath}char_crying.png';
+  static const String anxious      = '${basePath}char_anxious.png';
+  static const String stressed     = '${basePath}char_stressed.png';
+  static const String overwhelmed  = '${basePath}char_overwhelmed.png';
+  static const String angry        = '${basePath}char_angry.png';
+  static const String frustrated   = '${basePath}char_frustrated.png';
+  static const String irritated    = '${basePath}char_irritated.png';
+  static const String disappointed = '${basePath}char_disappointed.png';
+
+  // Physical symptoms
+  static const String inPain       = '${basePath}char_in_pain.png';
+  static const String cramps       = '${basePath}char_cramps.png';
+  static const String bloating     = '${basePath}char_bloating.png';
+  static const String headache     = '${basePath}char_headache.png';
+  static const String backPain     = '${basePath}char_back_pain.png';
+  static const String nauseous     = '${basePath}char_nauseous.png';
+  static const String dizzy        = '${basePath}char_dizzy.png';
+  static const String feverish     = '${basePath}char_feverish.png';
+  static const String lowEnergy    = '${basePath}char_low_energy.png';
+
+  // Activities
+  static const String studying     = '${basePath}char_studying.png';
+  static const String working      = '${basePath}char_working.png';
+  static const String focused      = '${basePath}char_focused.png';
+  static const String planning     = '${basePath}char_planning.png';
+  static const String productive   = '${basePath}char_productive.png';
+  static const String creative     = '${basePath}char_creative.png';
+  static const String cooking      = '${basePath}char_cooking.png';
+  static const String baking       = '${basePath}char_baking.png';
+  static const String cleaning     = '${basePath}char_cleaning.png';
+
+  // Self-care
+  static const String selfCare     = '${basePath}char_self_care.png';
+  static const String skinCare     = '${basePath}char_skin_care.png';
+  static const String hairCare     = '${basePath}char_hair_care.png';
+  static const String bathTime     = '${basePath}char_bath_time.png';
+  static const String spaDay       = '${basePath}char_spa_day.png';
+  static const String journaling   = '${basePath}char_journaling.png';
+  static const String reading      = '${basePath}char_reading.png';
+  static const String musicTime    = '${basePath}char_music_time.png';
+  static const String movieTime    = '${basePath}char_movie_time.png';
+
+  // Special
+  static const String rainyDay     = '${basePath}char_rainy_day.png';
+  static const String sunnyDay     = '${basePath}char_sunny_day.png';
+  static const String natureLove   = '${basePath}char_nature_love.png';
+  static const String traveling    = '${basePath}char_traveling.png';
+  static const String beachDay     = '${basePath}char_beach_day.png';
+  static const String festival     = '${basePath}char_festival.png';
+  static const String partyTime    = '${basePath}char_party_time.png';
+  static const String dateNight    = '${basePath}char_date_night.png';
+  static const String goodNight    = '${basePath}char_good_night.png';
+
+  // === ILLUSTRATION MAPPING LOGIC ===
+
+  // Map mood enum → character illustration
+  static String forMood(String mood) {
+    return switch (mood) {
+      'joyful'    => happy,
+      'calm'      => peaceful,
+      'tired'     => tired,
+      'anxious'   => anxious,
+      'sad'       => sad,
+      'irritable' => irritated,
+      'excited'   => excited,
+      'grateful'  => grateful,
+      'content'   => content,
+      'cozy'      => cozy,
+      'crying'    => crying,
+      'stressed'  => stressed,
+      _           => hello,
+    };
+  }
+
+  // Map symptom → character illustration
+  static String forSymptom(String symptom) {
+    return switch (symptom) {
+      'cramps'    => cramps,
+      'headache'  => headache,
+      'backPain'  => backPain,
+      'bloating'  => bloating,
+      'nausea'    => nauseous,
+      'fatigue'   => lowEnergy,
+      'dizzy'     => dizzy,
+      'fever'     => feverish,
+      _           => inPain,
+    };
+  }
+
+  // Map cycle phase → character illustration
+  static String forCyclePhase(String phase) {
+    return switch (phase) {
+      'menstrual'   => cozy,
+      'follicular'  => wakingUp,
+      'ovulation'   => excited,
+      'luteal'      => deepBreath,
+      _             => hello,
+    };
+  }
+
+  // Map self-care activity → character illustration
+  static String forSelfCare(String activity) {
+    return switch (activity) {
+      'bath'       => bathTime,
+      'skincare'   => skinCare,
+      'meditation' => meditating,
+      'music'      => musicTime,
+      'journal'    => journaling,
+      'reading'    => reading,
+      'spa'        => spaDay,
+      _            => selfCare,
+    };
+  }
+}
+```
+
+### IllustratedCard Widget (Core Reusable Widget)
+
+```dart
+// lib/core/widgets/illustrated_card.dart
+// Used throughout the app — every major card has a character illustration
+
+IllustratedCard(
+  title: "Follicular Phase",
+  subtitle: "Day 8 — energy rising",
+  illustration: AppIllustrations.forCyclePhase('follicular'),
+  backgroundColor: AppColors.roseSoft,
+  illustrationAlignment: Alignment.bottomRight,  // illustration peeks from corner
+  illustrationSize: 120,
+)
+
+// The illustration should:
+// - Be positioned in the bottom-right or top-right corner of the card
+// - Slightly overflow the card boundary (like MY PITA reference)
+// - Have a subtle drop shadow
+// - Animate in with a gentle scale+fade on first appearance
+// - Size: 100-140px depending on card height
+```
+
+---
+
+## 4. TECH STACK
+
+```
+Frontend:     Flutter 3.x (latest stable)
+State:        Riverpod 2.x + riverpod_generator (code gen)
+Navigation:   GoRouter 14.x
+Backend:      Firebase (Firestore, Auth, Storage, FCM, Remote Config)
+Local DB:     Drift (cycle data) + Hive (settings, cache)
+Secure Store: flutter_secure_storage (PIN, encryption key)
+Animations:   flutter_animate + rive (character animations) + lottie
+Audio:        just_audio (playback) + record (recording) + audio_waveforms
+AI:           Anthropic Claude API — claude-sonnet-4-20250514
+Push:         Firebase Cloud Messaging + flutter_local_notifications
+Encryption:   encrypt package (AES-256 for journal)
+Code Gen:     build_runner + freezed + json_serializable + drift_dev
+Testing:      flutter_test + mocktail + riverpod testing
+```
+
+---
+
+## 5. FOLDER STRUCTURE (FEATURE-FIRST)
+
+```
+lib/
+├── main.dart
+├── firebase_options.dart
+├── app.dart                              # MaterialApp.router, theme, providers
+│
+├── core/
+│   ├── constants/
+│   │   ├── app_colors.dart
+│   │   ├── app_typography.dart
+│   │   ├── app_spacing.dart
+│   │   ├── app_radius.dart
+│   │   ├── app_shadows.dart
+│   │   ├── app_strings.dart
+│   │   └── app_illustrations.dart        # ← NEW: all character asset paths + mapping logic
+│   │
+│   ├── theme/
+│   │   ├── app_theme.dart                # ThemeData light + dark
+│   │   ├── app_theme_provider.dart
+│   │   └── theme_extensions.dart
+│   │
+│   ├── router/
+│   │   ├── app_router.dart
+│   │   ├── app_routes.dart
+│   │   └── router_notifier.dart
+│   │
+│   ├── providers/
+│   │   ├── firebase_providers.dart
+│   │   └── shared_preferences_provider.dart
+│   │
+│   ├── services/
+│   │   ├── auth_service.dart
+│   │   ├── firestore_service.dart
+│   │   ├── storage_service.dart
+│   │   ├── notification_service.dart
+│   │   ├── ai_service.dart               # Claude API calls
+│   │   ├── encryption_service.dart       # AES-256 for journal
+│   │   └── analytics_service.dart
+│   │
+│   ├── models/
+│   │   ├── result.dart                   # Result<T, E> for error handling
+│   │   └── pagination.dart
+│   │
+│   ├── utils/
+│   │   ├── cycle_calculator.dart         # Core cycle math (pure Dart, testable)
+│   │   ├── date_utils.dart
+│   │   ├── validators.dart
+│   │   └── extensions/
+│   │       ├── string_extensions.dart
+│   │       ├── datetime_extensions.dart
+│   │       └── context_extensions.dart
+│   │
+│   └── widgets/
+│       ├── luna_button.dart              # Primary, secondary, ghost variants
+│       ├── luna_card.dart                # Base card with rose shadow
+│       ├── luna_text_field.dart
+│       ├── luna_bottom_sheet.dart
+│       ├── luna_dialog.dart
+│       ├── luna_loading.dart             # Shimmer loading
+│       ├── luna_empty_state.dart         # Always has illustration + message
+│       ├── luna_avatar.dart
+│       ├── luna_chip.dart                # Soft selection chips
+│       ├── animated_gradient_bg.dart     # Animated sky background
+│       ├── floating_particles.dart       # Rose particle system
+│       ├── phase_ring.dart               # Circular cycle ring (CustomPainter)
+│       └── illustrated_card.dart         # ← KEY: card with character illustration
+│
+├── features/
+│   │
+│   ├── onboarding/
+│   │   ├── data/onboarding_repository.dart
+│   │   ├── domain/onboarding_state.dart
+│   │   ├── presentation/
+│   │   │   ├── onboarding_screen.dart
+│   │   │   └── pages/
+│   │   │       ├── welcome_page.dart          # Animated, cinematic, char_hello
+│   │   │       ├── name_page.dart             # "What should we call you?"
+│   │   │       ├── cycle_setup_page.dart      # First cycle info, char_planning
+│   │   │       ├── notifications_page.dart    # char_warm, warm framing
+│   │   │       └── ready_page.dart            # char_in_love, "He made this for you"
+│   │   └── providers/onboarding_provider.dart
+│   │
+│   ├── home/
+│   │   ├── data/home_repository.dart
+│   │   ├── domain/
+│   │   │   ├── home_state.dart
+│   │   │   └── cycle_phase.dart              # Enum: menstrual/follicular/ovulation/luteal
+│   │   ├── presentation/
+│   │   │   ├── home_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── sky_background.dart        # Phase-aware animated gradient sky
+│   │   │       ├── phase_hero_card.dart       # ← Uses IllustratedCard, phase character
+│   │   │       ├── quick_log_fab.dart
+│   │   │       ├── today_card.dart
+│   │   │       ├── next_period_card.dart
+│   │   │       ├── from_him_peek_card.dart    # ← char_in_love peek
+│   │   │       ├── wellness_row.dart
+│   │   │       └── mood_character_display.dart # ← Shows current mood character large
+│   │   └── providers/home_provider.dart
+│   │
+│   ├── cycle/
+│   │   ├── data/
+│   │   │   ├── cycle_repository.dart
+│   │   │   └── cycle_local_datasource.dart   # Drift DB
+│   │   ├── domain/
+│   │   │   ├── cycle_entry.dart
+│   │   │   ├── cycle_prediction.dart
+│   │   │   └── cycle_phase.dart
+│   │   ├── presentation/
+│   │   │   ├── cycle_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── petal_calendar.dart        # Circular calendar CustomPainter
+│   │   │       ├── phase_legend.dart
+│   │   │       ├── prediction_chip.dart
+│   │   │       ├── cycle_stats_card.dart      # ← IllustratedCard with phase character
+│   │   │       └── phase_character_banner.dart # ← Large phase character illustration
+│   │   └── providers/
+│   │       ├── cycle_provider.dart
+│   │       └── cycle_prediction_provider.dart
+│   │
+│   ├── daily_log/
+│   │   ├── data/log_repository.dart
+│   │   ├── domain/
+│   │   │   ├── daily_log_entry.dart          # Freezed
+│   │   │   ├── mood.dart                     # Enum with label, color, illustration ref
+│   │   │   ├── symptom.dart                  # Enum with icon, illustration ref
+│   │   │   └── flow_level.dart
+│   │   ├── presentation/
+│   │   │   ├── daily_log_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── mood_selector.dart         # ← Shows character thumbnails for moods
+│   │   │       ├── mood_character_preview.dart # ← Large character preview on selection
+│   │   │       ├── flow_slider.dart
+│   │   │       ├── symptom_chip_grid.dart     # ← Chips with symptom character thumbnails
+│   │   │       ├── log_notes_field.dart
+│   │   │       └── save_animation.dart
+│   │   └── providers/daily_log_provider.dart
+│   │
+│   ├── from_him/
+│   │   ├── data/
+│   │   │   ├── from_him_repository.dart
+│   │   │   └── from_him_remote_datasource.dart
+│   │   ├── domain/
+│   │   │   ├── love_message.dart
+│   │   │   ├── voice_note.dart
+│   │   │   ├── memory_photo.dart
+│   │   │   ├── comfort_playlist.dart          # ← NEW
+│   │   │   └── message_trigger.dart
+│   │   ├── presentation/
+│   │   │   ├── from_him_screen.dart           # ← char_in_love hero
+│   │   │   ├── envelope_open_screen.dart      # ← char_shy/excited reveal
+│   │   │   ├── voice_note_screen.dart
+│   │   │   ├── memory_gallery_screen.dart
+│   │   │   ├── comfort_playlist_screen.dart   # ← NEW
+│   │   │   └── widgets/
+│   │   │       ├── sealed_envelope_card.dart
+│   │   │       ├── open_when_list.dart
+│   │   │       ├── polaroid_card.dart
+│   │   │       ├── voice_bubble.dart
+│   │   │       ├── hug_animation.dart
+│   │   │       ├── memory_timeline.dart
+│   │   │       └── playlist_card.dart         # ← NEW
+│   │   └── providers/from_him_provider.dart
+│   │
+│   ├── mood_garden/
+│   │   ├── data/garden_repository.dart
+│   │   ├── domain/
+│   │   │   ├── garden_state.dart
+│   │   │   └── garden_element.dart
+│   │   ├── presentation/
+│   │   │   ├── mood_garden_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── garden_canvas.dart         # CustomPainter layered garden
+│   │   │       ├── garden_character.dart      # ← Mini character tending garden
+│   │   │       ├── flower_bloom_widget.dart
+│   │   │       ├── weather_layer.dart
+│   │   │       └── streak_indicator.dart
+│   │   └── providers/garden_provider.dart
+│   │
+│   ├── ai_companion/
+│   │   ├── data/
+│   │   │   ├── companion_repository.dart
+│   │   │   └── ai_remote_datasource.dart
+│   │   ├── domain/
+│   │   │   ├── companion_message.dart
+│   │   │   └── companion_suggestion.dart
+│   │   ├── presentation/
+│   │   │   ├── companion_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── companion_bubble.dart
+│   │   │       ├── companion_character.dart   # ← Animated character responses
+│   │   │       ├── suggestion_card.dart       # ← IllustratedCard with activity char
+│   │   │       └── typing_indicator.dart
+│   │   └── providers/companion_provider.dart
+│   │
+│   ├── journal/
+│   │   ├── data/
+│   │   │   ├── journal_repository.dart
+│   │   │   └── journal_local_datasource.dart  # AES encrypted
+│   │   ├── domain/journal_entry.dart
+│   │   ├── presentation/
+│   │   │   ├── journal_screen.dart            # ← char_journaling empty state
+│   │   │   ├── journal_entry_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── journal_card.dart
+│   │   │       ├── mood_tint_background.dart
+│   │   │       └── writing_toolbar.dart
+│   │   └── providers/journal_provider.dart
+│   │
+│   ├── insights/
+│   │   ├── data/insights_repository.dart
+│   │   ├── domain/
+│   │   │   ├── insight.dart
+│   │   │   └── wellness_trend.dart
+│   │   ├── presentation/
+│   │   │   ├── insights_screen.dart           # ← char_productive header
+│   │   │   └── widgets/
+│   │   │       ├── mood_chart.dart
+│   │   │       ├── symptom_heatmap.dart
+│   │   │       ├── insight_story_card.dart    # ← AI narrative with char_content
+│   │   │       └── trend_badge.dart
+│   │   └── providers/insights_provider.dart
+│   │
+│   ├── self_care/
+│   │   ├── data/self_care_repository.dart
+│   │   ├── domain/
+│   │   │   ├── hydration_log.dart
+│   │   │   ├── sleep_log.dart
+│   │   │   └── self_care_entry.dart
+│   │   ├── presentation/
+│   │   │   ├── self_care_screen.dart
+│   │   │   └── widgets/
+│   │   │       ├── hydration_tracker.dart     # ← char_warm or water animation
+│   │   │       ├── sleep_tracker.dart         # ← char_good_night
+│   │   │       ├── exercise_suggestions.dart
+│   │   │       └── meditation_card.dart       # ← char_meditating
+│   │   └── providers/self_care_provider.dart
+│   │
+│   ├── auth/
+│   │   ├── data/auth_repository.dart
+│   │   ├── domain/app_user.dart
+│   │   ├── presentation/
+│   │   │   ├── login_screen.dart
+│   │   │   └── widgets/auth_form.dart
+│   │   └── providers/auth_provider.dart
+│   │
+│   └── settings/
+│       ├── data/settings_repository.dart
+│       ├── domain/app_settings.dart
+│       ├── presentation/
+│       │   ├── settings_screen.dart
+│       │   └── widgets/
+│       │       ├── settings_section.dart
+│       │       ├── app_lock_tile.dart
+│       │       └── theme_selector.dart
+│       └── providers/settings_provider.dart
+
+assets/
+├── illustrations/
+│   ├── char_happy.png
+│   ├── char_in_love.png
+│   ├── char_laughing.png
+│   ├── char_excited.png
+│   ├── char_shy.png
+│   ├── char_grateful.png
+│   ├── char_warm.png
+│   ├── char_hello.png
+│   ├── char_cheerful.png
+│   ├── char_tired.png
+│   ├── char_sleepy.png
+│   ├── char_waking_up.png
+│   ├── char_cozy.png
+│   ├── char_relaxed.png
+│   ├── char_peaceful.png
+│   ├── char_meditating.png
+│   ├── char_deep_breath.png
+│   ├── char_content.png
+│   ├── char_sad.png
+│   ├── char_crying.png
+│   ├── char_anxious.png
+│   ├── char_stressed.png
+│   ├── char_overwhelmed.png
+│   ├── char_angry.png
+│   ├── char_frustrated.png
+│   ├── char_irritated.png
+│   ├── char_disappointed.png
+│   ├── char_in_pain.png
+│   ├── char_cramps.png
+│   ├── char_bloating.png
+│   ├── char_headache.png
+│   ├── char_back_pain.png
+│   ├── char_nauseous.png
+│   ├── char_dizzy.png
+│   ├── char_feverish.png
+│   ├── char_low_energy.png
+│   ├── char_studying.png
+│   ├── char_working.png
+│   ├── char_focused.png
+│   ├── char_planning.png
+│   ├── char_productive.png
+│   ├── char_creative.png
+│   ├── char_cooking.png
+│   ├── char_baking.png
+│   ├── char_cleaning.png
+│   ├── char_self_care.png
+│   ├── char_skin_care.png
+│   ├── char_hair_care.png
+│   ├── char_bath_time.png
+│   ├── char_spa_day.png
+│   ├── char_journaling.png
+│   ├── char_reading.png
+│   ├── char_music_time.png
+│   ├── char_movie_time.png
+│   ├── char_rainy_day.png
+│   ├── char_sunny_day.png
+│   ├── char_nature_love.png
+│   ├── char_traveling.png
+│   ├── char_beach_day.png
+│   ├── char_festival.png
+│   ├── char_party_time.png
+│   ├── char_date_night.png
+│   └── char_good_night.png
+├── icons/
+│   └── [line-art style icons matching illustration style]
+└── lottie/
+    ├── hug_animation.json
+    ├── flower_bloom.json
+    └── confetti_petals.json
+```
+
+---
+
+## 6. DESIGN SYSTEM
+
+*(Full color, typography, spacing, shadow specs in Section 2 above)*
+
+### Key Reusable Widget Patterns
+
+```dart
+// 1. IllustratedCard — the most-used widget in the app
+IllustratedCard(
+  title: String,
+  subtitle: String?,
+  illustration: String,           // asset path from AppIllustrations
+  backgroundColor: Color,
+  illustrationAlignment: Alignment,
+  illustrationSize: double,       // 100-140px
+  onTap: VoidCallback?,
+  trailing: Widget?,
+)
+
+// 2. LunaCard — base card, all cards extend this
+LunaCard(
+  child: Widget,
+  padding: EdgeInsets?,
+  margin: EdgeInsets?,
+  color: Color?,                  // defaults to white
+  borderColor: Color?,
+  shadowStyle: LunaShadow,        // card | elevated | subtle
+)
+
+// 3. LunaEmptyState — NEVER show empty without this
+LunaEmptyState(
+  illustration: String,           // character asset path
+  title: String,
+  subtitle: String,               // often "He left this space for you 🌸"
+  action: LunaButton?,
+)
+
+// 4. LunaChip — mood/symptom chips
+LunaChip(
+  label: String,
+  icon: IconData?,
+  thumbnail: String?,             // character thumbnail (tiny 32px)
+  isSelected: bool,
+  onTap: VoidCallback,
+  selectedColor: Color,           // defaults to rosePrimary
+)
+```
+
+---
+
+## 7. FIREBASE SCHEMA
+
+```
+/users/{userId}
+  displayName, email, photoUrl
+  createdAt, lastUpdated
+  partnerUid: string?             // boyfriend's UID for "from him" writes
+  cycleAverageLength: 28
+  periodAverageLength: 5
+  notificationsEnabled: bool
+  appLockEnabled: bool
+  themeMode: 'light' | 'dark' | 'auto'
+
+/users/{userId}/cycleEntries/{entryId}
+  startDate, endDate?, cycleLength?, notes?, createdAt
+
+/users/{userId}/dailyLogs/{YYYY-MM-DD}
+  date, mood, flowLevel, symptoms[]
+  energyLevel (1-5), notes?
+  illustrationShown: string       // which character was shown
+  createdAt, updatedAt
+
+/users/{userId}/journalEntries/{entryId}
+  encryptedContent: string        // AES-256, key NEVER stored
+  mood, date, wordCount, createdAt
+
+/users/{userId}/selfCareLogs/{YYYY-MM-DD}
+  hydrationMl, sleepHours, sleepQuality (1-5)
+  exerciseMinutes?, meditationMinutes?
+  selfCareActivities: string[]    // ['bath', 'skincare', 'music']
+  date
+
+/users/{userId}/gardenState
+  bloomCount, currentWeather, streakDays
+  lastLogDate, totalFlowers, unlockedElements[]
+
+/fromHim/{userId}/messages/{messageId}
+  type: 'text' | 'voice' | 'photo' | 'openWhen' | 'playlist'
+  title, content?
+  audioUrl?, photoUrl?, caption?
+  playlistItems?: [{title, artist, url}]
+  trigger: 'manual' | 'day1' | 'day2' | 'lowMood' | 'cramps' | 'scheduled' | 'openWhen'
+  openWhenLabel?: string          // "Open when you miss me"
+  scheduledDate?: timestamp
+  isOpened: bool, openedAt?
+  isActive: bool, sortOrder
+  createdBy: string               // partner's userId
+
+/fromHim/{userId}/hugs/{hugId}
+  sentAt, seenAt?, message?
+
+// Firebase Storage:
+// gs://bucket/users/{userId}/profile/avatar.jpg
+// gs://bucket/fromHim/{userId}/voice/{messageId}.m4a
+// gs://bucket/fromHim/{userId}/photos/{messageId}.jpg
+```
+
+### Security Rules
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth.uid == userId;
+    }
+    match /fromHim/{userId}/{document=**} {
+      allow read: if request.auth.uid == userId;
+      allow write: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(userId))
+            .data.partnerUid == request.auth.uid;
+    }
+  }
+}
+```
+
+---
+
+## 8. APP ARCHITECTURE
+
+### Layer Pattern (per feature)
+
+```
+Presentation → Riverpod AsyncNotifier + Widgets + Pages
+    ↓ calls
+Domain → Freezed models + Repository interfaces (abstract)
+    ↓ implemented by
+Data → Repository impl + Remote DS (Firebase) + Local DS (Drift/Hive)
+    ↓ uses
+Core → Firebase services, AI service, encryption, notifications
+```
+
+### Riverpod Patterns
+
+```dart
+// All features use AsyncNotifier
+@riverpod
+class DailyLogNotifier extends _$DailyLogNotifier {
+  @override
+  Future<DailyLogEntry?> build(DateTime date) async {
+    return ref.watch(logRepositoryProvider).getLogForDate(date);
+  }
+  Future<void> save(DailyLogEntry entry) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => ref.read(logRepositoryProvider).save(entry));
+  }
+}
+
+// In widgets: ALWAYS handle all 3 states
+ref.watch(dailyLogProvider(date)).when(
+  data: (log) => LogContent(log: log),
+  loading: () => LunaLoading(),
+  error: (e, _) => LunaEmptyState(illustration: AppIllustrations.sad, ...),
+)
+
+// Side effects: use ref.listen()
+ref.listen(saveProvider, (_, next) {
+  if (next is AsyncData) {
+    HapticFeedback.lightImpact();
+    showSaveAnimation();
+  }
+});
+```
+
+---
+
+## 9. NAVIGATION — GOROUTER
+
+```dart
+GoRouter routes:
+  /onboarding              → OnboardingScreen
+  /home                    → HomeTab (shell)
+  /cycle                   → CycleTab (shell)
+  /garden                  → MoodGardenTab (shell)
+  /from-him                → FromHimTab (shell)
+  /profile                 → ProfileTab (shell)
+
+  /daily-log/:date         → DailyLogScreen
+  /from-him/envelope/:id   → EnvelopeOpenScreen (custom cinematic transition)
+  /from-him/gallery        → MemoryGalleryScreen
+  /from-him/playlist       → ComfortPlaylistScreen
+  /from-him/voice/:id      → VoiceNoteScreen
+  /journal                 → JournalScreen
+  /journal/write           → JournalEntryScreen
+  /companion               → AiCompanionScreen
+  /insights                → InsightsScreen
+  /self-care               → SelfCareScreen
+  /settings                → SettingsScreen
+  /settings/app-lock       → AppLockScreen
+```
+
+---
+
+## 10. COMPLETE FEATURE LIST
+
+### FEATURE GROUP 1: CYCLE TRACKING
+```
+F1.1  Period logging (start/end dates)
+F1.2  Cycle length tracking + history
+F1.3  Cycle length prediction (rolling average algorithm)
+F1.4  Period start prediction (±2 day range shown softly)
+F1.5  Ovulation prediction (LH surge estimation)
+F1.6  Fertile window calculation (5-day window)
+F1.7  Irregular cycle detection + adaptive algorithm
+F1.8  Cycle phase determination (4 phases)
+F1.9  Phase-aware UI theming (sky color, character, copy)
+F1.10 Petal calendar widget (beautiful circular calendar)
+F1.11 Cycle statistics (avg length, period length, regularity)
+F1.12 Cycle day counter (always visible)
+F1.13 Edit/correct past period data
+F1.14 Offline-first (Drift local DB, sync to Firestore)
+```
+
+### FEATURE GROUP 2: DAILY LOG
+```
+F2.1  Mood logging (9 moods: joyful/calm/tired/anxious/sad/irritable/excited/grateful/content)
+F2.2  Character illustration shown for logged mood
+F2.3  Symptom logging (9 physical: cramps/headache/backpain/bloating/nausea/fatigue/dizzy/fever/lowenergy)
+F2.4  Symptom chips with character thumbnails
+F2.5  Flow level (5 levels: none/spotting/light/medium/heavy)
+F2.6  Custom flow slider (teardrop icons)
+F2.7  Energy level (1-5 scale, gentle visual)
+F2.8  Free-text notes (handwritten font feel)
+F2.9  Voice-to-text notes
+F2.10 Save animation (petal unfurl + "Logged with love 🌸")
+F2.11 Log edit for any past date
+F2.12 Streak tracking (consecutive log days)
+F2.13 Quick-log from home screen FAB
+```
+
+### FEATURE GROUP 3: "FROM HIM" SYSTEM ⭐ (Emotional Core)
+```
+F3.1  Text love messages (handwritten font display)
+F3.2  "Open when…" sealed envelopes with labels
+       - "Open when you feel low"
+       - "Open when cramps hurt"
+       - "Open when you miss me"
+       - "Open when you feel beautiful"
+       - "Open when you need strength"
+       - "Open when you can't sleep"
+       - Custom "open when" labels
+F3.3  Envelope open animation (cinematic full-screen reveal)
+F3.4  Scheduled surprises (appear on specific dates)
+F3.5  Day-1 auto-trigger (message auto-appears on period Day 1)
+F3.6  Mood-trigger (message surfaces when she logs sad/anxious)
+F3.7  Cramp-trigger (message surfaces when she logs cramps)
+F3.8  Voice notes (his recorded voice, waveform playback)
+F3.9  Memory photos (Polaroid-style cards with captions)
+F3.10 Memory timeline (chronological scroll of all memories)
+F3.11 Comfort playlist (songs he chose for her, with labels)
+F3.12 "Send hug" animation (full-screen warm wash)
+F3.13 Hug notification ("He's thinking of you 💕")
+F3.14 Partner write access (partner can add content via app or web)
+F3.15 "New from him" notification badge on home card
+F3.16 char_in_love hero illustration on section header
+F3.17 All messages displayed in Caveat handwritten font
+```
+
+### FEATURE GROUP 4: MOOD GARDEN
+```
+F4.1  Living visual garden (CustomPainter, layered)
+F4.2  Garden changes with cycle phase + mood
+F4.3  Weather system: sunny/cloudy/rainy/starry
+F4.4  Flower bloom animation on daily log
+F4.5  Mini character tending the garden
+F4.6  Streak-based unlocks:
+       Day 3: cherry blossom tree
+       Day 7: butterfly appears
+       Day 14: stars at night
+       Day 30: golden flower (special, "from him")
+F4.7  Mood-reactive weather (logging sad = rain)
+F4.8  Phase-reactive garden lighting
+F4.9  Particle effects (fireflies in luteal, sun rays in ovulation)
+F4.10 Idle animations (flowers sway, particles drift)
+```
+
+### FEATURE GROUP 5: AI COMPANION
+```
+F5.1  Claude API integration (claude-sonnet-4-20250514)
+F5.2  Context-aware responses (cycle day, phase, mood, symptoms injected)
+F5.3  Warm/gentle personality — never clinical
+F5.4  Music suggestions based on mood + phase
+F5.5  Hydration reminders (phase-informed)
+F5.6  Self-care suggestions (phase-specific)
+F5.7  Sleep suggestions
+F5.8  Comfort suggestions (cramp relief, etc.)
+F5.9  Emotional validation responses
+F5.10 Companion character animates during response (activity-specific illustration)
+F5.11 Typing indicator (soft breathing dots)
+F5.12 "From him" message preview integration (companion can reference it)
+F5.13 Conversation history (last 10 exchanges kept in context)
+```
+
+### FEATURE GROUP 6: JOURNAL
+```
+F6.1  Private encrypted journal (AES-256)
+F6.2  Mood-tinted background (page color shifts with mood)
+F6.3  Handwritten font option (Caveat)
+F6.4  Voice-to-text for entries
+F6.5  Mood tagging per entry
+F6.6  Date-indexed entries
+F6.7  30-day emotional summary (AI generated)
+F6.8  Word count + writing time
+F6.9  Search within journal (client-side, decrypted in memory only)
+F6.10 char_journaling empty state
+F6.11 PIN-protected (separate from app lock)
+```
+
+### FEATURE GROUP 7: SELF-CARE TRACKING
+```
+F7.1  Hydration tracking (glasses/ml, animated fill)
+F7.2  Sleep tracking (hours + quality 1-5)
+F7.3  Exercise logging (minutes, type)
+F7.4  Meditation timer + logging
+F7.5  Self-care activity logging (bath, skincare, reading, etc.)
+F7.6  Phase-specific self-care suggestions:
+       Menstrual: warm bath, heating pad, chamomile tea
+       Follicular: light exercise, new activities
+       Ovulation: social activities, energetic exercise
+       Luteal: gentle yoga, journaling, early sleep
+F7.7  Character illustration for each activity (from AppIllustrations.forSelfCare())
+F7.8  Self-care streak tracking
+F7.9  Weekly wellness score
+F7.10 char_self_care, char_bath_time, char_meditating on respective cards
+```
+
+### FEATURE GROUP 8: INSIGHTS & REPORTS
+```
+F8.1  Mood over cycle chart (soft line, phase-colored bands)
+F8.2  Symptom frequency chart (soft bars)
+F8.3  Sleep quality trend (28-day)
+F8.4  Energy level over cycle
+F8.5  Hydration consistency
+F8.6  AI-generated monthly insight narrative (Claude API)
+F8.7  Pattern observations ("You feel most energetic days 10-14")
+F8.8  Hormonal pattern descriptions (soft language)
+F8.9  Wellness trend badges
+F8.10 Exportable summary (PDF)
+F8.11 char_productive / char_content on insight cards
+```
+
+### FEATURE GROUP 9: NOTIFICATIONS
+```
+F9.1  Period starting soon ("~2 days away")
+F9.2  Period started (Day 1) + auto-trigger "from him" message
+F9.3  Fertile window reminder
+F9.4  Daily log reminder (time she picks)
+F9.5  Hydration reminder (phase-aware)
+F9.6  Sleep reminder (custom time)
+F9.7  "From him" — new message
+F9.8  Hug received notification
+F9.9  Scheduled surprise delivery
+F9.10 Garden needs attention (3+ days no log)
+F9.11 Streak celebration (7, 14, 30 days)
+F9.12 All notifications: warm, personal, non-clinical copy
+```
+
+### FEATURE GROUP 10: PRIVACY & SECURITY
+```
+F10.1 Biometric app lock (fingerprint / Face ID)
+F10.2 PIN fallback (4-6 digits)
+F10.3 Auto-lock on background (configurable: 1/5/15 min)
+F10.4 Hidden/disguise mode (app shows as "Wellness Tracker")
+F10.5 Fake empty state (triple-tap avatar)
+F10.6 Journal PIN (separate from app lock)
+F10.7 AES-256 journal encryption (key never stored)
+F10.8 Private notes in daily log (separate encrypted field)
+F10.9 No third-party analytics on health data
+F10.10 Local-first for sensitive data (never uploaded raw)
+```
+
+### FEATURE GROUP 11: SETTINGS & PERSONALIZATION
+```
+F11.1 Theme: light / dark / auto
+F11.2 Notification preferences (per-type toggles)
+F11.3 App lock setup
+F11.4 Cycle defaults (average length, period length)
+F11.5 Partner connection (link partner's account)
+F11.6 Name / profile edit
+F11.7 Data export
+F11.8 Account deletion
+F11.9 About + "Made with love by [his name]" credit line
+```
+
+---
+
+## 11. SCREEN-BY-SCREEN SPEC
+
+### ONBOARDING (5 pages)
+```
+Page 1 — Welcome
+  Background: animated gradient (rose → warm peach → mauve, slow 8s loop)
+  Center: "Luna" in Cormorant Garamond 48px
+  Below: "Made just for you." in DM Sans italic 16px, warmGray600
+  Character: char_hello, 200px, bottom-right, animated float
+  Floating particles: 15 rose particles, slow drift
+  CTA: "Begin ✦" button, rosePrimary, pill shape
+
+Page 2 — Name
+  Soft white glassmorphism card
+  Title: "What should we call you?" Cormorant 28px
+  Input: DM Sans, large, centered
+  Live preview: "Hello, [name] 🌸" in Cormorant italic, rose
+  Character: char_happy, 120px, top-right of card
+  CTA: "That's me →"
+
+Page 3 — Cycle Setup
+  Title: "Let's set up your cycle"
+  Subtitle: "This helps Luna care for you better"
+  Date picker: soft rose calendar, last period date
+  Slider: "How long is your cycle usually?" (21-45 days, default 28)
+  Slider: "How long does your period last?" (2-10 days, default 5)
+  Character: char_planning, 120px
+  CTA: "Looks right →"
+
+Page 4 — Notifications
+  Title: "May I remind you to take care of yourself?"
+  Subtitle: "He asked Luna to check in on you 💕"
+  Character: char_warm, large, centered
+  Two soft cards: "Yes, remind me 🔔" / "Maybe later"
+  NOT: standard iOS/Android permission dialog feel
+
+Page 5 — Ready
+  Full-screen warm gradient (deep rose → gold)
+  His pre-written message in Caveat font, on warm paper card:
+  "I made this for you. I hope every time you open it,
+   you feel how much I love you. — [His Name]"
+  Character: char_in_love, 180px, below card
+  Button: "Open Luna 💕" (gold gradient button)
+```
+
+### HOME SCREEN
+```
+STRUCTURE:
+  [Full-bleed animated sky — phase color]
+  [Floating particles layer]
+  [Status bar: transparent, light icons]
+  [Top: "Good morning, [Name]" + avatar]
+  [Phase hero area — 45% of screen height]
+  [Glassmorphism pull-up container — 60% overlap]
+  [Scrollable content inside glass container]
+
+SKY LAYER:
+  Phase → Menstrual: deep rose (#E84D6F) → warm burgundy (#8B1A3C)
+  Phase → Follicular: soft peach (#FFD6C0) → light rose (#FFB3C1)
+  Phase → Ovulation:  warm gold (#FFD97D) → amber (#FFB347)
+  Phase → Luteal:     mauve (#D7A8E0) → soft purple (#B36CC8)
+  Animation: TweenAnimationBuilder, 3s crossfade on phase change
+
+PHASE HERO AREA:
+  - Phase name: "[Phase] Phase" — Cormorant 24px, white
+  - "Day [X] of your cycle" — DM Sans 13px, white 80%
+  - Phase ring: PhaseRing widget, 80px, white+phase color
+  - CHARACTER: IllustratedCard using AppIllustrations.forCyclePhase()
+    Positioned right side, 160px, overflows hero area slightly
+
+GLASSMORPHISM CONTAINER:
+  Background: white 85% + blur 20px
+  Border-radius: 28px top corners only
+  Pulls up with spring animation on load
+
+CARDS INSIDE (scrollable):
+  1. Today Status Card (IllustratedCard)
+     - Mood character if logged, char_hello if not
+     - "How are you feeling today?" if no log
+     - Logged mood summary if logged
+     - Quick log button
+
+  2. Period Countdown Card
+     - "Next period in X days" or "Day X of period"
+     - Mini phase dots
+     - rosePrimary gradient background
+     - char_calendar_icon or phase-appropriate char
+
+  3. From Him Peek Card ⭐
+     - goldSoft gradient background
+     - char_in_love, 80px right side
+     - "He left something for you ✨"
+     - New message badge if unread
+     - Tap → navigate to from_him
+
+  4. Wellness Quick Row (2 side-by-side cards)
+     - 💧 Hydration: animated ring, X/8 glasses, char_warm tiny
+     - 😴 Sleep: last night summary, char_good_night tiny
+
+  5. Self-Care Suggestion Card (phase-specific)
+     - Suggests activity appropriate for current phase
+     - Uses self-care illustration
+     - "He'd want you to rest today 🌸" (during menstrual)
+
+BOTTOM NAVIGATION (5 tabs):
+  Home 🏠 | Cycle 🌙 | Garden 🌱 | From Him 💌 | Me 👤
+  Active: rosePrimary icon + label
+  Inactive: warmGray400 icon
+  No border-top, soft shadow instead
+```
+
+### CYCLE SCREEN
+```
+Header: "Your Cycle" Cormorant 28px + month navigation
+Character: phase-specific, 120px, top-right
+
+PETAL CALENDAR (CustomPainter, center of screen):
+  Outer ring: phase arc (colored, 4px stroke)
+  Calendar ring: 28-35 days as segments
+  Period days: rosePrimary fill (petal-like)
+  Predicted period: roseSoft dashed outline
+  Ovulation day: goldPrimary glow circle
+  Fertile window: goldSoft highlight
+  Today: white circle with dark dot center
+  Selected day: scale up with spring anim
+
+STATS CARDS (below calendar, horizontal scroll):
+  - Average cycle: 28 days (IllustratedCard, char_content)
+  - Last period: 5 days (IllustratedCard)
+  - Cycle regularity: "Regular" badge
+  - Next predicted: "June 15" soft date
+```
+
+### DAILY LOG SCREEN
+```
+Opened from FAB as bottom sheet (draggable, spring animation)
+Full-screen expand option
+
+HEADER:
+  "How are you today, [Name]?" — Cormorant italic 24px
+  Date shown softly below
+
+MOOD SELECTOR:
+  Grid of 9 mood options (3×3)
+  Each: rounded card (80×80px) with:
+    - char_[mood] thumbnail (48px, circular crop)
+    - Mood label below in DM Sans 12px
+  Selected: scale 1.1, rosePrimary border ring, glow shadow
+  On hover/press: gentle scale feedback + haptic
+
+MOOD CHARACTER PREVIEW:
+  When mood selected: large character (180px) slides in from right
+  Smooth spring animation
+  Background tints to mood color
+
+FLOW SECTION:
+  Title: "Flow today"
+  Custom slider: 5 teardrop icons increasing in size
+  Labels: None / Spotting / Light / Medium / Heavy
+  Slider thumb: rosePrimary circle
+  Active track: rose gradient
+
+SYMPTOMS GRID:
+  Title: "Any symptoms?" + "Select all that apply"
+  3-column grid of chips
+  Each chip: icon + label + optional char thumbnail (32px)
+  Physical: Cramps / Headache / Back Pain / Bloating / Nausea / Fatigue / Dizzy / Fever / Low Energy
+  Emotional: Anxious / Irritable / Sad / Overwhelmed / Sensitive
+  Other: Acne / Tender / Spotting / Insomnia / Appetite changes
+  Selected chips: rosePrimary fill, white text, show char thumbnail
+
+ENERGY LEVEL:
+  "Energy today" + 5 soft circles (1-5)
+  Selected: filled rosePrimary, others: roseSoft outline
+
+NOTES:
+  "Anything else on your mind?" in Caveat italic (placeholder)
+  Text area: Caveat font, warm ivory background
+  Voice input button: mic icon
+
+SAVE BUTTON:
+  "Log with love 🌸" — full width, rosePrimary gradient
+  On tap:
+    1. HapticFeedback.mediumImpact()
+    2. Button morphs to checkmark
+    3. Petal unfurl animation (CustomPainter)
+    4. "Logged with love 🌸" toast fades in
+    5. Garden updates (flower blooms)
+    6. Sheet dismisses after 1.5s
+```
+
+### "FROM HIM" SCREEN ⭐
+```
+HEADER:
+  "From [His Name]" — Cormorant 32px
+  "He made all of this for you 💕" — DM Sans 14px, warmGray600
+  char_in_love: 140px, right side, overflowing header slightly
+  Background: warm ivory with subtle gold grain
+
+HUG BUTTON (prominent, centered):
+  Size: 160px circle
+  Background: gold gradient (goldSoft → goldPrimary)
+  Center: heart icon with pulse animation (scale 1.0 → 1.1 → 1.0, 2s loop)
+  Label: "Tap to feel a hug from him"
+  On tap → HugAnimation full screen
+
+OPEN WHEN ENVELOPES (horizontal scroll):
+  Section title: "Open when..." in Caveat 20px
+  Cards: 160×200px each
+  Design:
+    - Ivory background (#FFFBF7)
+    - Envelope SVG illustration (line-art style matching character style)
+    - Wax seal dot: 16px rosePrimary circle at bottom
+    - Label: Caveat 14px, warmGray800
+    - New badge: 8px rosePrimary dot, top-right
+    - Opened state: envelope flap open, mauveSoft tint
+  Labels shown:
+    "When you feel low" | "When cramps hurt" | "When you miss me"
+    "When you feel beautiful" | "When you need strength" | "When you can't sleep"
+
+ENVELOPE OPEN ANIMATION:
+  1. Tap card → card scales to fill screen (500ms, elasticOut)
+  2. Warm ivory fills entire screen
+  3. Envelope flap animates open (rotateX, 300ms)
+  4. Content fades in: his message in Caveat font
+  5. Small char (char_shy or char_grateful, 120px) fades in below
+  6. Soft particle effect (hearts/petals)
+  7. "He wrote this just for you" caption at top
+
+VOICE NOTES SECTION:
+  Title: "His voice, for you"
+  Voice cards: horizontal scroll
+    Each card: waveform visualization + his name + duration
+    Tap: audio plays, waveform animates
+    AudioWaveforms package for visualization
+
+MEMORY PHOTOS:
+  Title: "Moments together"
+  Polaroid grid (masonry layout)
+  Each photo:
+    - White Polaroid border (8px sides, 24px bottom)
+    - 2px rose shadow
+    - Caption in Caveat 13px below photo
+    - Slight rotation (±2°, alternating)
+    - Tap → full-screen view with caption
+
+PLAYLIST:
+  Title: "Songs he picked for you 🎵"
+  Song cards: list view
+    Each: album art circle + song title + "because..."
+    "Because" text in Caveat italic (why he picked it for her)
+
+MEMORY TIMELINE (bottom, full list):
+  Chronological scroll of ALL memories
+  Date markers in Cormorant
+  Mixed: photos, messages, special moments
+```
+
+### MOOD GARDEN SCREEN
+```
+FULL SCREEN CANVAS (CustomPainter):
+  Layers (bottom to top):
+    1. Sky gradient (phase/weather aware)
+    2. Mountains/hills (soft, parallax on scroll)
+    3. Ground
+    4. Trees (unlock at day 3 streak: cherry blossoms)
+    5. Flowers (bloom based on log streak)
+    6. Mini character (tending garden, char_content or char_sad)
+    7. Weather particles (rain drops / sun rays / stars)
+    8. Fireflies (luteal phase evenings)
+    9. Butterflies (unlock at day 7)
+
+WEATHER STATES:
+  Menstrual + low mood: rain + clouds + grey-blue sky
+  Menstrual + okay:     light drizzle + some color
+  Follicular:           morning light + mist + warm sky
+  Ovulation + good:     full sunshine + bright sky + sparkles
+  Luteal:               evening warm sky + fireflies
+  3+ days no log:       garden dims + character looks sad
+
+STREAK INFO (overlay, bottom):
+  "Day [X] streak 🌸" soft card
+  Unlock progress: "3 more days for butterflies 🦋"
+
+TAP TO WATER:
+  Tap garden → watering can animation + flower grows
+  Only works once per day (if haven't logged)
+  Prompts: "Log your day to help your garden bloom 🌱"
+```
+
+---
+
+## 12. ANIMATION SYSTEM
+
+### Core Animation List
+
+```dart
+// 1. Breathing gradient — home sky
+AnimationController(duration: Duration(seconds: 5), vsync: this)..repeat(reverse: true)
+Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(curve: Curves.easeInOut))
+
+// 2. Mood orb / character thumbnail selection
+// Scale: 1.0 → 1.15 (selected), 1.0 → 0.9 (deselected)
+// Use flutter_animate: widget.animate().scale(duration: 200.ms, curve: Curves.easeOutBack)
+
+// 3. Character slide-in (on mood selection)
+// Slide from right + fade: .slideX(begin: 0.3, duration: 300.ms).fade()
+
+// 4. Envelope open (dramatic)
+// Stage 1: card → fullscreen (500ms, elasticOut)
+// Stage 2: flap opens (rotateX 0→-180deg, 300ms)
+// Stage 3: content fadeIn + slideY(begin: 0.2, 400ms)
+// Stage 4: character fades in (300ms delay)
+
+// 5. Petal unfurl on log save (CustomPainter)
+// 8 petals drawn from center outward
+// AnimationController 0→1, each petal offset by 50ms
+// Curve: easeOutCubic
+
+// 6. Flower bloom in garden (CustomPainter)
+// Path drawing animation: petal paths drawn from base outward
+// Staggered: 8 petals, 80ms apart
+
+// 7. Floating particles (home screen)
+// 15 circles, size 3-8px, rose color at 10-25% opacity
+// Each has random: startY, speed, drift angle
+// Loop: drift up, fade at top, respawn at bottom
+
+// 8. Page transitions (GoRouter)
+// Default: fade + scale (0.96→1.0, 250ms, easeOut)
+// From Him → Envelope: heroTransition from card bounds
+// Bottom nav: fade only (150ms)
+
+// 9. Hug animation (full screen)
+// Warm color wash expands from center (rose→gold)
+// Hearts float up from bottom
+// Pulse rings expand outward
+// Text: "He's thinking of you 💕" fades in
+// char_in_love fades in center
+
+// 10. Staggered card entrance (all list screens)
+// Each card: .fadeIn(delay: (index * 80).ms).slideY(begin: 0.05)
+
+// 11. Garden character idle
+// Gentle sway: rotateZ(-2° ↔ 2°, 3s, Curves.easeInOut, repeat reverse)
+
+// 12. Waveform animation (voice note playback)
+// AudioWaveforms package handles this
+// Accent color: rosePrimary
+
+// 13. Save button morph
+// Pill button → circle → checkmark (sequential, 600ms total)
+```
+
+### Animation Curves
+
+```dart
+Curves.easeInOutCubic   // general transitions
+Curves.elasticOut       // bouncy reveals (envelope, orb)
+Curves.easeOutBack      // cards coming in
+Curves.decelerate       // content fading in
+Curves.easeInOut        // breathing, gradients
+```
+
+---
+
+## 13. NOTIFICATION SYSTEM
+
+### Copy (warm, never clinical)
+
+```
+periodStartingSoon:   "Luna 🌸 · Your period may start in ~2 days. He wanted you prepared 💕"
+periodDay1:           "A message from him 💌 · He left something special for today."
+fertilWindow:         "Luna 🌸 · Your fertile window begins today."
+dailyLog:             "How are you today? 🌸 · Take a moment for yourself."
+hydration:            "Hydration check 💧 · During your period, water really helps."
+sleep:                "Wind down time 🌙 · Your body does its best work when you rest."
+fromHim:              "💌 from him · He left you something new."
+hug:                  "He's thinking of you 💕 · Open Luna to feel it."
+streak7:              "7 days in a row 🌸 · Your garden is thriving. So are you."
+streak30:             "30 days! 💕 · He left something very special in your garden."
+gardenMissing:        "Your garden misses you 🌱 · Just a few seconds to check in?"
+```
+
+---
+
+## 14. SECURITY & PRIVACY
+
+```
+App lock:         local_auth (biometric) + PIN fallback
+Auto-lock:        configurable background timer (1/5/15 min / never)
+Hidden mode:      hold settings icon 3s → app shows as "Wellness Tracker"
+Fake empty state: triple-tap avatar → shows empty app
+
+Journal encryption:
+  Key = SHA256(userPin + userId) — derived, never stored
+  Content AES-256 encrypted before ANY storage (local or remote)
+  If PIN wrong: content unreadable (no recovery by design)
+  Firestore stores only: {encryptedContent, mood, wordCount, date}
+
+Data rules:
+  - Health data stays in Firestore (user-only security rules)
+  - Journal: encrypted before leaving device
+  - Voice notes: Storage with private access rules
+  - PIN: flutter_secure_storage (iOS Keychain / Android Keystore)
+  - No health data in Firebase Analytics
+```
+
+---
+
+## 15. FLUTTER PACKAGES
+
+```yaml
+dependencies:
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  go_router: ^14.0.0
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+  firebase_storage: ^12.0.0
+  firebase_messaging: ^15.0.0
+  firebase_analytics: ^11.0.0
+  hive_flutter: ^1.1.0
+  flutter_secure_storage: ^9.2.0
+  drift: ^2.20.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.1.0
+  flutter_animate: ^4.5.0
+  lottie: ^3.1.0
+  rive: ^0.13.0
+  google_fonts: ^6.2.0
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  smooth_page_indicator: ^1.2.0
+  flutter_svg: ^2.0.10+1
+  just_audio: ^0.9.40
+  record: ^5.1.0
+  audio_waveforms: ^1.0.5
+  image_picker: ^1.1.2
+  photo_view: ^0.15.0
+  flutter_local_notifications: ^17.2.2
+  timezone: ^0.9.4
+  local_auth: ^2.3.0
+  encrypt: ^5.0.3
+  dio: ^5.7.0
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  intl: ^0.19.0
+  uuid: ^4.5.0
+  url_launcher: ^6.3.0
+  share_plus: ^10.0.0
+  connectivity_plus: ^6.0.5
+  fl_chart: ^0.68.0          # for insights charts
+  confetti: ^0.7.0            # for celebration animations
+
+dev_dependencies:
+  build_runner: ^2.4.13
+  riverpod_generator: ^2.6.2
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+  drift_dev: ^2.20.0
+  mocktail: ^1.0.4
+  flutter_lints: ^4.0.0
+```
+
+---
+
+## 16. AGENT BUILD ORDER (PHASED)
+
+### PHASE 1 — Foundation (Target: working skeleton)
+```
+1.1  Add all dependencies + resolve conflicts
+1.2  Add Google Fonts to pubspec (Cormorant Garamond, DM Sans, Caveat)
+1.3  Add illustrations to pubspec.yaml flutter.assets (assets/illustrations/)
+     NOTE: Illustrations provided separately by user. Use placeholder pink boxes
+     with character name text until assets are provided. Build IllustratedCard
+     to accept a placeholder mode that shows a rose-colored box with label text.
+1.4  Implement full design system: AppColors, AppTypography, AppSpacing,
+     AppRadius, AppShadows, AppIllustrations
+1.5  Implement AppTheme (light + dark) using design system
+1.6  Build all core/widgets: LunaButton, LunaCard, LunaChip, LunaLoading,
+     LunaEmptyState, IllustratedCard (with placeholder support)
+1.7  Set up GoRouter (all routes defined, placeholder screens for each)
+1.8  Firebase init + auth service
+1.9  Auth screens (login/signup) using design system
+1.10 Test: app boots, auth works, all routes navigate
+```
+
+### PHASE 2 — Onboarding + Home (Target: beautiful first impression)
+```
+2.1  AnimatedGradientBackground widget
+2.2  FloatingParticles widget (rose particles)
+2.3  All 5 onboarding pages with animations
+2.4  Character placeholder integration on onboarding pages
+2.5  HomeScaffold with bottom navigation
+2.6  Sky background (phase-aware gradient)
+2.7  Phase hero area with IllustratedCard
+2.8  Glassmorphism pull-up container
+2.9  All home cards (Today, Countdown, From Him peek, Wellness row)
+2.10 CycleCalculator utility (pure Dart) with unit tests
+2.11 Wire home screen to real cycle data (Firestore)
+2.12 Phase detection working
+Test: onboarding completes, home screen looks beautiful, phase detected
+```
+
+### PHASE 3 — Daily Log + Cycle Screen (Target: core tracking works)
+```
+3.1  MoodSelector widget with character thumbnails (placeholder mode)
+3.2  MoodCharacterPreview (large character slide-in)
+3.3  FlowSlider custom widget
+3.4  SymptomChipGrid with all symptom chips
+3.5  Save animation (petal unfurl CustomPainter)
+3.6  DailyLog Firestore CRUD + Riverpod providers
+3.7  Offline-first with Drift local DB
+3.8  PetalCalendar widget (CustomPainter, circular)
+3.9  Cycle screen with calendar + stats cards
+3.10 Streak tracking logic
+3.11 Quick-log FAB on home screen
+Test: full log flow works, calendar renders correctly, streaks count
+```
+
+### PHASE 4 — "From Him" (⭐ Priority — highest quality required)
+```
+4.1  FromHim Firestore schema + security rules deployed
+4.2  from_him_repository.dart with all CRUD
+4.3  Main "From Him" screen layout (header, hug button, sections)
+4.4  SealedEnvelopeCard widget (sealed + opened states)
+4.5  OpenWhenList with all 6 default labels
+4.6  Envelope open ANIMATION (cinematic — this must be polished)
+     - Full screen transition
+     - Flap open animation
+     - Content reveal with character
+     - Particle effect
+4.7  VoiceBubble widget + just_audio + audio_waveforms
+4.8  Voice note recording + Firebase Storage upload
+4.9  PolaroidCard widget + image_picker + Storage upload
+4.10 Memory timeline widget
+4.11 ComfortPlaylist — song list with "because" notes
+4.12 HugAnimation full-screen widget
+4.13 Trigger system:
+     - Day 1 auto-trigger
+     - Mood trigger (sad/anxious)
+     - Cramp trigger
+     - Scheduled delivery
+4.14 Push notification for new from-him content
+Test: partner can add content, user receives it beautifully,
+      envelope animation is cinematic quality
+```
+
+### PHASE 5 — Mood Garden + AI Companion (Target: living app)
+```
+5.1  GardenCanvas CustomPainter (sky + ground + flower layers)
+5.2  FlowerBloom animation (path-based, CustomPainter)
+5.3  WeatherLayer (rain particles / sun rays / stars / fireflies)
+5.4  GardenCharacter (mini character, idle sway animation)
+5.5  Streak unlock system + unlock animations
+5.6  Garden updates on daily log save
+
+5.7  Claude API service (ai_service.dart)
+5.8  Context injection (cycle day, phase, mood, symptoms → system prompt)
+5.9  Companion chat UI (soft bubbles)
+5.10 CompanionCharacter widget (shows relevant illustration)
+5.11 Typing indicator (breathing dots)
+5.12 SuggestionCard widget (music, hydration, self-care)
+Test: garden responds to logging, companion gives warm relevant responses
+```
+
+### PHASE 6 — Secondary Features (Target: complete app)
+```
+6.1  Journal: encrypted write + read (AES-256)
+6.2  JournalScreen + JournalEntryScreen (mood-tinted backgrounds)
+6.3  Voice-to-text in journal
+6.4  30-day AI summary (Claude API)
+
+6.5  SelfCareScreen with activity cards + character illustrations
+6.6  HydrationTracker (animated water fill)
+6.7  SleepTracker
+6.8  Phase-specific self-care suggestions
+
+6.9  InsightsScreen: mood chart, symptom chart, sleep trend
+6.10 AI monthly insight narrative (Claude API)
+6.11 Trend badges
+
+6.12 FCM push notifications
+6.13 All notification types from Section 13
+6.14 Local notification scheduling (period prediction)
+```
+
+### PHASE 7 — Polish + Security (Target: production-ready)
+```
+7.1  App lock (local_auth biometric + PIN)
+7.2  Auto-lock timer
+7.3  Hidden/disguise mode
+7.4  Journal PIN
+
+7.5  Full animation pass — every screen:
+     - Staggered entrance animations on all list screens
+     - All page transitions polished
+     - Micro-interactions on all interactive elements
+     - Haptic feedback on all primary actions
+
+7.6  Dark theme complete — every screen tested in dark mode
+7.7  Empty states — every screen has LunaEmptyState with character
+7.8  Error states — every screen has warm error display
+7.9  Loading states — shimmer on all data-fetching screens
+
+7.10 Character illustration integration (when assets provided):
+     - Replace all placeholder boxes with actual char_*.png
+     - Verify sizing and positioning on all cards
+     - Test IllustratedCard overflow on all screen sizes
+
+7.11 Performance: const constructors, image caching, lazy loading
+7.12 Settings screen complete
+Test: full app flow, dark mode, offline mode, all animations
+```
+
+---
+
+## 17. DO'S AND DON'TS
+
+### DO ✅
+- Use `IllustratedCard` for every major card — character presence everywhere
+- Use `AppIllustrations.forMood()`, `.forCyclePhase()`, `.forSymptom()` for character selection
+- Support placeholder mode in `IllustratedCard` until real assets arrive
+- `const` constructors everywhere possible
+- Handle all `AsyncValue` states: data + loading + error — always
+- Use `ref.listen()` for side effects, `ref.watch()` in build
+- `Freezed` for all data models
+- `Result<T>` for repository returns
+- `GoRouter` named routes only (define all names in `app_routes.dart`)
+- `HapticFeedback.lightImpact()` on all primary interactions
+- `HapticFeedback.mediumImpact()` on saves and completions
+- Drift local DB first, Firestore sync second (offline-first)
+- `flutter_secure_storage` for PIN and encryption key
+- Cormorant Garamond for emotional display text — always
+- Caveat font for anything "from him" — always
+- Rose-tinted shadows (never gray shadows)
+- Character thumbnails (32px) on mood chips and symptom chips
+- The `from_him` section must always feel premium — never rush it
+- Write warm, personal copy for ALL empty states and notifications
+- Test the envelope open animation frame-by-frame before shipping Phase 4
+
+### DON'T ❌
+- Don't use `GetX`, `Provider`, `BLoC` — Riverpod only
+- Don't call `ref.read()` inside `build()` — use `ref.watch()`
+- Don't use `Navigator.push()` — GoRouter only
+- Don't put business logic in widgets
+- Don't store encryption keys anywhere (Firestore, Hive, SharedPrefs)
+- Don't use generic fonts (Inter, Roboto, System)
+- Don't use gray shadows anywhere — all shadows are rose-tinted
+- Don't show blank/empty screens — LunaEmptyState on every zero state
+- Don't use `FutureBuilder`/`StreamBuilder` — AsyncValue only
+- Don't show raw numbers without warm card context
+- Don't skip haptics
+- Don't use bubblegum pink (#FF69B4) — use the warm dusty rose palette
+- Don't build the From Him section quickly — it's the emotional core
+- Don't add placeholder text that doesn't make sense warmly
+  BAD: "No data" / "Loading..." / "Error occurred"
+  GOOD: "He hasn't left anything here yet 🌸" / Shimmer / Soft error illustration
+
+---
+
+## 18. SPECIAL WIDGET SPECS
+
+### IllustratedCard (the most-used widget)
+```
+Required params: title, illustration (asset path)
+Optional: subtitle, backgroundColor, illustrationAlignment,
+          illustrationSize (default 120px), onTap, trailing, badge
+
+Layout:
+  Card: LunaCard, padding 16px
+  Content area: takes 65% of card width
+  Illustration area: takes 40% of card width (overlaps via Stack)
+  Illustration position: bottom-right (default) or top-right
+  Illustration overflow: allowed to extend beyond card bottom edge by 10-20px
+  Illustration shadow: soft 3px rose shadow
+
+Placeholder mode (when asset not yet available):
+  Show: RoseSoft container (same size) with character label text centered
+  This ensures layout is correct before assets are provided
+
+Animation: fade + scale on first build (.animate().fadeIn().scale(begin: 0.8))
+```
+
+### PhaseRing (CustomPainter)
+```
+Size: 80-100px (configurable)
+Outer track: full circle, roseSoft, 3px stroke
+Phase arc: colored arc, current phase color, 3.5px stroke, rounded caps
+Center: phase icon (SVG) + day number below in Cormorant
+Animation: arc draws in 0→position on build (800ms, easeOutCubic)
+```
+
+### MoodSelector (character thumbnails)
+```
+Grid: 3×3, gap 10px
+Each cell: rounded card 80×80px
+  - char_[mood] in 48px circle crop (or placeholder)
+  - mood label: DM Sans 11px, warmGray600
+Selected: rosePrimary border (2px), scale 1.05, rose glow shadow
+On tap: HapticFeedback.selectionClick()
+```
+
+### SealedEnvelopeCard
+```
+Size: 160×200px
+Background: ivory #FFFBF7
+Border: 0.5px roseMid
+Radius: 16px
+Shadow: cardShadow (rose-tinted)
+Center: envelope SVG illustration (line-art, 80px)
+Bottom: Caveat font label (14px)
+Wax seal: 14px rosePrimary circle at envelope flap center
+New badge: 8px rosePrimary dot, top-right corner, animated pulse
+Opened state: envelope flap open (SVG state 2), mauveSoft 20% overlay
+```
+
+### HugAnimation (full-screen)
+```
+Triggered by: tapping hug button in From Him section
+Duration: 3 seconds total
+
+Stage 1 (0-500ms): gold wash expands from center (radial gradient)
+Stage 2 (300ms-1200ms): 12 heart particles float up from bottom
+Stage 3 (600ms-2000ms): char_in_love fades in center (160px)
+Stage 4 (1000ms-2500ms): "He's thinking of you 💕" text fades in (Cormorant 24px)
+Stage 5 (2500-3000ms): gentle fade to normal screen
+
+Dismiss: tap anywhere or wait for auto-dismiss
+Background: gold gradient, warm, full opacity
+```
+
+### AnimatedGradientBackground
+```dart
+// Accepts: CyclePhase phase (determines color set)
+// 3-stop gradient that breathes (5s loop, reverse)
+// Phase color sets defined in AppColors
+// Additional FloatingParticles layer on top
+// Performance: RepaintBoundary wrapping
+```
+
+---
+
+*This document is the complete source of truth for the Luna app.*
+*Version 2 — includes illustrated character system, complete feature list, and design reference integration.*
+*Agent must follow Phase 16 build order strictly.*
+*The "From Him" section and character illustration system are the emotional core — maximum quality required.*
+*Character asset files (char_*.png) will be provided separately. Build with placeholder support first.*
+

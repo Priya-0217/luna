@@ -1,0 +1,95 @@
+﻿│   ├── 📁 core
+│   ├── 📁 features
+│   ├── 📄 app.dart
+│   ├── 📄 firebase_options.dart
+│   ├── 📄 main.dart
+│   ├── 📄 project_structure.txt
+│   │   ├── 📁 constants
+│   │   ├── 📁 providers
+│   │   ├── 📁 router
+│   │   ├── 📁 services
+│   │   ├── 📁 widgets
+│   │   │   ├── 📄 app_colors.dart
+│   │   │   ├── 📄 app_illustrations.dart
+│   │   │   ├── 📄 app_radius.dart
+│   │   │   ├── 📄 app_shadows.dart
+│   │   │   ├── 📄 app_spacing.dart
+│   │   │   ├── 📄 app_typography.dart
+│   │   │   ├── 📄 database_provider.dart
+│   │   │   ├── 📄 app_router.dart
+│   │   │   ├── 📄 app_routes.dart
+│   │   │   ├── 📄 auth_service.dart
+│   │   │   ├── 📄 auth_service.g.dart
+│   │   │   ├── 📄 database.dart
+│   │   │   ├── 📄 database.g.dart
+│   │   │   ├── 📄 encryption_service.dart
+│   │   │   ├── 📄 suggestion_service.dart
+│   │   │   ├── 📄 animated_gradient_bg.dart
+│   │   │   ├── 📄 floating_particles.dart
+│   │   │   ├── 📄 illustrated_card.dart
+│   │   │   ├── 📄 luna_button.dart
+│   │   │   ├── 📄 luna_card.dart
+│   │   │   ├── 📄 luna_chip.dart
+│   │   │   ├── 📄 luna_empty_state.dart
+│   │   │   ├── 📄 luna_loading.dart
+│   │   │   ├── 📄 phase_ring.dart
+│   │   ├── 📁 auth
+│   │   ├── 📁 cycle
+│   │   ├── 📁 daily_log
+│   │   ├── 📁 from_him
+│   │   ├── 📁 home
+│   │   ├── 📁 insights
+│   │   ├── 📁 journal
+│   │   ├── 📁 mood_garden
+│   │   ├── 📁 onboarding
+│   │   ├── 📁 self_care
+│   │   ├── 📁 settings
+│   │   │   ├── 📁 domain
+│   │   │   ├── 📁 presentation
+│   │   │   ├── 📁 providers
+│   │   │   │   ├── 📄 app_user.dart
+│   │   │   │   ├── 📄 app_user.freezed.dart
+│   │   │   │   ├── 📄 app_user.g.dart
+│   │   │   │   ├── 📄 login_screen.dart
+│   │   │   │   ├── 📄 signup_screen.dart
+│   │   │   │   ├── 📄 auth_provider.dart
+│   │   │   │   ├── 📄 auth_provider.g.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 cycle_screen.dart
+│   │   │   │   ├── 📄 petal_calendar.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 daily_log_screen.dart
+│   │   │   │   ├── 📄 flow_slider.dart
+│   │   │   │   ├── 📄 mood_selector.dart
+│   │   │   │   ├── 📄 symptom_chip_grid.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 comfort_playlist_screen.dart
+│   │   │   │   ├── 📄 envelope_open_screen.dart
+│   │   │   │   ├── 📄 from_him_screen.dart
+│   │   │   │   ├── 📄 memory_gallery_screen.dart
+│   │   │   │   ├── 📄 voice_playback_screen.dart
+│   │   │   ├── 📁 domain
+│   │   │   ├── 📁 presentation
+│   │   │   ├── 📁 providers
+│   │   │   │   ├── 📄 cycle_calculator.dart
+│   │   │   │   ├── 📄 cycle_phase.dart
+│   │   │   │   ├── 📄 home_screen.dart
+│   │   │   │   ├── 📄 dashboard_provider.dart
+│   │   │   │   ├── 📄 dashboard_provider.g.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 insights_screen.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 journal_screen.dart
+│   │   │   │   ├── 📄 journal_write_screen.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 companion_screen.dart
+│   │   │   │   ├── 📄 garden_canvas.dart
+│   │   │   │   ├── 📄 mood_garden_screen.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 onboarding_screen.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 self_care_screen.dart
+│   │   │   ├── 📁 presentation
+│   │   │   │   ├── 📄 app_lock_screen.dart
+│   │   │   │   ├── 📄 profile_tab.dart
+│   │   │   │   ├── 📄 settings_screen.dart
