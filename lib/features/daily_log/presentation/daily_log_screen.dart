@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:her/core/constants/app_colors.dart';
+import 'package:her/core/constants/app_illustrations.dart';
+import 'package:her/core/constants/app_radius.dart';
 import 'package:her/core/constants/app_spacing.dart';
 import 'package:her/core/constants/app_typography.dart';
 import 'package:her/core/widgets/luna_button.dart';
@@ -48,7 +50,8 @@ class _DailyLogScreenState extends ConsumerState<DailyLogScreen> {
         setState(() {
           _selectedMood = entry.mood;
           _selectedFlow = entry.flow;
-          _selectedSymptoms = entry.symptoms.split(', ').where((s) => s.isNotEmpty).toList();
+          _selectedSymptoms =
+              entry.symptoms.split(', ').where((s) => s.isNotEmpty).toList();
           _notesController.text = entry.notes ?? '';
         });
       }
@@ -78,15 +81,28 @@ class _DailyLogScreenState extends ConsumerState<DailyLogScreen> {
 
       await ref.read(dailyLogControllerProvider.notifier).saveLog(log);
 
-      // Invalidate dashboard provider so that changes display immediately
+      // Invalidate dashboard so changes show immediately
       ref.invalidate(dashboardProvider);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Your check-in has been saved securely 🌸 Take care of yourself!'),
+          SnackBar(
+            content: Row(
+              children: [
+                const Text('🌸  ', style: TextStyle(fontSize: 18)),
+                Expanded(
+                  child: Text(
+                    'Logged with love! Take care of yourself today.',
+                    style: AppTypography.bodySmall
+                        .copyWith(color: AppColors.white),
+                  ),
+                ),
+              ],
+            ),
             backgroundColor: AppColors.rosePrimary,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.md)),
           ),
         );
         Navigator.of(context).pop();
@@ -95,8 +111,8 @@ class _DailyLogScreenState extends ConsumerState<DailyLogScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content:
-                  Text('Could not save: $e 💕 Your data is secure locally.')),
+            content: Text('Could not save: $e 💕 Your data is secure locally.'),
+          ),
         );
       }
     } finally {
@@ -110,94 +126,181 @@ class _DailyLogScreenState extends ConsumerState<DailyLogScreen> {
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.roseLight,
-      appBar: AppBar(
-        title: Text('Daily Check-in 🌸', style: AppTypography.titleLarge),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Mood Selector
-              LunaCard(
-                borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-                child: MoodSelector(
-                  selectedMood: _selectedMood,
-                  onMoodSelected: (mood) => setState(() => _selectedMood = mood),
+        child: Column(
+          children: [
+            // ── Warm Character Header ──────────────────────────────────
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isDark
+                      ? [AppColors.darkCard, AppColors.darkSurface]
+                      : [AppColors.roseSoft, AppColors.roseMid.withAlpha(80)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Flow Selector teardrops
-              LunaCard(
-                borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-                child: FlowSlider(
-                  selectedFlow: _selectedFlow,
-                  onFlowSelected: (flow) => setState(() => _selectedFlow = flow),
-                ),
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 0),
+              child: Row(
+                children: [
+                  // Back arrow
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: isDark ? AppColors.darkText : AppColors.roseDark,
+                      size: 20,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Daily Check-in 🌸',
+                          style: AppTypography.displayMedium.copyWith(
+                            color: isDark
+                                ? AppColors.darkText
+                                : AppColors.roseDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'How are you feeling today, love?',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: isDark
+                                ? AppColors.warmGray400
+                                : AppColors.warmGray600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Character illustration — peeks from top-right
+                  Image.asset(
+                    AppIllustrations.journaling,
+                    width: 80,
+                    height: 90,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const SizedBox(width: 80),
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.md),
+            ),
 
-              // Symptoms list
-              LunaCard(
-                borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-                child: SymptomChipGrid(
-                  selectedSymptoms: _selectedSymptoms,
-                  onSymptomsChanged: (symptoms) => setState(() => _selectedSymptoms = symptoms),
+            // ── Scrollable content ─────────────────────────────────────
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
                 ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Short daily thoughts note text field
-              LunaCard(
-                borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'Secret Thoughts & Notes 📝',
-                      style: AppTypography.titleLarge.copyWith(
-                        color: isDark ? AppColors.darkText : AppColors.roseDark,
-                        fontWeight: FontWeight.bold,
+                    // Mood Selector 3×3 grid with character preview
+                    LunaCard(
+                      borderColor:
+                          isDark ? AppColors.darkBorder : AppColors.roseSoft,
+                      child: MoodSelector(
+                        selectedMood: _selectedMood,
+                        onMoodSelected: (mood) =>
+                            setState(() => _selectedMood = mood),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    TextField(
-                      controller: _notesController,
-                      maxLines: 3,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: isDark ? AppColors.darkText : AppColors.charcoal,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Any symptoms he should know, cravings, or private notes... 🌸',
-                        hintStyle: AppTypography.bodySmall.copyWith(color: AppColors.warmGray400),
-                        border: InputBorder.none,
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Flow teardrop selector
+                    LunaCard(
+                      borderColor:
+                          isDark ? AppColors.darkBorder : AppColors.roseSoft,
+                      child: FlowSlider(
+                        selectedFlow: _selectedFlow,
+                        onFlowSelected: (flow) =>
+                            setState(() => _selectedFlow = flow),
                       ),
                     ),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Symptom chip grid with character thumbnails
+                    LunaCard(
+                      borderColor:
+                          isDark ? AppColors.darkBorder : AppColors.roseSoft,
+                      child: SymptomChipGrid(
+                        selectedSymptoms: _selectedSymptoms,
+                        onSymptomsChanged: (symptoms) =>
+                            setState(() => _selectedSymptoms = symptoms),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Notes text field
+                    LunaCard(
+                      borderColor:
+                          isDark ? AppColors.darkBorder : AppColors.roseSoft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                AppIllustrations.journaling,
+                                width: 32,
+                                height: 32,
+                                errorBuilder: (_, __, ___) =>
+                                    const Icon(Icons.edit_note,
+                                        color: AppColors.rosePrimary),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Secret Thoughts & Notes 📝',
+                                style: AppTypography.titleLarge.copyWith(
+                                  color: isDark
+                                      ? AppColors.darkText
+                                      : AppColors.roseDark,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          TextField(
+                            controller: _notesController,
+                            maxLines: 4,
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: isDark
+                                  ? AppColors.darkText
+                                  : AppColors.charcoal,
+                            ),
+                            decoration: InputDecoration(
+                              hintText:
+                                  'Any thoughts, cravings, or private notes... 🌸',
+                              hintStyle: AppTypography.bodySmall
+                                  .copyWith(color: AppColors.warmGray400),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // Save button
+                    LunaButton(
+                      text: 'Seal Log with Love 💕',
+                      isLoading: _isSaving,
+                      onPressed: _save,
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Save button
-              LunaButton(
-                text: 'Seal Log 💕',
-                isLoading: _isSaving,
-                onPressed: _save,
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

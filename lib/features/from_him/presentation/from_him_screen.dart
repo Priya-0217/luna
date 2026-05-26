@@ -1,14 +1,14 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:her/core/constants/app_colors.dart';
+import 'package:her/core/constants/app_illustrations.dart';
 import 'package:her/core/constants/app_radius.dart';
-import 'package:her/core/constants/app_shadows.dart';
 import 'package:her/core/constants/app_spacing.dart';
 import 'package:her/core/constants/app_typography.dart';
 import 'package:her/core/widgets/luna_card.dart';
-import 'package:her/core/widgets/luna_button.dart';
 import 'package:her/core/router/app_routes.dart';
 
 class FromHimScreen extends StatefulWidget {
@@ -18,7 +18,8 @@ class FromHimScreen extends StatefulWidget {
   State<FromHimScreen> createState() => _FromHimScreenState();
 }
 
-class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProviderStateMixin {
+class _FromHimScreenState extends State<FromHimScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _hugController;
   bool _isHugging = false;
 
@@ -50,36 +51,88 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
           _hugController.reset();
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Envelope of love received 💕 Feel better, beautiful!'),
+          SnackBar(
+            content: Row(
+              children: [
+                const Text('🫂  ', style: TextStyle(fontSize: 18)),
+                Expanded(
+                  child: Text(
+                    'Held close, just for you 💕',
+                    style: AppTypography.bodySmall
+                        .copyWith(color: AppColors.white),
+                  ),
+                ),
+              ],
+            ),
             backgroundColor: AppColors.rosePrimary,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.md)),
           ),
         );
       }
     });
   }
 
-  // Letters timeline mock
-  final List<Map<String, String>> letters = [
-    {'id': 'cramps', 'title': 'Read during cramps ⚡', 'desc': 'Open this when your body hurts and you need comfort.'},
-    {'id': 'sad', 'title': 'Read when down 🌧️', 'desc': 'A soft note to dry your tears and hold you tight.'},
-    {'id': 'sunny', 'title': 'Read when happy ☀️', 'desc': 'Celebrate the sunshine together.'},
-    {'id': 'argument', 'title': 'Read after an argument 🌸', 'desc': 'Because nothing can stand between us.'},
-    {'id': 'miss_me', 'title': 'Read when you miss me 💕', 'desc': 'To remind you how close I really am.'},
+  // Sealed envelope letters
+  final List<Map<String, String>> _letters = [
+    {
+      'id': 'cramps',
+      'title': 'Read during cramps ⚡',
+      'desc': 'Open this when your body hurts and you need comfort.',
+      'seal': '🌸',
+    },
+    {
+      'id': 'sad',
+      'title': 'Read when down 🌧️',
+      'desc': 'A soft note to dry your tears and hold you tight.',
+      'seal': '💙',
+    },
+    {
+      'id': 'sunny',
+      'title': 'Read when happy ☀️',
+      'desc': 'Celebrate the sunshine together.',
+      'seal': '✨',
+    },
+    {
+      'id': 'argument',
+      'title': 'Read after an argument 🌸',
+      'desc': 'Because nothing can stand between us.',
+      'seal': '💕',
+    },
+    {
+      'id': 'miss_me',
+      'title': 'Read when you miss me 💕',
+      'desc': 'To remind you how close I really am.',
+      'seal': '🫂',
+    },
   ];
 
-  // Polaroid memories mock
-  final List<Map<String, String>> memories = [
-    {'title': 'Our first sunset 🌅', 'date': 'Oct 12, 2025'},
-    {'title': 'Rainy coffee day ☕', 'date': 'Nov 04, 2025'},
-    {'title': 'Walking in the park 🌳', 'date': 'Dec 25, 2025'},
+  // Polaroid memories — slightly rotated for authentic feel
+  final List<Map<String, dynamic>> _memories = [
+    {'title': 'Our first sunset 🌅', 'date': 'Oct 12, 2025', 'tilt': -2.0},
+    {'title': 'Rainy coffee day ☕', 'date': 'Nov 04, 2025', 'tilt': 1.5},
+    {'title': 'Walking in the park 🌳', 'date': 'Dec 25, 2025', 'tilt': -1.0},
+    {'title': 'Surprise dinner 🕯️', 'date': 'Jan 14, 2026', 'tilt': 2.5},
   ];
 
-  // Songs list mock
-  final List<Map<String, String>> songs = [
-    {'title': 'Perfect', 'artist': 'Ed Sheeran', 'mood': 'Romantic'},
-    {'title': 'Love Story', 'artist': 'Taylor Swift', 'mood': 'Sweet'},
-    {'title': 'Say You Won\'t Let Go', 'artist': 'James Arthur', 'mood': 'Cozy'},
+  // Comfort songs with "why he picked it" notes
+  final List<Map<String, String>> _songs = [
+    {
+      'title': 'Perfect',
+      'artist': 'Ed Sheeran',
+      'why': 'because you are, to me.',
+    },
+    {
+      'title': 'Love Story',
+      'artist': 'Taylor Swift',
+      'why': 'because this is our story.',
+    },
+    {
+      'title': 'Say You Won\'t Let Go',
+      'artist': 'James Arthur',
+      'why': 'because I never will.',
+    },
   ];
 
   @override
@@ -95,6 +148,7 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Header
             Text(
               'From Him 💌',
               style: AppTypography.displayLarge.copyWith(
@@ -110,38 +164,46 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // Pulsating Hug Button
+            // ── Virtual Hug Button ─────────────────────────────────────
             LunaCard(
-              borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
+              color: isDark ? AppColors.darkCard : AppColors.goldSoft,
+              borderColor: isDark ? AppColors.darkBorder : AppColors.goldMid,
               child: Column(
                 children: [
                   Text(
-                    _isHugging ? 'Holding you close... 💕' : 'Need a squeeze? 🧸',
+                    _isHugging
+                        ? 'Holding you close... 💕'
+                        : 'Need a squeeze? 🧸',
                     style: AppTypography.titleLarge.copyWith(
                       color: isDark ? AppColors.darkText : AppColors.roseDark,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Tap to trigger a virtual, long warm hug sent directly from him.',
+                    'Tap to trigger a warm virtual hug sent directly from him.',
                     textAlign: TextAlign.center,
-                    style: AppTypography.bodySmall,
+                    style: AppTypography.bodySmall.copyWith(
+                      color:
+                          isDark ? AppColors.warmGray400 : AppColors.warmGray600,
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Center(
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
+                        // Pulsing rings while hugging
                         if (_isHugging)
                           AnimatedBuilder(
                             animation: _hugController,
                             builder: (context, child) {
                               return Container(
-                                width: 90 + (60 * _hugController.value),
-                                height: 90 + (60 * _hugController.value),
+                                width: 90 + (70 * _hugController.value),
+                                height: 90 + (70 * _hugController.value),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: AppColors.rosePrimary.withOpacity(0.25 * (1.0 - _hugController.value)),
+                                  color: AppColors.goldPrimary.withOpacity(
+                                      0.3 * (1.0 - _hugController.value)),
                                 ),
                               );
                             },
@@ -151,19 +213,28 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
                           child: Container(
                             width: 90,
                             height: 90,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [AppColors.rosePrimary, AppColors.roseDeep],
+                              gradient: const LinearGradient(
+                                colors: [
+                                  AppColors.goldPrimary,
+                                  AppColors.rosePrimary,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
                               boxShadow: [
-                                BoxShadow(color: AppColors.roseSoft, blurRadius: 12, spreadRadius: 2),
+                                BoxShadow(
+                                  color: AppColors.goldPrimary.withOpacity(0.35),
+                                  blurRadius: 16,
+                                  spreadRadius: 2,
+                                ),
                               ],
                             ),
                             alignment: Alignment.center,
                             child: const Text(
                               '🫂',
-                              style: TextStyle(fontSize: 36),
+                              style: TextStyle(fontSize: 38),
                             ),
                           ),
                         ),
@@ -173,9 +244,9 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.xl),
 
-            // Envelopes List
+            // ── Sealed Envelopes ───────────────────────────────────────
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -187,54 +258,102 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
                   ),
                 ),
                 Text(
-                  'Unlocks on mood check',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.warmGray600),
+                  'Tap to open',
+                  style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.warmGray600),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
             SizedBox(
-              height: 150,
+              height: 168,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: letters.length,
+                itemCount: _letters.length,
                 itemBuilder: (context, index) {
-                  final letter = letters[index];
-                  return Container(
-                    width: 220,
-                    margin: const EdgeInsets.only(right: 12),
-                    child: LunaCard(
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        context.pushNamed(
-                          AppRoutes.envelope,
-                          pathParameters: {'id': letter['id']!},
-                        );
-                      },
-                      color: isDark ? AppColors.darkCard : AppColors.goldSoft,
-                      borderColor: isDark ? AppColors.darkBorder : AppColors.goldMid,
+                  final letter = _letters[index];
+                  return GestureDetector(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      context.pushNamed(
+                        AppRoutes.envelope,
+                        pathParameters: {'id': letter['id']!},
+                      );
+                    },
+                    child: Container(
+                      width: 200,
+                      margin: const EdgeInsets.only(right: 14),
+                      padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+                      decoration: BoxDecoration(
+                        // Ivory envelope background
+                        color: isDark
+                            ? AppColors.darkCard
+                            : AppColors.ivory,
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.goldMid.withOpacity(0.6),
+                          width: 0.8,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.goldPrimary.withOpacity(0.08),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('✉️', style: TextStyle(fontSize: 28)),
-                          const SizedBox(height: 6),
+                          // Top envelope flap icon
+                          const Text('✉️',
+                              style: TextStyle(fontSize: 26)),
                           Text(
                             letter['title']!,
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.handwrittenLg.copyWith(
-                              color: isDark ? AppColors.goldMid : AppColors.roseDark,
+                              color: isDark
+                                  ? AppColors.goldMid
+                                  : AppColors.roseDark,
+                              height: 1.2,
                             ),
                           ),
-                          const SizedBox(height: 4),
                           Text(
                             letter['desc']!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTypography.handwritten.copyWith(
-                              fontSize: 12,
-                              color: isDark ? AppColors.warmGray400 : AppColors.charcoal,
+                            style: AppTypography.handwrittenSm.copyWith(
+                              color: isDark
+                                  ? AppColors.warmGray400
+                                  : AppColors.warmGray600,
+                            ),
+                          ),
+                          // Wax seal dot at bottom center
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.rosePrimary,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        AppColors.rosePrimary.withOpacity(0.3),
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                letter['seal']!,
+                                style: const TextStyle(fontSize: 11),
+                              ),
                             ),
                           ),
                         ],
@@ -244,15 +363,33 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
                 },
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.xl),
 
-            // Memories Polaroid grid
-            Text(
-              'Polaroid Memories 📸',
-              style: AppTypography.titleLarge.copyWith(
-                color: isDark ? AppColors.darkText : AppColors.roseDark,
-                fontWeight: FontWeight.bold,
-              ),
+            // ── Polaroid Memories ──────────────────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Polaroid Memories 📸',
+                  style: AppTypography.titleLarge.copyWith(
+                    color: isDark ? AppColors.darkText : AppColors.roseDark,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    context.pushNamed(AppRoutes.memoryGallery);
+                  },
+                  child: Text(
+                    'View all',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.rosePrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.sm),
             GridView.builder(
@@ -260,100 +397,191 @@ class _FromHimScreenState extends State<FromHimScreen> with SingleTickerProvider
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.85,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
+                childAspectRatio: 0.82,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
               ),
-              itemCount: memories.length,
+              itemCount: _memories.length,
               itemBuilder: (context, index) {
-                final mem = memories[index];
+                final mem = _memories[index];
+                final tilt = mem['tilt'] as double;
 
-                return Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    border: Border.all(color: AppColors.roseSoft, width: 1.0),
-                    borderRadius: BorderRadius.circular(4),
-                    boxShadow: AppShadows.subtleShadow,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Photo placeholder
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.roseSoft.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(2),
+                // Authentic polaroid with subtle rotation
+                return Transform.rotate(
+                  angle: tilt * math.pi / 180,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 24),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.12),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                        BoxShadow(
+                          color: AppColors.roseSoft.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(2, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Photo placeholder — soft rose tint
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.roseSoft.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.photo_camera_outlined,
+                                  color: AppColors.rosePrimary.withOpacity(0.6),
+                                  size: 32,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Memory',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.rosePrimary.withOpacity(0.6),
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          alignment: Alignment.center,
-                          child: const Icon(Icons.photo_outlined, color: AppColors.rosePrimary, size: 36),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        mem['title']!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.handwritten.copyWith(
-                          color: AppColors.charcoal,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 8),
+                        // Caption + date in Caveat handwriting
+                        Text(
+                          mem['title'] as String,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.handwritten.copyWith(
+                            color: AppColors.charcoal,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        mem['date']!,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 9,
-                          color: AppColors.warmGray600,
+                        Text(
+                          mem['date'] as String,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 9,
+                            color: AppColors.warmGray600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.xl),
 
-            // Playlist songs row
-            Text(
-              'Comfort Playlist 🎵',
-              style: AppTypography.titleLarge.copyWith(
-                color: isDark ? AppColors.darkText : AppColors.roseDark,
-                fontWeight: FontWeight.bold,
-              ),
+            // ── Comfort Playlist ───────────────────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Comfort Playlist 🎵',
+                  style: AppTypography.titleLarge.copyWith(
+                    color: isDark ? AppColors.darkText : AppColors.roseDark,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    context.pushNamed(AppRoutes.playlist);
+                  },
+                  child: Text(
+                    'Full playlist',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.rosePrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.sm),
             LunaCard(
-              borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
+              borderColor:
+                  isDark ? AppColors.darkBorder : AppColors.roseSoft,
               child: Column(
-                children: List.generate(songs.length, (index) {
-                  final song = songs[index];
+                children: List.generate(_songs.length, (index) {
+                  final song = _songs[index];
                   return Column(
                     children: [
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Container(
-                          width: 40,
-                          height: 40,
+                          width: 44,
+                          height: 44,
                           decoration: BoxDecoration(
-                            color: AppColors.rosePrimary.withOpacity(0.12),
+                            gradient: const LinearGradient(
+                              colors: [
+                                AppColors.rosePrimary,
+                                AppColors.mauvePrimary,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
                             borderRadius: BorderRadius.circular(AppRadius.md),
                           ),
                           alignment: Alignment.center,
-                          child: const Icon(Icons.play_arrow, color: AppColors.rosePrimary),
+                          child: const Icon(Icons.music_note,
+                              color: Colors.white, size: 20),
                         ),
-                        title: Text(song['title']!, style: AppTypography.titleMedium),
-                        subtitle: Text('${song['artist']} • ${song['mood']}', style: AppTypography.bodySmall),
-                        trailing: const Icon(Icons.favorite, color: AppColors.rosePrimary, size: 20),
+                        title: Text(song['title']!,
+                            style: AppTypography.titleMedium),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(song['artist']!,
+                                style: AppTypography.bodySmall),
+                            // "Why he picked it" note in Caveat
+                            Text(
+                              song['why']!,
+                              style: AppTypography.handwrittenSm.copyWith(
+                                color: isDark
+                                    ? AppColors.warmGray400
+                                    : AppColors.rosePrimary,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ),
+                        isThreeLine: true,
+                        trailing: const Icon(
+                          Icons.favorite,
+                          color: AppColors.rosePrimary,
+                          size: 18,
+                        ),
                         onTap: () {
                           HapticFeedback.lightImpact();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Playing ${song['title']}... 🎵')),
+                            SnackBar(
+                              content: Text(
+                                  'Playing ${song['title']}... 🎵'),
+                            ),
                           );
                         },
                       ),
-                      if (index < songs.length - 1) const Divider(),
+                      if (index < _songs.length - 1)
+                        Divider(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.roseSoft,
+                          height: 1,
+                        ),
                     ],
                   );
                 }),

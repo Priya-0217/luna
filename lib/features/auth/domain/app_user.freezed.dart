@@ -25,9 +25,15 @@ mixin _$AppUser {
   String get email => throw _privateConstructorUsedError;
   String get displayName => throw _privateConstructorUsedError;
   String? get partnerUid => throw _privateConstructorUsedError;
+  String? get coupleId => throw _privateConstructorUsedError;
+  bool get isLinked => throw _privateConstructorUsedError;
   int get cycleAverageLength => throw _privateConstructorUsedError;
   int get periodAverageLength => throw _privateConstructorUsedError;
   bool get isOnboarded => throw _privateConstructorUsedError;
+  String? get role => throw _privateConstructorUsedError;
+  String? get myLoveCode => throw _privateConstructorUsedError;
+  String? get partnerRole => throw _privateConstructorUsedError;
+  String? get partnerDisplayName => throw _privateConstructorUsedError;
 
   /// Serializes this AppUser to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,9 +54,15 @@ abstract class $AppUserCopyWith<$Res> {
     String email,
     String displayName,
     String? partnerUid,
+    String? coupleId,
+    bool isLinked,
     int cycleAverageLength,
     int periodAverageLength,
     bool isOnboarded,
+    String? role,
+    String? myLoveCode,
+    String? partnerRole,
+    String? partnerDisplayName,
   });
 }
 
@@ -73,9 +85,15 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
     Object? email = null,
     Object? displayName = null,
     Object? partnerUid = freezed,
+    Object? coupleId = freezed,
+    Object? isLinked = null,
     Object? cycleAverageLength = null,
     Object? periodAverageLength = null,
     Object? isOnboarded = null,
+    Object? role = freezed,
+    Object? myLoveCode = freezed,
+    Object? partnerRole = freezed,
+    Object? partnerDisplayName = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -95,6 +113,14 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
                 ? _value.partnerUid
                 : partnerUid // ignore: cast_nullable_to_non_nullable
                       as String?,
+            coupleId: freezed == coupleId
+                ? _value.coupleId
+                : coupleId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isLinked: null == isLinked
+                ? _value.isLinked
+                : isLinked // ignore: cast_nullable_to_non_nullable
+                      as bool,
             cycleAverageLength: null == cycleAverageLength
                 ? _value.cycleAverageLength
                 : cycleAverageLength // ignore: cast_nullable_to_non_nullable
@@ -107,6 +133,22 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
                 ? _value.isOnboarded
                 : isOnboarded // ignore: cast_nullable_to_non_nullable
                       as bool,
+            role: freezed == role
+                ? _value.role
+                : role // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            myLoveCode: freezed == myLoveCode
+                ? _value.myLoveCode
+                : myLoveCode // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            partnerRole: freezed == partnerRole
+                ? _value.partnerRole
+                : partnerRole // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            partnerDisplayName: freezed == partnerDisplayName
+                ? _value.partnerDisplayName
+                : partnerDisplayName // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -126,9 +168,15 @@ abstract class _$$AppUserImplCopyWith<$Res> implements $AppUserCopyWith<$Res> {
     String email,
     String displayName,
     String? partnerUid,
+    String? coupleId,
+    bool isLinked,
     int cycleAverageLength,
     int periodAverageLength,
     bool isOnboarded,
+    String? role,
+    String? myLoveCode,
+    String? partnerRole,
+    String? partnerDisplayName,
   });
 }
 
@@ -150,9 +198,15 @@ class __$$AppUserImplCopyWithImpl<$Res>
     Object? email = null,
     Object? displayName = null,
     Object? partnerUid = freezed,
+    Object? coupleId = freezed,
+    Object? isLinked = null,
     Object? cycleAverageLength = null,
     Object? periodAverageLength = null,
     Object? isOnboarded = null,
+    Object? role = freezed,
+    Object? myLoveCode = freezed,
+    Object? partnerRole = freezed,
+    Object? partnerDisplayName = freezed,
   }) {
     return _then(
       _$AppUserImpl(
@@ -172,6 +226,14 @@ class __$$AppUserImplCopyWithImpl<$Res>
             ? _value.partnerUid
             : partnerUid // ignore: cast_nullable_to_non_nullable
                   as String?,
+        coupleId: freezed == coupleId
+            ? _value.coupleId
+            : coupleId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isLinked: null == isLinked
+            ? _value.isLinked
+            : isLinked // ignore: cast_nullable_to_non_nullable
+                  as bool,
         cycleAverageLength: null == cycleAverageLength
             ? _value.cycleAverageLength
             : cycleAverageLength // ignore: cast_nullable_to_non_nullable
@@ -184,6 +246,22 @@ class __$$AppUserImplCopyWithImpl<$Res>
             ? _value.isOnboarded
             : isOnboarded // ignore: cast_nullable_to_non_nullable
                   as bool,
+        role: freezed == role
+            ? _value.role
+            : role // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        myLoveCode: freezed == myLoveCode
+            ? _value.myLoveCode
+            : myLoveCode // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerRole: freezed == partnerRole
+            ? _value.partnerRole
+            : partnerRole // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerDisplayName: freezed == partnerDisplayName
+            ? _value.partnerDisplayName
+            : partnerDisplayName // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -197,9 +275,15 @@ class _$AppUserImpl implements _AppUser {
     required this.email,
     required this.displayName,
     this.partnerUid,
+    this.coupleId,
+    this.isLinked = false,
     this.cycleAverageLength = 28,
     this.periodAverageLength = 5,
     this.isOnboarded = false,
+    this.role,
+    this.myLoveCode,
+    this.partnerRole,
+    this.partnerDisplayName,
   });
 
   factory _$AppUserImpl.fromJson(Map<String, dynamic> json) =>
@@ -214,6 +298,11 @@ class _$AppUserImpl implements _AppUser {
   @override
   final String? partnerUid;
   @override
+  final String? coupleId;
+  @override
+  @JsonKey()
+  final bool isLinked;
+  @override
   @JsonKey()
   final int cycleAverageLength;
   @override
@@ -222,10 +311,18 @@ class _$AppUserImpl implements _AppUser {
   @override
   @JsonKey()
   final bool isOnboarded;
+  @override
+  final String? role;
+  @override
+  final String? myLoveCode;
+  @override
+  final String? partnerRole;
+  @override
+  final String? partnerDisplayName;
 
   @override
   String toString() {
-    return 'AppUser(uid: $uid, email: $email, displayName: $displayName, partnerUid: $partnerUid, cycleAverageLength: $cycleAverageLength, periodAverageLength: $periodAverageLength, isOnboarded: $isOnboarded)';
+    return 'AppUser(uid: $uid, email: $email, displayName: $displayName, partnerUid: $partnerUid, coupleId: $coupleId, isLinked: $isLinked, cycleAverageLength: $cycleAverageLength, periodAverageLength: $periodAverageLength, isOnboarded: $isOnboarded, role: $role, myLoveCode: $myLoveCode, partnerRole: $partnerRole, partnerDisplayName: $partnerDisplayName)';
   }
 
   @override
@@ -239,12 +336,23 @@ class _$AppUserImpl implements _AppUser {
                 other.displayName == displayName) &&
             (identical(other.partnerUid, partnerUid) ||
                 other.partnerUid == partnerUid) &&
+            (identical(other.coupleId, coupleId) ||
+                other.coupleId == coupleId) &&
+            (identical(other.isLinked, isLinked) ||
+                other.isLinked == isLinked) &&
             (identical(other.cycleAverageLength, cycleAverageLength) ||
                 other.cycleAverageLength == cycleAverageLength) &&
             (identical(other.periodAverageLength, periodAverageLength) ||
                 other.periodAverageLength == periodAverageLength) &&
             (identical(other.isOnboarded, isOnboarded) ||
-                other.isOnboarded == isOnboarded));
+                other.isOnboarded == isOnboarded) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.myLoveCode, myLoveCode) ||
+                other.myLoveCode == myLoveCode) &&
+            (identical(other.partnerRole, partnerRole) ||
+                other.partnerRole == partnerRole) &&
+            (identical(other.partnerDisplayName, partnerDisplayName) ||
+                other.partnerDisplayName == partnerDisplayName));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -255,9 +363,15 @@ class _$AppUserImpl implements _AppUser {
     email,
     displayName,
     partnerUid,
+    coupleId,
+    isLinked,
     cycleAverageLength,
     periodAverageLength,
     isOnboarded,
+    role,
+    myLoveCode,
+    partnerRole,
+    partnerDisplayName,
   );
 
   /// Create a copy of AppUser
@@ -280,9 +394,15 @@ abstract class _AppUser implements AppUser {
     required final String email,
     required final String displayName,
     final String? partnerUid,
+    final String? coupleId,
+    final bool isLinked,
     final int cycleAverageLength,
     final int periodAverageLength,
     final bool isOnboarded,
+    final String? role,
+    final String? myLoveCode,
+    final String? partnerRole,
+    final String? partnerDisplayName,
   }) = _$AppUserImpl;
 
   factory _AppUser.fromJson(Map<String, dynamic> json) = _$AppUserImpl.fromJson;
@@ -296,11 +416,23 @@ abstract class _AppUser implements AppUser {
   @override
   String? get partnerUid;
   @override
+  String? get coupleId;
+  @override
+  bool get isLinked;
+  @override
   int get cycleAverageLength;
   @override
   int get periodAverageLength;
   @override
   bool get isOnboarded;
+  @override
+  String? get role;
+  @override
+  String? get myLoveCode;
+  @override
+  String? get partnerRole;
+  @override
+  String? get partnerDisplayName;
 
   /// Create a copy of AppUser
   /// with the given fields replaced by the non-null parameter values.

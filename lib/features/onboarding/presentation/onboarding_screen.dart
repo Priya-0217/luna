@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:her/core/constants/app_illustrations.dart';
-import 'package:her/features/home/providers/dashboard_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
+
 import 'package:her/core/constants/app_colors.dart';
-import 'package:her/core/constants/app_radius.dart';
 import 'package:her/core/constants/app_spacing.dart';
 import 'package:her/core/constants/app_typography.dart';
-import 'package:her/core/widgets/animated_gradient_bg.dart';
 import 'package:her/core/widgets/floating_particles.dart';
 import 'package:her/core/widgets/luna_button.dart';
-import 'package:her/core/widgets/luna_card.dart';
 import 'package:her/core/router/app_routes.dart';
-import 'package:her/features/home/domain/cycle_phase.dart';
+import 'package:her/core/role/app_role.dart';
+
 import 'package:her/features/auth/providers/auth_provider.dart';
-import 'package:her/features/auth/data/auth_repository.dart';
 import 'package:her/features/auth/domain/app_user.dart';
 import 'package:her/features/cycle/data/cycle_repository.dart';
+import 'package:her/features/home/providers/dashboard_provider.dart';
+
+import 'pages/splash_page.dart';
+import 'pages/role_select_page.dart';
+import 'pages/her_name_page.dart';
+import 'pages/cycle_setup_page.dart';
+import 'pages/love_code_page.dart';
+import 'pages/her_notifications_page.dart';
+import 'pages/him_name_page.dart';
+import 'pages/him_about_her_page.dart';
+import 'pages/him_notifications_page.dart';
+import 'pages/ready_page.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -34,29 +42,181 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // Form states
-  final _nameController = TextEditingController();
+  // Shared State
+  AppRole? _selectedRole;
+  String _loveCode = '';
+
+  // Her State
+  final _herNameController = TextEditingController();
   double _cycleLength = 28.0;
   double _periodDuration = 5.0;
   DateTime _lastPeriodDate = DateTime.now().subtract(const Duration(days: 10));
-  bool _notificationsEnabled = true;
+  Map<String, bool> _herNotifications = {
+    'period': true,
+    'hydration': true,
+    'sleep': false,
+    'fromHim': true,
+    'dailyLog': true,
+  };
+
+  // Him State
+  final _himNameController = TextEditingController();
+  final _herNameForHimController = TextEditingController();
+  final _secretNoteController = TextEditingController();
+  Map<String, bool> _himPreferences = {
+    'shareCycle': false,
+    'herNotifications': false,
+    'privateReminders': true,
+  };
+  Map<String, bool> _himNotifications = {
+    'period': true,
+    'mood': true,
+    'fromHer': true,
+    'care': true,
+    'streak': true,
+  };
 
   @override
   void dispose() {
     _pageController.dispose();
-    _nameController.dispose();
+    _herNameController.dispose();
+    _himNameController.dispose();
+    _herNameForHimController.dispose();
+    _secretNoteController.dispose();
     super.dispose();
   }
 
+  void _generateLoveCodeIfNeeded() {
+    if (_loveCode.isNotEmpty || _selectedRole == null) return;
+    
+    final w1Her = ['ROSE', 'DAWN', 'SOFT', 'SILK', 'PETAL', 'BLUSH'];
+    final w2Her = ['MOON', 'MIST', 'GLOW', 'HAZE', 'LACE', 'DUSK'];
+    final w1Him = ['STAR', 'WAVE', 'PINE', 'STORM', 'FORGE', 'TIDE'];
+    final w2Him = ['TIDE', 'CREST', 'PEAK', 'VALE', 'COVE', 'BLAZE'];
+
+    final w1 = _selectedRole == AppRole.her ? w1Her : w1Him;
+    final w2 = _selectedRole == AppRole.her ? w2Her : w2Him;
+    
+    final r = Random();
+    final word1 = w1[r.nextInt(w1.length)];
+    final word2 = w2[r.nextInt(w2.length)];
+    final digits = r.nextInt(9000) + 1000;
+    
+    setState(() {
+      _loveCode = 'LUNA-$word1-$word2-$digits';
+    });
+  }
+
+  List<Widget> get _pages {
+    final pages = <Widget>[
+      SplashPage(
+        onBegin: _nextPage,
+        onConnect: () {
+          context.pushNamed(AppRoutes.codeEntry);
+        },
+      ),
+      RoleSelectPage(
+        selectedRole: _selectedRole?.name,
+        onRoleSelected: (roleStr) {
+          setState(() {
+            _selectedRole = roleStr == 'her' ? AppRole.her : AppRole.him;
+          });
+          _generateLoveCodeIfNeeded();
+          _nextPage();
+        },
+      ),
+    ];
+
+    if (_selectedRole == AppRole.her) {
+      pages.addAll([
+        HerNamePage(controller: _herNameController, onNext: _nextPage),
+        CycleSetupPage(
+          lastPeriodDate: _lastPeriodDate,
+          cycleLength: _cycleLength,
+          periodDuration: _periodDuration,
+          onDateSelected: (d) => setState(() => _lastPeriodDate = d),
+          onCycleLengthChanged: (v) => setState(() => _cycleLength = v),
+          onPeriodDurationChanged: (v) => setState(() => _periodDuration = v),
+        ),
+        LoveCodePage(
+          role: 'her',
+          code: _loveCode,
+          onCopy: () {
+            Clipboard.setData(ClipboardData(text: _loveCode));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Copied! Send it to him 💙')),
+            );
+          },
+          onShare: () {}, // TODO: Native share
+          onQR: () {}, // TODO: Show QR sheet
+          onSkip: _nextPage,
+        ),
+        HerNotificationsPage(
+          selections: _herNotifications,
+          onChanged: (k, v) => setState(() => _herNotifications[k] = v),
+        ),
+        HerReadyPage(onFinish: _finishOnboarding),
+      ]);
+    } else if (_selectedRole == AppRole.him) {
+      pages.addAll([
+        SplashPage(
+          isHim: true,
+          onBegin: _nextPage,
+          onConnect: () {
+            context.pushNamed(AppRoutes.codeEntry);
+          },
+        ),
+        HimNamePage(
+          hisNameController: _himNameController,
+          herNameController: _herNameForHimController,
+          onNext: _nextPage,
+        ),
+        HimAboutHerPage(
+          preferences: _himPreferences,
+          onPreferenceChanged: (k, v) => setState(() => _himPreferences[k] = v),
+          secretNoteController: _secretNoteController,
+        ),
+        LoveCodePage(
+          role: 'him',
+          code: _loveCode,
+          onCopy: () {
+            Clipboard.setData(ClipboardData(text: _loveCode));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Copied! Send it to her 🌸')),
+            );
+          },
+          onShare: () {}, // TODO: Native share
+          onQR: () {}, // TODO: Show QR sheet
+          onSkip: _nextPage,
+          onEnterPartnerCode: () {
+            context.pushNamed(AppRoutes.codeEntry);
+          },
+        ),
+        HimNotificationsPage(
+          selections: _himNotifications,
+          onChanged: (k, v) => setState(() => _himNotifications[k] = v),
+        ),
+        HimReadyPage(onFinish: _finishOnboarding),
+      ]);
+    }
+
+    return pages;
+  }
+
   void _nextPage() {
-    if (_currentPage < 4) {
+    if (_currentPage == 1 && _selectedRole == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select who you are to continue ✨')),
+      );
+      return;
+    }
+
+    if (_currentPage < _pages.length - 1) {
       HapticFeedback.lightImpact();
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOutCubic,
       );
-    } else {
-      _finishOnboarding();
     }
   }
 
@@ -70,65 +230,78 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
-  void _finishOnboarding() async {
-    // 1. Validation
-    final name = _nameController.text.trim();
-    if (name.isEmpty) {
-      _pageController.animateToPage(1,
-          duration: const Duration(milliseconds: 400), curve: Curves.ease);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your name 💕')),
-      );
-      return;
-    }
-
+  Future<void> _finishOnboarding() async {
     HapticFeedback.mediumImpact();
 
-    // 2. Local caching
+    final isHer = _selectedRole == AppRole.her;
+    final name = isHer ? _herNameController.text.trim() : _himNameController.text.trim();
+    
+    // Save to Hive
     final box = Hive.box('settings');
-    debugPrint('Onboarding: Saving to Hive: name=$name, cycle=$_cycleLength, period=$_periodDuration, date=$_lastPeriodDate');
     await box.putAll({
       'onboarding_completed': true,
+      'app_role': _selectedRole?.name,
       'username': name,
-      'cycle_length': _cycleLength.toInt(),
-      'period_duration': _periodDuration.toInt(),
-      'last_period_date': _lastPeriodDate.toIso8601String(),
-      'notifications_enabled': _notificationsEnabled,
     });
+
+    if (isHer) {
+      await box.putAll({
+        'cycle_length': _cycleLength.toInt(),
+        'period_duration': _periodDuration.toInt(),
+        'last_period_date': _lastPeriodDate.toIso8601String(),
+        'notifications_enabled': _herNotifications['period'] ?? true,
+      });
+    } else {
+      await box.putAll({
+        'her_name': _herNameForHimController.text.trim(),
+        'him_secret_note': _secretNoteController.text.trim(),
+      });
+    }
 
     final firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
       final authNotifier = ref.read(authProvider.notifier);
-      final cycleRepo = ref.read(cycleRepositoryProvider);
-
-      final appUser = ref.read(authProvider).valueOrNull ??
-          AppUser(
-            uid: firebaseUser.uid,
-            email: firebaseUser.email ?? '',
-            displayName: name,
-            cycleAverageLength: _cycleLength.toInt(),
-            periodAverageLength: _periodDuration.toInt(),
-            isOnboarded: false,
-          );
+      final appUser = ref.read(authProvider).valueOrNull ?? AppUser(
+        uid: firebaseUser.uid,
+        email: firebaseUser.email ?? '',
+        displayName: name,
+        isOnboarded: false,
+      );
 
       try {
-        // 3. Update Firebase Profile
+        // Save Love Code locally & to Firestore
+        try {
+          await FirebaseFirestore.instance.collection('loveCodes').doc(_loveCode).set({
+            'code': _loveCode,
+            'ownerUid': firebaseUser.uid,
+            'ownerRole': _selectedRole?.name,
+            'ownerName': name,
+            'linkedUid': null,
+            'linkedAt': null,
+            'createdAt': FieldValue.serverTimestamp(),
+            'isActive': true,
+          });
+        } catch (e) {
+          debugPrint('Warning: Could not save loveCode document to Firestore: $e');
+        }
+
+        // Update User Profile
         await authNotifier.updateProfile(appUser.copyWith(
           displayName: name,
-          cycleAverageLength: _cycleLength.toInt(),
-          periodAverageLength: _periodDuration.toInt(),
+          role: _selectedRole?.name,
+          myLoveCode: _loveCode,
           isOnboarded: true,
+          cycleAverageLength: isHer ? _cycleLength.toInt() : 28,
+          periodAverageLength: isHer ? _periodDuration.toInt() : 5,
         ));
 
-        // 4. Start first period entry
-        await cycleRepo.startPeriod(_lastPeriodDate);
-
-        // Force a refresh of the dashboard to ensure the first calculation is correct
-        ref.invalidate(dashboardProvider);
-
-        if (mounted) {
-          context.goNamed(AppRoutes.home);
+        if (isHer) {
+          final cycleRepo = ref.read(cycleRepositoryProvider);
+          await cycleRepo.startPeriod(_lastPeriodDate);
+          ref.invalidate(dashboardProvider);
         }
+
+        if (mounted) context.goNamed(AppRoutes.home);
       } catch (e) {
         debugPrint('Error during onboarding completion: $e');
         if (mounted) {
@@ -138,76 +311,68 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         }
       }
     } else {
-      // Send the user to signup
-      if (mounted) {
-        context.goNamed(AppRoutes.signup);
-      }
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _lastPeriodDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 90)),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.rosePrimary,
-              onPrimary: AppColors.white,
-              onSurface: AppColors.roseDark,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _lastPeriodDate) {
-      setState(() {
-        _lastPeriodDate = picked;
-      });
+      if (mounted) context.goNamed(AppRoutes.signup);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isHim = _selectedRole == AppRole.him;
+    final pages = _pages;
+    
+    // Determine if we show bottom nav on this page
+    // Splash pages (0, and potentially 2 if Him) usually have their own buttons
+    // Ready pages (last) have their own finish buttons
+    bool showBottomNav = _currentPage > 0 && _currentPage < pages.length - 1;
+    if (isHim && _currentPage == 2) showBottomNav = false; // Him Splash
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.roseLight,
-      body: AnimatedGradientBackground(
-        phase: CyclePhase.follicular,
-        child: FloatingParticles(
-          child: SafeArea(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.ivory,
+      body: Stack(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isHim
+                    ? [AppColors.slateBlue, AppColors.slateBlueSoft, AppColors.ivory]
+                    : [AppColors.roseDark, AppColors.roseSoft, AppColors.ivory],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          FloatingParticles(
+            count: 20,
+            color: isHim ? AppColors.slateBluePrimary.withOpacity(0.3) : AppColors.rosePrimary.withOpacity(0.3),
+          ),
+          SafeArea(
             child: Column(
               children: [
-                // Top Progress indicator
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xl,
-                    vertical: AppSpacing.md,
-                  ),
-                  child: Row(
-                    children: List.generate(5, (index) {
-                      final active = index <= _currentPage;
-                      return Expanded(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          height: 4,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                          decoration: BoxDecoration(
-                            color: active
-                                ? AppColors.rosePrimary
-                                : (isDark ? AppColors.darkBorder : AppColors.roseMid.withOpacity(0.3)),
-                            borderRadius: BorderRadius.circular(2),
+                // Minimal Progress Indicator
+                if (_currentPage > 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
+                    child: Row(
+                      children: List.generate(pages.length - 1, (index) {
+                        final active = index < _currentPage;
+                        return Expanded(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            height: 3,
+                            decoration: BoxDecoration(
+                              color: active
+                                  ? (isHim ? AppColors.slateBluePrimary : AppColors.rosePrimary)
+                                  : (isDark ? AppColors.darkBorder : AppColors.warmGray200),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                    ),
                   ),
-                ),
 
                 // Active slide body
                 Expanded(
@@ -217,355 +382,36 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onPageChanged: (page) {
                       setState(() => _currentPage = page);
                     },
-                    children: [
-                      _buildWelcomeSlide(isDark),
-                      _buildNameSlide(isDark),
-                      _buildCycleSlide(isDark),
-                      _buildNotifySlide(isDark),
-                      _buildEnvelopeSlide(isDark),
-                    ],
+                    children: pages,
                   ),
                 ),
 
                 // Bottom Nav buttons
-                Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (_currentPage > 0)
+                if (showBottomNav)
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         TextButton(
                           onPressed: _prevPage,
                           child: Text(
                             'Back',
                             style: AppTypography.bodyMedium.copyWith(
-                              color: isDark ? AppColors.warmGray400 : AppColors.roseDark,
+                              color: isDark ? AppColors.warmGray400 : AppColors.charcoal,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        )
-                      else
-                        const SizedBox.shrink(),
-                      LunaButton(
-                        text: _currentPage == 4 ? 'Enter Luna 💕' : 'Continue',
-                        width: 160,
-                        onPressed: _nextPage,
-                      ),
-                    ],
+                        ),
+                        LunaButton(
+                          text: 'Continue',
+                          width: 160,
+                          backgroundColor: isHim ? AppColors.slateBluePrimary : AppColors.rosePrimary,
+                          onPressed: _nextPage,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // === SLIDE BUILDERS ===
-
-  Widget _buildWelcomeSlide(bool isDark) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 24),
-          // Hello character — large, clean, centered
-          Image.asset(
-            AppIllustrations.hello,
-            width: 200,
-            height: 200,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => Container(
-              width: 180,
-              height: 180,
-              decoration: const BoxDecoration(
-                color: AppColors.roseSoft,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: const Text('🌙', style: TextStyle(fontSize: 80)),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            'Hello, Beautiful 🌸',
-            textAlign: TextAlign.center,
-            style: AppTypography.displayLarge.copyWith(
-              color: isDark ? AppColors.darkText : AppColors.roseDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Welcome to Luna — a custom, quiet space he built just for you. Every element, card, and note has been filled with care to support you through all your rhythms.',
-            textAlign: TextAlign.center,
-            style: AppTypography.bodyMedium.copyWith(
-              color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNameSlide(bool isDark) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          // Shy character — fits the "tell us your name" moment perfectly
-          Image.asset(
-            AppIllustrations.shy,
-            width: 150,
-            height: 150,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => const SizedBox(height: 150),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            'What should we call you? 💕',
-            textAlign: TextAlign.center,
-            style: AppTypography.displayMedium.copyWith(
-              color: isDark ? AppColors.darkText : AppColors.roseDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Luna will personalize all messages and comfort quotes for you.',
-            textAlign: TextAlign.center,
-            style: AppTypography.bodyMedium.copyWith(
-              color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          LunaCard(
-            borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-            child: TextFormField(
-              controller: _nameController,
-              textAlign: TextAlign.center,
-              style: AppTypography.titleLarge.copyWith(
-                color: isDark ? AppColors.darkText : AppColors.charcoal,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Enter your name...',
-                hintStyle: AppTypography.titleLarge
-                    .copyWith(color: AppColors.warmGray400),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCycleSlide(bool isDark) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Tell us your rhythm 🌙',
-            textAlign: TextAlign.center,
-            style: AppTypography.displayMedium.copyWith(
-              color: isDark ? AppColors.darkText : AppColors.roseDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'This enables calculations for predictions, ovulation dates, and self-care tips.',
-            textAlign: TextAlign.center,
-            style: AppTypography.bodySmall.copyWith(
-              color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          // Cycle length slider
-          LunaCard(
-            borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Cycle Duration', style: AppTypography.titleMedium),
-                    Text('${_cycleLength.toInt()} Days', style: AppTypography.titleLarge.copyWith(color: AppColors.rosePrimary)),
-                  ],
-                ),
-                Slider(
-                  value: _cycleLength,
-                  min: 21,
-                  max: 45,
-                  activeColor: AppColors.rosePrimary,
-                  inactiveColor: AppColors.roseSoft,
-                  onChanged: (val) => setState(() => _cycleLength = val),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          // Period length slider
-          LunaCard(
-            borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Period Duration', style: AppTypography.titleMedium),
-                    Text('${_periodDuration.toInt()} Days', style: AppTypography.titleLarge.copyWith(color: AppColors.rosePrimary)),
-                  ],
-                ),
-                Slider(
-                  value: _periodDuration,
-                  min: 3,
-                  max: 10,
-                  activeColor: AppColors.rosePrimary,
-                  inactiveColor: AppColors.roseSoft,
-                  onChanged: (val) => setState(() => _periodDuration = val),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          // Last period start date
-          LunaCard(
-            onTap: () => _selectDate(context),
-            borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Last Period Start Date', style: AppTypography.titleMedium),
-                    const SizedBox(height: 2),
-                    Text('Tap to pick the date', style: AppTypography.bodySmall.copyWith(color: AppColors.warmGray600)),
-                  ],
-                ),
-                Text(
-                  DateFormat('MMM dd, yyyy').format(_lastPeriodDate),
-                  style: AppTypography.titleMedium.copyWith(
-                    color: AppColors.rosePrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotifySlide(bool isDark) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 40),
-          Text(
-            'Keep in touch? 💌',
-            textAlign: TextAlign.center,
-            style: AppTypography.displayMedium.copyWith(
-              color: isDark ? AppColors.darkText : AppColors.roseDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Would you like Luna to send you soft quotes, morning comfort, or prompt reminders selected just for you?',
-            textAlign: TextAlign.center,
-            style: AppTypography.bodyMedium.copyWith(
-              color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-          LunaCard(
-            borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-            child: SwitchListTile(
-              value: _notificationsEnabled,
-              onChanged: (val) => setState(() => _notificationsEnabled = val),
-              activeColor: AppColors.rosePrimary,
-              title: Text('Loving Reminders', style: AppTypography.titleLarge),
-              subtitle: Text('Soft checks and daily period tips', style: AppTypography.bodySmall),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEnvelopeSlide(bool isDark) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'A Sealed Letter ✉️',
-            textAlign: TextAlign.center,
-            style: AppTypography.displayMedium.copyWith(
-              color: isDark ? AppColors.darkText : AppColors.roseDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'He left a secret message sealed specifically for your entry into this space.',
-            textAlign: TextAlign.center,
-            style: AppTypography.bodySmall.copyWith(
-              color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          // Handwritten Letter envelope card
-          LunaCard(
-            color: isDark ? AppColors.darkCard : AppColors.goldSoft,
-            borderColor: isDark ? AppColors.darkBorder : AppColors.goldMid,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('✉️', style: TextStyle(fontSize: 40)),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Hey Priya,',
-                  style: AppTypography.handwrittenLg.copyWith(
-                    color: isDark ? AppColors.goldMid : AppColors.roseDark,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'I built this app for you because I care about your comfort and happiness more than anything. I want this space to be a warm embrace whenever you need it, and a safe repository for your thoughts. You are loved, always. 💕',
-                  textAlign: TextAlign.center,
-                  style: AppTypography.handwritten.copyWith(
-                    color: isDark ? AppColors.darkText : AppColors.charcoal,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  '— Yours Forever',
-                  style: AppTypography.handwrittenLg.copyWith(
-                    color: isDark ? AppColors.goldMid : AppColors.rosePrimary,
-                  ),
-                ),
               ],
             ),
           ),

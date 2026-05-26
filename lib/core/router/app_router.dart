@@ -9,11 +9,14 @@ import 'package:her/core/router/app_routes.dart';
 import 'package:her/features/auth/presentation/login_screen.dart';
 import 'package:her/features/auth/presentation/signup_screen.dart';
 import 'package:her/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:her/features/love_code/presentation/code_entry_screen.dart';
 import 'package:her/features/home/presentation/home_screen.dart';
 import 'package:her/features/cycle/presentation/cycle_screen.dart';
 import 'package:her/features/mood_garden/presentation/mood_garden_screen.dart';
 import 'package:her/features/from_him/presentation/from_him_screen.dart';
 import 'package:her/features/settings/presentation/profile_tab.dart';
+import 'package:her/core/role/app_role.dart';
+import 'package:her/features/home/presentation/him_home_tab.dart';
 
 // Details presentation imports
 import 'package:her/features/daily_log/presentation/daily_log_screen.dart';
@@ -29,6 +32,7 @@ import 'package:her/features/insights/presentation/insights_screen.dart';
 import 'package:her/features/self_care/presentation/self_care_screen.dart';
 import 'package:her/features/settings/presentation/settings_screen.dart';
 import 'package:her/features/settings/presentation/app_lock_screen.dart';
+import 'package:her/features/relationship/presentation/bucket_list_screen.dart';
 
 // Auth provider import
 import 'package:her/features/auth/providers/auth_provider.dart';
@@ -68,6 +72,14 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
         if (user.isOnboarded && (isLoggingIn || state.matchedLocation == '/onboarding')) {
           return '/';
         }
+        
+        // Redirect based on roles
+        if (user.isOnboarded && state.matchedLocation.startsWith('/cycle') && user.role == 'him') {
+          return '/him/care';
+        }
+        if (user.isOnboarded && state.matchedLocation.startsWith('/him/care') && user.role == 'her') {
+          return '/cycle';
+        }
       }
       return null;
     },
@@ -93,6 +105,12 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const OnboardingScreen(),
       ),
+      GoRoute(
+        path: '/code-entry',
+        name: AppRoutes.codeEntry,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const CodeEntryScreen(),
+      ),
 
       // Shell tabs navigation structure
       ShellRoute(
@@ -104,7 +122,10 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/',
             name: AppRoutes.home,
-            builder: (context, state) => const HomeTab(),
+            builder: (context, state) {
+              final isHim = ref.read(authProvider).valueOrNull?.role == 'him';
+              return isHim ? const HimHomeTab() : const HomeTab();
+            },
           ),
           GoRoute(
             path: '/cycle',
@@ -125,6 +146,23 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
             path: '/profile',
             name: AppRoutes.profile,
             builder: (context, state) => const ProfileTab(),
+          ),
+          
+          // Him Specific Tabs (Stubs for now)
+          GoRoute(
+            path: '/from-her',
+            name: AppRoutes.fromHer,
+            builder: (context, state) => Scaffold(appBar: AppBar(title: const Text("From Her"))),
+          ),
+          GoRoute(
+            path: '/him/care',
+            name: AppRoutes.himCare,
+            builder: (context, state) => Scaffold(appBar: AppBar(title: const Text("Her Care Dashboard"))),
+          ),
+          GoRoute(
+            path: '/us',
+            name: AppRoutes.us,
+            builder: (context, state) => Scaffold(appBar: AppBar(title: const Text("Us"))),
           ),
         ],
       ),
@@ -207,6 +245,12 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.appLock,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const AppLockScreen(),
+      ),
+      GoRoute(
+        path: '/bucket-list',
+        name: AppRoutes.bucketList,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const BucketListScreen(),
       ),
     ],
   );

@@ -14,66 +14,86 @@ import 'package:her/core/widgets/luna_loading.dart';
 import 'package:her/core/widgets/phase_ring.dart';
 import 'package:her/core/router/app_routes.dart';
 import 'package:her/core/services/suggestion_service.dart';
+import 'package:her/core/role/app_role.dart';
+import 'package:her/features/auth/providers/auth_provider.dart';
 import 'package:her/features/home/domain/cycle_phase.dart';
 import 'package:her/features/home/providers/dashboard_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   final Widget child;
 
   const HomeScreen({super.key, required this.child});
 
-  int _calculateSelectedIndex(BuildContext context) {
+  int _calculateSelectedIndex(BuildContext context, AppRole role) {
     final String location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/cycle')) return 1;
-    if (location.startsWith('/garden')) return 2;
-    if (location.startsWith('/from-him')) return 3;
-    if (location.startsWith('/profile')) return 4;
+    if (role == AppRole.her) {
+      if (location.startsWith('/cycle')) return 1;
+      if (location.startsWith('/garden')) return 2;
+      if (location.startsWith('/from-him')) return 3;
+      if (location.startsWith('/profile')) return 4;
+    } else {
+      if (location.startsWith('/from-her')) return 1;
+      if (location.startsWith('/him/care')) return 2;
+      if (location.startsWith('/us')) return 3;
+      if (location.startsWith('/profile')) return 4; // Or /him/me
+    }
     return 0;
   }
 
-  void _onItemTapped(int index, BuildContext context) {
-    switch (index) {
-      case 0:
-        context.goNamed(AppRoutes.home);
-        break;
-      case 1:
-        context.goNamed(AppRoutes.cycle);
-        break;
-      case 2:
-        context.goNamed(AppRoutes.garden);
-        break;
-      case 3:
-        context.goNamed(AppRoutes.fromHim);
-        break;
-      case 4:
-        context.goNamed(AppRoutes.profile);
-        break;
+  void _onItemTapped(int index, BuildContext context, AppRole role) {
+    if (role == AppRole.her) {
+      switch (index) {
+        case 0: context.goNamed(AppRoutes.home); break;
+        case 1: context.goNamed(AppRoutes.cycle); break;
+        case 2: context.goNamed(AppRoutes.garden); break;
+        case 3: context.goNamed(AppRoutes.fromHim); break;
+        case 4: context.goNamed(AppRoutes.profile); break;
+      }
+    } else {
+      switch (index) {
+        case 0: context.goNamed(AppRoutes.home); break;
+        case 1: context.goNamed(AppRoutes.fromHer); break;
+        case 2: context.goNamed(AppRoutes.himCare); break;
+        case 3: context.goNamed(AppRoutes.us); break;
+        case 4: context.goNamed(AppRoutes.profile); break;
+      }
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currentIndex = _calculateSelectedIndex(context);
+    
+    // Default to Her if undefined
+    final role = ref.watch(authProvider).valueOrNull?.role == 'him' 
+        ? AppRole.him 
+        : AppRole.her;
+        
+    final currentIndex = _calculateSelectedIndex(context, role);
+    final isHim = role == AppRole.him;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.roseLight,
+      backgroundColor: isDark 
+          ? AppColors.darkBackground 
+          : (isHim ? AppColors.slateBlueLight : AppColors.roseLight),
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.white,
           border: Border(
             top: BorderSide(
-              color: isDark ? AppColors.darkBorder : AppColors.roseSoft,
+              color: isDark 
+                  ? AppColors.darkBorder 
+                  : (isHim ? AppColors.slateBlueSoft : AppColors.roseSoft),
               width: 1.0,
             ),
           ),
         ),
         child: BottomNavigationBar(
           currentIndex: currentIndex,
-          onTap: (index) => _onItemTapped(index, context),
+          onTap: (index) => _onItemTapped(index, context, role),
           backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
-          selectedItemColor: AppColors.rosePrimary,
+          selectedItemColor: isHim ? AppColors.slateBluePrimary : AppColors.rosePrimary,
           unselectedItemColor: isDark
               ? AppColors.warmGray600
               : AppColors.warmGray400,
@@ -83,7 +103,33 @@ class HomeScreen extends StatelessWidget {
           unselectedLabelStyle: AppTypography.bodySmall,
           type: BottomNavigationBarType.fixed,
           elevation: 0,
-          items: const [
+          items: isHim ? const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.mail_outline),
+              activeIcon: Icon(Icons.mail),
+              label: 'From Her',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_outline),
+              activeIcon: Icon(Icons.favorite),
+              label: 'Her',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.people_outline),
+              activeIcon: Icon(Icons.people),
+              label: 'Us',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Me',
+            ),
+          ] : const [
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite_outline),
               activeIcon: Icon(Icons.favorite),
@@ -112,7 +158,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: currentIndex == 0
+      floatingActionButton: (currentIndex == 0 && !isHim)
           ? FloatingActionButton(
               onPressed: () => context.pushNamed(AppRoutes.dailyLog),
               backgroundColor: AppColors.rosePrimary,

@@ -5,11 +5,13 @@ import 'package:her/core/constants/app_colors.dart';
 class FloatingParticles extends StatefulWidget {
   final int count;
   final Widget? child;
+  final Color? color;
 
   const FloatingParticles({
     super.key,
     this.count = 15,
     this.child,
+    this.color,
   });
 
   @override
@@ -101,7 +103,7 @@ class _FloatingParticlesState extends State<FloatingParticles>
                     }
 
                     return CustomPaint(
-                      painter: _ParticlePainter(_particles),
+                      painter: _ParticlePainter(_particles, color: widget.color),
                       size: Size(constraints.maxWidth, constraints.maxHeight),
                     );
                   },
@@ -135,8 +137,9 @@ class _Particle {
 
 class _ParticlePainter extends CustomPainter {
   final List<_Particle> particles;
+  final Color? color;
 
-  _ParticlePainter(this.particles);
+  _ParticlePainter(this.particles, {this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -149,7 +152,7 @@ class _ParticlePainter extends CustomPainter {
         currentOpacity = particle.opacity * (particle.y / 100).clamp(0.0, 1.0);
       }
 
-      paint.color = AppColors.rosePrimary.withOpacity(currentOpacity);
+      paint.color = (color ?? AppColors.rosePrimary).withOpacity(currentOpacity);
       canvas.drawCircle(
         Offset(particle.x, particle.y),
         particle.size,

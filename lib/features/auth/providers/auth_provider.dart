@@ -21,6 +21,13 @@ AppUser _toAppUser(User firebaseUser, Map<String, dynamic>? firestoreData) {
     periodAverageLength:
         (firestoreData?['periodAverageLength'] as int?) ?? 5,
     isOnboarded: (firestoreData?['isOnboarded'] as bool?) ?? false,
+    partnerUid: firestoreData?['partnerUid'] as String?,
+    coupleId: firestoreData?['coupleId'] as String?,
+    isLinked: (firestoreData?['isLinked'] as bool?) ?? false,
+    role: firestoreData?['role'] as String?,
+    myLoveCode: firestoreData?['myLoveCode'] as String?,
+    partnerRole: firestoreData?['partnerRole'] as String?,
+    partnerDisplayName: firestoreData?['partnerDisplayName'] as String?,
   );
 }
 
@@ -108,4 +115,24 @@ class Auth extends _$Auth {
     await authRepo.updateProfile(updatedUser);
     state = AsyncData(updatedUser);
   }
+
+  // ── Refresh User State ──────────────────────────────────────────────────────
+  Future<void> refresh() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) {
+      state = const AsyncData(null);
+      return;
+    }
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .get();
+      return _toAppUser(firebaseUser, doc.data());
+    });
+  }
+
+  // ── Sign Out Compatibility ──────────────────────────────────────────────────
+  Future<void> signOut() => logout();
 }

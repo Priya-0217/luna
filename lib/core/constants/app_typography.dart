@@ -93,4 +93,12 @@ class AppTypography {
         fontWeight: FontWeight.w600,
         height: 1.3,
       );
+
+  // === COMPATIBILITY/LEGACY TOKENS ===
+  static TextStyle get h1 => displayLarge;
+  static TextStyle get h2 => displayMedium;
+  static TextStyle get h3 => headlineLarge;
+  static TextStyle get h4 => headlineMed;
+  static TextStyle get labelSmall => bodySmall;
+  static TextStyle get labelLarge => titleLarge;
 }

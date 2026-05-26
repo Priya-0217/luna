@@ -1,0 +1,86 @@
+Running Gradle task 'assembleDebug'...                            275.5s
+Error: Gradle task assembleDebug failed with exit code 1
+PS D:\flutter_projects\her> flutter run
+Launching lib\main.dart on RMX5250 (wireless) in debug mode...
+lib/core/router/app_router.dart:5:8: Error: Error when reading 'lib/features/auth/presentation/screens/auth_screen.dart': The system cannot find the path specified
+import 'package:her/features/auth/presentation/screens/auth_screen.dart';
+       ^
+lib/core/router/app_router.dart:6:8: Error: Error when reading 'lib/features/auth/presentation/screens/onboarding_screen.dart': The system cannot find the path specified
+import 'package:her/features/auth/presentation/screens/onboarding_screen.dart';
+       ^
+lib/core/router/app_router.dart:7:8: Error: Error when reading 'lib/features/home/presentation/screens/main_layout.dart': The system cannot find the path specified
+import 'package:her/features/home/presentation/screens/main_layout.dart';
+       ^
+lib/core/router/app_router.dart:10:6: Error: Error when reading 'lib/core/router/app_router.g.dart': The system cannot find the file specified
+part 'app_router.g.dart';
+     ^
+lib/core/router/app_router.dart:10:6: Error: Can't use 'lib/core/router/app_router.g.dart' as a part, because it has no 'part of' declaration.
+part 'app_router.g.dart';
+     ^
+lib/core/router/app_router.dart:13:20: Error: Type 'AppRouterRef' not found.
+GoRouter appRouter(AppRouterRef ref) {
+                   ^^^^^^^^^^^^
+lib/core/theme/app_theme.dart:7:1: Error: 'CyclePhase' is imported from both 'package:her/features/cycle/domain/cycle_phase.dart' and 'package:her/features/cycle/utils/cycle_calculator.dart'.
+import 'package:her/features/cycle/domain/cycle_phase.dart';
+^^^^^^^^^^
+lib/features/cycle/domain/cycle_entry.dart:16:8: Error: The constructor function type '_CycleEntry Function({DateTime createdAt, int? cycleLength, DateTime? endDate, String id, DateTime startDate, bool synced, String userId})' isn't a subtype of 'CycleEntry Function({DateTime createdAt, DateTime date, String id, bool isPeriodEnd, bool isPeriodStart, bool synced, String userId})'.
+ - '_CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
+ - 'DateTime' is from 'dart:core'.
+ - 'CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
+  }) = _CycleEntry;
+       ^
+lib/app.dart:11:30: Error: The getter 'appRouterProvider' isn't defined for the type 'LunaApp'.
+ - 'LunaApp' is from 'package:her/app.dart' ('lib/app.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'appRouterProvider'.
+    final router = ref.watch(appRouterProvider);
+                             ^^^^^^^^^^^^^^^^^
+lib/core/router/app_router.dart:13:20: Error: 'AppRouterRef' isn't a type.
+GoRouter appRouter(AppRouterRef ref) {
+                   ^^^^^^^^^^^^
+lib/core/router/app_router.dart:38:44: Error: Couldn't find constructor 'MainLayout'.
+        builder: (context, state) => const MainLayout(),
+                                           ^^^^^^^^^^
+lib/core/router/app_router.dart:42:44: Error: Couldn't find constructor 'AuthScreen'.
+        builder: (context, state) => const AuthScreen(),
+                                           ^^^^^^^^^^
+lib/core/router/app_router.dart:46:44: Error: Couldn't find constructor 'OnboardingScreen'.
+        builder: (context, state) => const OnboardingScreen(),
+                                           ^^^^^^^^^^^^^^^^
+lib/features/cycle/utils/cycle_calculator.dart:40:16: Error: The getter 'isPeriodStart' isn't defined for the type 'CycleEntry'.
+ - 'CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'isPeriodStart'.
+      (e) => e.isPeriodStart,
+               ^^^^^^^^^^^^^
+lib/features/cycle/utils/cycle_calculator.dart:44:53: Error: The getter 'date' isn't defined for the type 'CycleEntry'.
+ - 'CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'date'.
+    final dayOfCycle = calculateCycleDay(lastPeriod.date, DateTime.now(), 28);
+                                                    ^^^^
+lib/features/auth/providers/auth_provider.dart:96:46: Error: The method 'createUserProfile' isn't defined for the type 'AuthRepository'.
+ - 'AuthRepository' is from 'package:her/features/auth/data/auth_repository.dart' ('lib/features/auth/data/auth_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'createUserProfile'.
+      await ref.read(authRepositoryProvider).createUserProfile(user);
+                                             ^^^^^^^^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:106:44: Error: The method 'updateUserProfile' isn't defined for the type 'AuthRepository'.
+ - 'AuthRepository' is from 'package:her/features/auth/data/auth_repository.dart' ('lib/features/auth/data/auth_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'updateUserProfile'.
+    await ref.read(authRepositoryProvider).updateUserProfile(updated);
+                                           ^^^^^^^^^^^^^^^^^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildDebug'.
+> Process 'command 'C:\Users\Dell\Downloads\flutter_windows_3.35.3-stable\flutter\bin\flutter.bat'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 1s
+Running Gradle task 'assembleDebug'...                             62.1s
+Error: Gradle task assembleDebug failed with exit code 1

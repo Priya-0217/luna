@@ -51,4 +51,18 @@ class AppColors {
   static const Color darkBorder      = Color(0xFF5C3A4A);   // subtle border
   static const Color darkText        = Color(0xFFF5E6EC);   // soft warm white
   static const Color darkAccent      = Color(0xFFFF8FAA);   // rose on dark
+
+  // === COMPATIBILITY/LEGACY TOKENS ===
+  static const Color warmGray500     = warmGray600;
+  static const Color warmGray300     = warmGray400;
+  static const Color softIvory       = ivory;
+  
+  // === HIM PALETTE (Slate Blue) ===
+  static const Color slateBlueLight  = Color(0xFFEEF1FF);   // page backgrounds
+  static const Color slateBlueSoft   = Color(0xFFD0D9FF);   // card tints
+  static const Color slateBlueMid    = Color(0xFFA8BBFF);   // borders, dividers
+  static const Color slateBluePrimary = Color(0xFF6B8EFF);  // primary CTAs
+  static const Color slateBlueDeep   = Color(0xFF4A6BE8);   // active/pressed
+  static const Color slateBlueDark   = Color(0xFF2A45B0);   // text on light blue bg
+  static const Color slateBlue       = slateBluePrimary;
 }
