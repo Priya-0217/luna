@@ -33,6 +33,9 @@ import 'package:her/features/self_care/presentation/self_care_screen.dart';
 import 'package:her/features/settings/presentation/settings_screen.dart';
 import 'package:her/features/settings/presentation/app_lock_screen.dart';
 import 'package:her/features/relationship/presentation/bucket_list_screen.dart';
+import 'package:her/features/relationship/presentation/relationship_screen.dart';
+import 'package:her/features/him/presentation/care_dashboard.dart';
+import 'package:her/features/from_him/presentation/from_her_screen.dart';
 
 // Auth provider import
 import 'package:her/features/auth/providers/auth_provider.dart';
@@ -55,7 +58,9 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final authState = ref.read(authProvider);
       final user = authState.valueOrNull;
-      final isLoggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
+      final isLoggingIn =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/signup';
 
       if (user == null) {
         // Force login if trying to access secure routes
@@ -63,21 +68,29 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
           return '/login';
         }
       } else {
-        // If user is not onboarded and not currently on the onboarding screen, force them there
-        if (!user.isOnboarded && state.matchedLocation != '/onboarding') {
+        // If user is not onboarded and not currently on the onboarding screen (or code entry), force them there
+        final isAtOnboarding =
+            state.matchedLocation == '/onboarding' ||
+            state.matchedLocation == '/code-entry';
+        if (!user.isOnboarded && !isAtOnboarding) {
           return '/onboarding';
         }
-        
+
         // If logged in, onboarded, and on auth/onboarding pages, go to dashboard
-        if (user.isOnboarded && (isLoggingIn || state.matchedLocation == '/onboarding')) {
+        if (user.isOnboarded &&
+            (isLoggingIn || state.matchedLocation == '/onboarding')) {
           return '/';
         }
-        
+
         // Redirect based on roles
-        if (user.isOnboarded && state.matchedLocation.startsWith('/cycle') && user.role == 'him') {
+        if (user.isOnboarded &&
+            state.matchedLocation.startsWith('/cycle') &&
+            user.role == 'him') {
           return '/him/care';
         }
-        if (user.isOnboarded && state.matchedLocation.startsWith('/him/care') && user.role == 'her') {
+        if (user.isOnboarded &&
+            state.matchedLocation.startsWith('/him/care') &&
+            user.role == 'her') {
           return '/cycle';
         }
       }
@@ -147,22 +160,22 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
             name: AppRoutes.profile,
             builder: (context, state) => const ProfileTab(),
           ),
-          
-          // Him Specific Tabs (Stubs for now)
+
+          // Him Specific Tabs
           GoRoute(
             path: '/from-her',
             name: AppRoutes.fromHer,
-            builder: (context, state) => Scaffold(appBar: AppBar(title: const Text("From Her"))),
+            builder: (context, state) => const FromHerScreen(),
           ),
           GoRoute(
             path: '/him/care',
             name: AppRoutes.himCare,
-            builder: (context, state) => Scaffold(appBar: AppBar(title: const Text("Her Care Dashboard"))),
+            builder: (context, state) => const CareDashboard(),
           ),
           GoRoute(
             path: '/us',
             name: AppRoutes.us,
-            builder: (context, state) => Scaffold(appBar: AppBar(title: const Text("Us"))),
+            builder: (context, state) => const RelationshipScreen(),
           ),
         ],
       ),

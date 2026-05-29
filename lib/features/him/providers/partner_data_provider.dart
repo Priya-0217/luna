@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:her/features/auth/domain/app_user.dart';
 import 'package:her/features/auth/providers/auth_provider.dart';
 import 'package:her/features/cycle/domain/cycle_entry.dart';
@@ -23,9 +24,15 @@ Stream<Map<String, dynamic>> partnerData(PartnerDataRef ref) {
   final partnerUid = auth?.partnerUid;
 
   if (partnerUid == null) {
+    debugPrint(
+      '🤝 PartnerDataProvider: No partnerUid found, returning empty stream',
+    );
     return Stream.value({});
   }
 
+  debugPrint(
+    '🤝 PartnerDataProvider: Listening for partner data changes: $partnerUid',
+  );
   return FirebaseFirestore.instance
       .collection('users')
       .doc(partnerUid)
@@ -42,6 +49,9 @@ Stream<AppUser?> partnerProfile(PartnerProfileRef ref) {
     return Stream.value(null);
   }
 
+  debugPrint(
+    '🤝 PartnerDataProvider: Fetching partner profile for $partnerUid',
+  );
   return FirebaseFirestore.instance
       .collection('users')
       .doc(partnerUid)
@@ -49,6 +59,9 @@ Stream<AppUser?> partnerProfile(PartnerProfileRef ref) {
       .map((doc) {
         final data = doc.data();
         if (data == null) return null;
+        debugPrint(
+          '🤝 PartnerDataProvider: Partner profile updated: ${data['displayName']}',
+        );
         return AppUser.fromJson({
           ...data,
           'uid': partnerUid,
@@ -66,25 +79,48 @@ Stream<List<CycleEntry>> partnerCycleEntries(PartnerCycleEntriesRef ref) {
     return Stream.value([]);
   }
 
+  debugPrint(
+    '🤝 PartnerDataProvider: Streaming partner cycle entries for $partnerUid',
+  );
   return FirebaseFirestore.instance
       .collection('users')
       .doc(partnerUid)
-      .collection('cycle_entries')
-      .orderBy('date', descending: true)
+      .collection(
+        'cycleEntries',
+      ) // 🚨 FIXED collection name to match FirestoreService
+      .orderBy('startDate', descending: true) // Using startDate as primary sort
       .snapshots()
-      .map(
-        (snapshot) => snapshot.docs.map((doc) {
+      .handleError((error) {
+        debugPrint(
+          '⚠️ PartnerDataProvider: Firestore error on cycleEntries: $error',
+        );
+        // Return an empty stream or rethrow based on preference
+        // Rethrowing allows AsyncValue to catch it, but we've logged it nicely.
+        throw error;
+      })
+      .map((snapshot) {
+        debugPrint(
+          '🤝 PartnerDataProvider: Found ${snapshot.docs.length} partner cycle documents',
+        );
+        return snapshot.docs.map((doc) {
           final data = doc.data();
-          final dateVal = _parseDate(data['startDate'] ?? data['date']);
-          final endDateVal = data['endDate'] != null ? _parseDate(data['endDate']) : (data['isPeriodEnd'] == true ? dateVal : null);
+          // Fallback through common date field names
+          final dateVal = _parseDate(
+            data['startDate'] ?? data['date'] ?? data['createdAt'],
+          );
+          final endDateVal = data['endDate'] != null
+              ? _parseDate(data['endDate'])
+              : (data['isPeriodEnd'] == true ? dateVal : null);
           return CycleEntry(
             id: data['id'] ?? doc.id,
             userId: partnerUid,
             startDate: dateVal,
             endDate: endDateVal,
-            createdAt: _parseDate(data['createdAt'] ?? data['date'] ?? data['startDate']),
+            createdAt: _parseDate(
+              data['createdAt'] ?? data['date'] ?? data['startDate'],
+            ),
             synced: true,
           );
-        }).toList(),
-      );
+        }).toList();
+      });
 }

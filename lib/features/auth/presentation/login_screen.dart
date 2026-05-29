@@ -36,247 +36,53 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authProvider.notifier).login(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          );
+      debugPrint(
+        '🔑 LoginScreen: Attempting login for ${_emailController.text.trim()}',
+      );
+      ref
+          .read(authProvider.notifier)
+          .login(_emailController.text.trim(), _passwordController.text.trim())
+          .then((_) {
+            // Only run after successful login state update
+            if (mounted && ref.read(authProvider).hasValue) {
+              final user = ref.read(authProvider).value;
+              debugPrint(
+                '🔑 LoginScreen: User state after login: ${user?.uid}, role: ${user?.role}, isOnboarded: ${user?.isOnboarded}',
+              );
+
+              if (user != null && user.isOnboarded) {
+                debugPrint('🔑 LoginScreen: Redirecting to home...');
+                context.goNamed(AppRoutes.home);
+              }
+            }
+          })
+          .catchError((e) {
+            debugPrint('🔑 LoginScreen: Login error caught: $e');
+          });
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+  void _friendlyError(String msg, BuildContext context) {
+    String message = _getFriendlyErrorMessage(msg);
 
-    // Show error snackbar when login fails
-    ref.listen<AsyncValue<dynamic>>(authProvider, (previous, next) {
-      if (next.hasError && !next.isLoading) {
-        final msg = next.error.toString();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _friendlyError(msg),
-              style: AppTypography.bodySmall.copyWith(color: Colors.white),
-            ),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-          ),
-        );
-      }
-    });
-
-    final background = AnimatedGradientBackground(
-      phase: CyclePhase.follicular,
-      child: FloatingParticles(
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // ── Heading ──────────────────────────────────────────
-                    Text(
-                      'Welcome back, Love 🌸',
-                      textAlign: TextAlign.center,
-                      style: AppTypography.displayMedium.copyWith(
-                        color: isDark ? AppColors.darkText : AppColors.roseDark,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Take a deep breath and settle in.',
-                      textAlign: TextAlign.center,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // ── Login Card ────────────────────────────────────────
-                    LunaCard(
-                      borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Email
-                          TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: isDark ? AppColors.darkText : AppColors.charcoal,
-                            ),
-                            decoration: _fieldDecoration(
-                              label: 'Your Email',
-                              hint: 'hello@example.com',
-                              icon: Icons.mail_outline,
-                              isDark: isDark,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'Please enter your email 🌸';
-                              }
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
-                                return "Let's enter a valid email 💕";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-
-                          // Password
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscurePassword,
-                            textInputAction: TextInputAction.done,
-                            onFieldSubmitted: (_) => _submit(),
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: isDark ? AppColors.darkText : AppColors.charcoal,
-                            ),
-                            decoration: _fieldDecoration(
-                              label: 'Your Password',
-                              hint: '••••••••',
-                              icon: Icons.lock_outlined,
-                              isDark: isDark,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                  color: isDark
-                                      ? AppColors.warmGray400
-                                      : AppColors.rosePrimary,
-                                ),
-                                onPressed: () => setState(
-                                    () => _obscurePassword = !_obscurePassword),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'Please enter your password 💕';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters 🌱';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: AppSpacing.xl),
-
-                          // Sign-In Button
-                          LunaButton(
-                            text: 'Enter Luna',
-                            isLoading: authState.isLoading,
-                            onPressed: _submit,
-                          ),
-
-                          // Forgot password link
-                          const SizedBox(height: AppSpacing.md),
-                          TextButton(
-                            onPressed: _showForgotPassword,
-                            child: Text(
-                              'Forgot your password?',
-                              textAlign: TextAlign.center,
-                              style: AppTypography.bodySmall.copyWith(
-                                color: isDark
-                                    ? AppColors.warmGray400
-                                    : AppColors.warmGray600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // ── Sign-up link ──────────────────────────────────────
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account?",
-                          style: AppTypography.bodySmall.copyWith(
-                            color: isDark
-                                ? AppColors.warmGray400
-                                : AppColors.warmGray600,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () =>
-                              context.pushNamed(AppRoutes.signup),
-                          child: Text(
-                            'Create Your Space',
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.rosePrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: AppTypography.bodySmall.copyWith(color: Colors.white),
+        ),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
       ),
     );
-
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.roseLight,
-      body: background,
-    );
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
-
-  InputDecoration _fieldDecoration({
-    required String label,
-    required String hint,
-    required IconData icon,
-    required bool isDark,
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: AppTypography.bodySmall.copyWith(
-        color: isDark ? AppColors.warmGray400 : AppColors.roseDark,
-      ),
-      hintText: hint,
-      hintStyle: AppTypography.bodySmall.copyWith(color: AppColors.warmGray400),
-      prefixIcon: Icon(
-        icon,
-        color: isDark ? AppColors.roseSoft : AppColors.rosePrimary,
-      ),
-      suffixIcon: suffixIcon,
-      filled: true,
-      fillColor:
-          isDark ? AppColors.darkSurface : AppColors.roseLight.withOpacity(0.5),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        borderSide: const BorderSide(color: AppColors.rosePrimary, width: 1.5),
-      ),
-    );
-  }
-
-  String _friendlyError(String raw) {
-    if (raw.contains('user-not-found') || raw.contains('wrong-password') ||
+  String _getFriendlyErrorMessage(String raw) {
+    if (raw.contains('user-not-found') ||
+        raw.contains('wrong-password') ||
         raw.contains('invalid-credential')) {
       return "Hmm, those details don't match 🌸 — please try again.";
     }
@@ -330,8 +136,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     SnackBar(
                       content: Text(
                         'Reset link sent 🌸 — check your inbox!',
-                        style: AppTypography.bodySmall
-                            .copyWith(color: Colors.white),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       backgroundColor: AppColors.rosePrimary,
                     ),
@@ -341,20 +148,249 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Couldn't send reset email — check the address."),
+                      content: Text(
+                        "Couldn't send reset email — check the address.",
+                      ),
                       backgroundColor: AppColors.error,
                     ),
                   );
                 }
               }
             },
-            child: Text(
+            child: const Text(
               'Send Reset Link',
               style: TextStyle(color: AppColors.rosePrimary),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  InputDecoration _fieldDecoration({
+    required String label,
+    required String hint,
+    required IconData icon,
+    required bool isDark,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: AppTypography.bodySmall.copyWith(
+        color: isDark ? AppColors.warmGray400 : AppColors.roseDark,
+      ),
+      hintText: hint,
+      hintStyle: AppTypography.bodySmall.copyWith(color: AppColors.warmGray400),
+      prefixIcon: Icon(
+        icon,
+        color: isDark ? AppColors.roseSoft : AppColors.rosePrimary,
+      ),
+      suffixIcon: suffixIcon,
+      filled: true,
+      fillColor: isDark
+          ? AppColors.darkSurface
+          : AppColors.roseLight.withOpacity(0.5),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: const BorderSide(color: AppColors.rosePrimary, width: 1.5),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Show error snackbar when login fails
+    ref.listen<AsyncValue<dynamic>>(authProvider, (previous, next) {
+      if (next.hasError && !next.isLoading) {
+        _friendlyError(next.error.toString(), context);
+      }
+    });
+
+    final background = AnimatedGradientBackground(
+      phase: CyclePhase.follicular,
+      child: FloatingParticles(
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // ── Heading ──────────────────────────────────────────
+                    Text(
+                      'Welcome back, Love 🌸',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.displayMedium.copyWith(
+                        color: isDark ? AppColors.darkText : AppColors.roseDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Take a deep breath and settle in.',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: isDark
+                            ? AppColors.warmGray400
+                            : AppColors.warmGray600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // ── Login Card ────────────────────────────────────────
+                    LunaCard(
+                      borderColor: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.roseSoft,
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Email
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: isDark
+                                  ? AppColors.darkText
+                                  : AppColors.charcoal,
+                            ),
+                            decoration: _fieldDecoration(
+                              label: 'Your Email',
+                              hint: 'hello@example.com',
+                              icon: Icons.mail_outline,
+                              isDark: isDark,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Please enter your email 🌸';
+                              }
+                              if (!RegExp(
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              ).hasMatch(value)) {
+                                return "Let's enter a valid email 💕";
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+
+                          // Password
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _submit(),
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: isDark
+                                  ? AppColors.darkText
+                                  : AppColors.charcoal,
+                            ),
+                            decoration: _fieldDecoration(
+                              label: 'Your Password',
+                              hint: '••••••••',
+                              icon: Icons.lock_outlined,
+                              isDark: isDark,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: isDark
+                                      ? AppColors.warmGray400
+                                      : AppColors.rosePrimary,
+                                ),
+                                onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Please enter your password 💕';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters 🌱';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+
+                          // Sign-In Button
+                          LunaButton(
+                            text: 'Enter Luna',
+                            isLoading: authState.isLoading,
+                            onPressed: _submit,
+                          ),
+
+                          // Forgot password link
+                          const SizedBox(height: AppSpacing.md),
+                          TextButton(
+                            onPressed: _showForgotPassword,
+                            child: Text(
+                              'Forgot your password?',
+                              textAlign: TextAlign.center,
+                              style: AppTypography.bodySmall.copyWith(
+                                color: isDark
+                                    ? AppColors.warmGray400
+                                    : AppColors.warmGray600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // ── Sign-up link ──────────────────────────────────────
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account?",
+                          style: AppTypography.bodySmall.copyWith(
+                            color: isDark
+                                ? AppColors.warmGray400
+                                : AppColors.warmGray600,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => context.pushNamed(AppRoutes.signup),
+                          child: Text(
+                            'Create Your Space',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.rosePrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.roseLight,
+      body: background,
     );
   }
 }

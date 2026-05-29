@@ -36,7 +36,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authProvider.notifier).signup(
+      debugPrint(
+        '📝 SignupScreen: Attempting signup for ${_emailController.text.trim()}',
+      );
+      ref
+          .read(authProvider.notifier)
+          .signup(
             _nameController.text.trim(),
             _emailController.text.trim(),
             _passwordController.text.trim(),
@@ -106,8 +111,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                     // ── Signup Card ───────────────────────────────────────
                     LunaCard(
-                      borderColor:
-                          isDark ? AppColors.darkBorder : AppColors.roseSoft,
+                      borderColor: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.roseSoft,
                       padding: const EdgeInsets.all(AppSpacing.xl),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,8 +164,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                 return 'Please enter your email 🌸';
                               }
                               if (!RegExp(
-                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              ).hasMatch(value)) {
                                 return "Let's enter a valid email 💕";
                               }
                               return null;
@@ -192,8 +198,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                       ? AppColors.warmGray400
                                       : AppColors.rosePrimary,
                                 ),
-                                onPressed: () => setState(() =>
-                                    _obscurePassword = !_obscurePassword),
+                                onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ),
                               ),
                             ),
                             validator: (value) {
@@ -273,8 +280,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         color: isDark ? AppColors.warmGray400 : AppColors.roseDark,
       ),
       hintText: hint,
-      hintStyle:
-          AppTypography.bodySmall.copyWith(color: AppColors.warmGray400),
+      hintStyle: AppTypography.bodySmall.copyWith(color: AppColors.warmGray400),
       prefixIcon: Icon(
         icon,
         color: isDark ? AppColors.roseSoft : AppColors.rosePrimary,

@@ -1,7 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:her/core/services/auth_service.dart';
+import 'package:her/core/services/database.dart';
+import 'package:her/core/services/encryption_service.dart';
 import 'package:her/features/auth/domain/app_user.dart';
 import 'package:her/features/auth/data/auth_repository.dart';
 
@@ -14,12 +19,12 @@ AppUser _toAppUser(User firebaseUser, Map<String, dynamic>? firestoreData) {
   return AppUser(
     uid: firebaseUser.uid,
     email: firebaseUser.email ?? '',
-    displayName: firebaseUser.displayName ??
-        (firestoreData?['displayName'] as String? ?? ''),
-    cycleAverageLength:
-        (firestoreData?['cycleAverageLength'] as int?) ?? 28,
-    periodAverageLength:
-        (firestoreData?['periodAverageLength'] as int?) ?? 5,
+    displayName:
+        firestoreData?['displayName'] as String? ??
+        firebaseUser.displayName ??
+        '',
+    cycleAverageLength: (firestoreData?['cycleAverageLength'] as int?) ?? 28,
+    periodAverageLength: (firestoreData?['periodAverageLength'] as int?) ?? 5,
     isOnboarded: (firestoreData?['isOnboarded'] as bool?) ?? false,
     partnerUid: firestoreData?['partnerUid'] as String?,
     coupleId: firestoreData?['coupleId'] as String?,
@@ -39,50 +44,65 @@ AppUser _toAppUser(User firebaseUser, Map<String, dynamic>? firestoreData) {
 class Auth extends _$Auth {
   @override
   FutureOr<AppUser?> build() async {
-    // Watch the Firebase auth-state stream. Riverpod will rebuild when it
-    // emits a new value (signed in / signed out).
+    debugPrint('⏳ AuthProvider: Initializing auth state...');
+    // Watch the Firebase auth-state stream.
     final userStream = ref.watch(authStateChangesProvider);
 
-    return userStream.when(
-      data: (firebaseUser) async {
-        if (firebaseUser == null) return null;
-
-        // Fetch extra profile fields from Firestore
-        try {
-          final doc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(firebaseUser.uid)
-              .get();
-          return _toAppUser(firebaseUser, doc.data());
-        } catch (_) {
-          // If Firestore fetch fails, fall back to Firebase Auth data
-          return _toAppUser(firebaseUser, null);
-        }
-      },
-      loading: () => null,
-      error: (_, __) => null,
+    if (userStream.value == null) {
+      debugPrint('👤 AuthProvider: No active session (logged out)');
+      return null;
+    }
+    final firebaseUser = userStream.value!;
+    debugPrint(
+      '👤 AuthProvider: Active Firebase user: ${firebaseUser.uid} (${firebaseUser.email})',
     );
+
+    // Directly use a Stream for Firestore to ensure we react to role changes
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .snapshots()
+        .map((doc) {
+          final data = doc.data();
+          debugPrint('🔄 AuthProvider: Firestore profile updated: $data');
+          return _toAppUser(firebaseUser, data);
+        })
+        .first;
   }
 
   // ── Login ──────────────────────────────────────────────────────────────────
   Future<void> login(String email, String password) async {
+    debugPrint('🔑 AuthProvider: Login attempt for $email');
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       final service = ref.read(authServiceProvider);
       final credential = await service.signIn(email: email, password: password);
       final firebaseUser = credential.user!;
+      debugPrint(
+        '✅ AuthProvider: Firebase sign in success: ${firebaseUser.uid}',
+      );
 
       // Fetch Firestore profile
       final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(firebaseUser.uid)
           .get();
-      return _toAppUser(firebaseUser, doc.data());
-    });
+
+      final appUser = _toAppUser(firebaseUser, doc.data());
+      debugPrint('✅ AuthProvider: Profile loaded for role: ${appUser.role}');
+      state = AsyncData(appUser);
+
+      // Force refresh of any providers depending on the role
+      ref.invalidateSelf();
+    } catch (e, st) {
+      debugPrint('❌ AuthProvider: Login failed: $e');
+      state = AsyncError(e, st);
+    }
   }
 
   // ── Signup ─────────────────────────────────────────────────────────────────
   Future<void> signup(String name, String email, String password) async {
+    debugPrint('🆕 AuthProvider: Signup attempt for $email ($name)');
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final service = ref.read(authServiceProvider);
@@ -92,21 +112,48 @@ class Auth extends _$Auth {
         password: password,
       );
       final firebaseUser = credential.user!;
+      debugPrint(
+        '✅ AuthProvider: Firebase account created: ${firebaseUser.uid}',
+      );
 
       // Fetch the newly-created Firestore doc
       final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(firebaseUser.uid)
           .get();
+      debugPrint('✅ AuthProvider: Initial profile stored');
       return _toAppUser(firebaseUser, doc.data());
     });
   }
 
   // ── Logout ─────────────────────────────────────────────────────────────────
   Future<void> logout() async {
+    debugPrint('🧼 AuthProvider: Performing deep wipe and logout...');
     state = const AsyncLoading();
-    await ref.read(authServiceProvider).signOut();
-    state = const AsyncData(null);
+
+    try {
+      // 1. Clear Local Database (Drift)
+      await ref.read(appDatabaseProvider).clearAllData();
+      debugPrint('🗄️ AuthProvider: Drift local database wiped');
+
+      // 2. Clear Local Settings (Hive)
+      await Hive.box('settings').clear();
+      debugPrint('📦 AuthProvider: Hive settings cleared');
+
+      // 3. Clear Secure Storage (Everything!)
+      const secureStorage = FlutterSecureStorage();
+      await secureStorage.deleteAll();
+      debugPrint('🔑 AuthProvider: Secure storage wiped');
+
+      // 4. Sign out from Firebase
+      await ref.read(authServiceProvider).signOut();
+      debugPrint('✅ AuthProvider: Firebase session terminated');
+
+      state = const AsyncData(null);
+    } catch (e, st) {
+      debugPrint('❌ AuthProvider: Logout cleanup failed: $e');
+      state = AsyncError(e, st);
+    }
   }
 
   // ── Update Profile ──────────────────────────────────────────────────────────

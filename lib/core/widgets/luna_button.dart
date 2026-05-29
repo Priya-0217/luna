@@ -7,11 +7,7 @@ import 'package:her/core/constants/app_spacing.dart';
 import 'package:her/core/constants/app_shadows.dart';
 import 'package:her/core/constants/app_typography.dart';
 
-enum LunaButtonVariant {
-  primary,
-  secondary,
-  ghost,
-}
+enum LunaButtonVariant { primary, secondary, ghost }
 
 class LunaButton extends StatefulWidget {
   final String text;
@@ -22,6 +18,7 @@ class LunaButton extends StatefulWidget {
   final double height;
   final bool isLoading;
   final Color? backgroundColor;
+  final Gradient? gradient;
 
   const LunaButton({
     super.key,
@@ -33,6 +30,7 @@ class LunaButton extends StatefulWidget {
     this.height = 48.0,
     this.isLoading = false,
     this.backgroundColor,
+    this.gradient,
   });
 
   @override
@@ -75,14 +73,17 @@ class _LunaButtonState extends State<LunaButton> {
     switch (widget.variant) {
       case LunaButtonVariant.primary:
         textColor = AppColors.white;
-        gradient = (widget.onPressed != null && widget.backgroundColor == null)
-            ? const LinearGradient(
-                colors: [AppColors.rosePrimary, AppColors.roseDeep],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : null;
-        backgroundColor = widget.backgroundColor ??
+        gradient =
+            widget.gradient ??
+            ((widget.onPressed != null && widget.backgroundColor == null)
+                ? const LinearGradient(
+                    colors: [AppColors.rosePrimary, AppColors.roseDeep],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null);
+        backgroundColor =
+            widget.backgroundColor ??
             (widget.onPressed == null
                 ? (isDark ? AppColors.darkBorder : AppColors.roseSoft)
                 : null);
@@ -128,7 +129,9 @@ class _LunaButtonState extends State<LunaButton> {
                   widget.text,
                   style: AppTypography.labelMedium.copyWith(
                     color: widget.onPressed == null
-                        ? (isDark ? AppColors.warmGray600 : AppColors.warmGray400)
+                        ? (isDark
+                              ? AppColors.warmGray600
+                              : AppColors.warmGray400)
                         : textColor,
                     fontWeight: FontWeight.w600,
                   ),

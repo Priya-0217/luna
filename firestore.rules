@@ -1,0 +1,91 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if the caller is the linked partner
+    function isLinkedPartner(userId) {
+      let ownerDoc = get(/databases/$(database)/documents/users/$(userId)).data;
+      return ownerDoc.isLinked == true && ownerDoc.partnerUid == request.auth.uid;
+    }
+
+    function isCoupleMember(coupleId) {
+      return request.auth != null && (
+        get(/databases/$(database)/documents/shared/$(coupleId)).data.herUid == request.auth.uid ||
+        get(/databases/$(database)/documents/shared/$(coupleId)).data.himUid == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.coupleId == coupleId
+      );
+    }
+
+    // User Profiles & Personal Data
+    match /users/{userId} {
+      // Allow any logged-in user to read top-level profile (needed to find partner)
+      allow read: if request.auth != null;
+      
+      // Allow owner to update their profile
+      // ALSO allow a user to update a partner's profile ONLY IF they are currently unlinked (linking phase)
+      allow update: if request.auth != null && (
+        request.auth.uid == userId || 
+        (resource.data.isLinked == false)
+      );
+      
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // ── Sub-collection specific rules ──
+      
+      // Cycle Entries: Partner can read if linked (Fixes PERMISSION_DENIED for Him role)
+      match /cycleEntries/{entryId} {
+        allow read: if request.auth != null && (request.auth.uid == userId || isLinkedPartner(userId));
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Daily Logs: Partner can read if linked (For mood visual synchronization)
+      match /dailyLogs/{logId} {
+        allow read: if request.auth != null && (request.auth.uid == userId || isLinkedPartner(userId));
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Default: Owner-only for private data (Journal, etc.)
+      match /{allSubcollections=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Love Codes (used for linking)
+    match /loveCodes/{codeId} {
+      allow read: if request.auth != null;
+      allow update: if request.auth != null && resource.data.linkedUid == null;
+      allow create: if request.auth != null;
+    }
+
+    // Shared Couple Data (Anniversaries, Memories, etc.)
+    match /shared/{coupleId} {
+      // Read/Update: must be one of the two linked partners
+      allow read, update: if isCoupleMember(coupleId);
+
+      // Create: the creator must be one of the UIDs in the document
+      allow create: if request.auth != null && (
+        request.auth.uid == request.resource.data.herUid || 
+        request.auth.uid == request.resource.data.himUid
+      );
+
+      // Partner Chat: allow both partners to read/write messages,
+      // but only the sender can create their own message.
+      match /partnerChat/{messageId} {
+        allow read: if isCoupleMember(coupleId);
+        allow create: if isCoupleMember(coupleId) && request.resource.data.senderId == request.auth.uid;
+        allow update, delete: if isCoupleMember(coupleId);
+      }
+
+      // Sub-collections (memories, bucketList, partnerChat, etc.)
+      match /{allSubcollections=**} {
+        allow read, write: if isCoupleMember(coupleId);
+      }
+    }
+    
+    // Global Default Deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

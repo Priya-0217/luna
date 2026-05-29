@@ -71,26 +71,25 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) => m.createAll(),
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.addColumn(dailyLogs, dailyLogs.userId);
-            await m.addColumn(dailyLogs, dailyLogs.energyLevel);
-            await m.addColumn(dailyLogs, dailyLogs.synced);
-            await m.addColumn(journalEntries, journalEntries.userId);
-            await m.addColumn(journalEntries, journalEntries.synced);
-            await m.addColumn(selfCareLogs, selfCareLogs.userId);
-            await m.addColumn(selfCareLogs, selfCareLogs.synced);
-            await m.createTable(cycleEntries);
-          }
-        },
-      );
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(dailyLogs, dailyLogs.userId);
+        await m.addColumn(dailyLogs, dailyLogs.energyLevel);
+        await m.addColumn(dailyLogs, dailyLogs.synced);
+        await m.addColumn(journalEntries, journalEntries.userId);
+        await m.addColumn(journalEntries, journalEntries.synced);
+        await m.addColumn(selfCareLogs, selfCareLogs.userId);
+        await m.addColumn(selfCareLogs, selfCareLogs.synced);
+        await m.createTable(cycleEntries);
+      }
+    },
+  );
 
   // ── Daily Logs ──────────────────────────────────────────────────────────────
   Future<List<DailyLogRow>> getAllLogs() => select(dailyLogs).get();
 
-  Future<int> insertLog(DailyLogsCompanion log) =>
-      into(dailyLogs).insert(log);
+  Future<int> insertLog(DailyLogsCompanion log) => into(dailyLogs).insert(log);
 
   Future<void> upsertDailyLog(DailyLogsCompanion log) =>
       into(dailyLogs).insertOnConflictUpdate(log);
@@ -103,11 +102,12 @@ class AppDatabase extends _$AppDatabase {
 
   Future<DailyLogRow?> getLogByDate(DateTime targetDate) {
     final d = DateTime(targetDate.year, targetDate.month, targetDate.day);
-    return (select(dailyLogs)
-          ..where((t) =>
+    return (select(dailyLogs)..where(
+          (t) =>
               t.date.year.equals(d.year) &
               t.date.month.equals(d.month) &
-              t.date.day.equals(d.day)))
+              t.date.day.equals(d.day),
+        ))
         .getSingleOrNull();
   }
 
@@ -115,22 +115,24 @@ class AppDatabase extends _$AppDatabase {
       (select(dailyLogs)..where((t) => t.synced.equals(false))).get();
 
   Future<void> markLogSynced(String id) =>
-      (update(dailyLogs)..where((t) => t.id.equals(id)))
-          .write(const DailyLogsCompanion(synced: Value(true)));
+      (update(dailyLogs)..where((t) => t.id.equals(id))).write(
+        const DailyLogsCompanion(synced: Value(true)),
+      );
 
   Future<List<DailyLogRow>> getLogsInRange(DateTime from, DateTime to) =>
       (select(dailyLogs)
-            ..where((t) =>
-                t.date.isBiggerOrEqualValue(from) &
-                t.date.isSmallerOrEqualValue(to))
+            ..where(
+              (t) =>
+                  t.date.isBiggerOrEqualValue(from) &
+                  t.date.isSmallerOrEqualValue(to),
+            )
             ..orderBy([(t) => OrderingTerm.asc(t.date)]))
           .get();
 
   // ── Journal ─────────────────────────────────────────────────────────────────
-  Future<List<JournalRow>> getAllJournalEntries() =>
-      (select(journalEntries)
-            ..orderBy([(t) => OrderingTerm.desc(t.date)]))
-          .get();
+  Future<List<JournalRow>> getAllJournalEntries() => (select(
+    journalEntries,
+  )..orderBy([(t) => OrderingTerm.desc(t.date)])).get();
 
   Future<int> insertJournalEntry(JournalEntriesCompanion entry) =>
       into(journalEntries).insert(entry);
@@ -147,8 +149,9 @@ class AppDatabase extends _$AppDatabase {
       (select(journalEntries)..where((t) => t.synced.equals(false))).get();
 
   Future<void> markJournalEntrySynced(int id) =>
-      (update(journalEntries)..where((t) => t.id.equals(id)))
-          .write(const JournalEntriesCompanion(synced: Value(true)));
+      (update(journalEntries)..where((t) => t.id.equals(id))).write(
+        const JournalEntriesCompanion(synced: Value(true)),
+      );
 
   // ── Self-Care ───────────────────────────────────────────────────────────────
   Future<List<SelfCareLog>> getSelfCareLogsByType(String type) =>
@@ -164,11 +167,13 @@ class AppDatabase extends _$AppDatabase {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     return (select(selfCareLogs)
-          ..where((t) =>
-              t.type.equals(type) &
-              t.date.year.equals(today.year) &
-              t.date.month.equals(today.month) &
-              t.date.day.equals(today.day))
+          ..where(
+            (t) =>
+                t.type.equals(type) &
+                t.date.year.equals(today.year) &
+                t.date.month.equals(today.month) &
+                t.date.day.equals(today.day),
+          )
           ..limit(1))
         .getSingleOrNull();
   }
@@ -176,26 +181,30 @@ class AppDatabase extends _$AppDatabase {
   Future<double> getHydrationToday() async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final logs = await (select(selfCareLogs)
-          ..where((t) =>
-              t.type.equals('hydration') &
-              t.date.year.equals(today.year) &
-              t.date.month.equals(today.month) &
-              t.date.day.equals(today.day)))
-        .get();
+    final logs =
+        await (select(selfCareLogs)..where(
+              (t) =>
+                  t.type.equals('hydration') &
+                  t.date.year.equals(today.year) &
+                  t.date.month.equals(today.month) &
+                  t.date.day.equals(today.day),
+            ))
+            .get();
     return logs.fold<double>(0.0, (sum, item) => sum + item.value);
   }
 
   Future<double> getSleepToday() async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final logs = await (select(selfCareLogs)
-          ..where((t) =>
-              t.type.equals('sleep') &
-              t.date.year.equals(today.year) &
-              t.date.month.equals(today.month) &
-              t.date.day.equals(today.day)))
-        .get();
+    final logs =
+        await (select(selfCareLogs)..where(
+              (t) =>
+                  t.type.equals('sleep') &
+                  t.date.year.equals(today.year) &
+                  t.date.month.equals(today.month) &
+                  t.date.day.equals(today.day),
+            ))
+            .get();
     return logs.fold<double>(0.0, (sum, item) => sum + item.value);
   }
 
@@ -203,14 +212,14 @@ class AppDatabase extends _$AppDatabase {
       (select(selfCareLogs)..where((t) => t.synced.equals(false))).get();
 
   Future<void> markSelfCareLogSynced(int id) =>
-      (update(selfCareLogs)..where((t) => t.id.equals(id)))
-          .write(const SelfCareLogsCompanion(synced: Value(true)));
+      (update(selfCareLogs)..where((t) => t.id.equals(id))).write(
+        const SelfCareLogsCompanion(synced: Value(true)),
+      );
 
   // ── Cycle Entries ───────────────────────────────────────────────────────────
-  Future<List<CycleRow>> getAllCycleEntries() =>
-      (select(cycleEntries)
-            ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
-          .get();
+  Future<List<CycleRow>> getAllCycleEntries() => (select(
+    cycleEntries,
+  )..orderBy([(t) => OrderingTerm.desc(t.startDate)])).get();
 
   Future<void> upsertCycleEntry(CycleEntriesCompanion entry) =>
       into(cycleEntries).insertOnConflictUpdate(entry);
@@ -231,11 +240,21 @@ class AppDatabase extends _$AppDatabase {
       (select(cycleEntries)..where((t) => t.synced.equals(false))).get();
 
   Future<void> markCycleEntrySynced(String id) =>
-      (update(cycleEntries)..where((t) => t.id.equals(id)))
-          .write(const CycleEntriesCompanion(synced: Value(true)));
+      (update(cycleEntries)..where((t) => t.id.equals(id))).write(
+        const CycleEntriesCompanion(synced: Value(true)),
+      );
 
   Future<int> deleteCycleEntry(String id) =>
       (delete(cycleEntries)..where((t) => t.id.equals(id))).go();
+
+  // ── Clear All Data ──────────────────────────────────────────────────────────
+  Future<void> clearAllData() async {
+    await transaction(() async {
+      for (final table in allTables) {
+        await delete(table).go();
+      }
+    });
+  }
 }
 
 // ─── Database Riverpod provider (defined here, used by sync_service) ─────────

@@ -22,6 +22,8 @@ class DashboardData {
   final int periodDuration;
   final bool isIrregular;
   final double cycleStdDev;
+  final bool isLinked;
+  final String? myLoveCode;
 
   DashboardData({
     required this.username,
@@ -35,6 +37,8 @@ class DashboardData {
     required this.periodDuration,
     required this.isIrregular,
     required this.cycleStdDev,
+    required this.isLinked,
+    this.myLoveCode,
   });
 }
 
@@ -43,26 +47,52 @@ class Dashboard extends _$Dashboard {
   @override
   FutureOr<DashboardData> build() async {
     final box = Hive.box('settings');
-    debugPrint('Dashboard: Rebuilding dashboard data...');
+    debugPrint('📊 DashboardProvider: Rebuilding dashboard data...');
 
     // Use real username from Firebase auth, fall back to Hive cache
     final authUser = ref.watch(authProvider).valueOrNull;
+
+    // 🚨 PROTECTION: If role is HIM, we should NOT be calculating her dashboard data here.
+    if (authUser?.role == 'him') {
+      debugPrint(
+        '🛡️ DashboardProvider: User is HIM, returning partner-only dashboard state',
+      );
+      return DashboardData(
+        username: authUser?.displayName ?? 'Partner',
+        cycleDay: 1,
+        phase: CyclePhase.follicular,
+        daysUntilPeriod: 0,
+        isFertile: false,
+        hydration: 0,
+        sleep: 0,
+        cycleLength: 28,
+        periodDuration: 5,
+        isIrregular: false,
+        cycleStdDev: 0,
+        isLinked: authUser?.isLinked ?? false,
+        myLoveCode: authUser?.myLoveCode,
+      );
+    }
+
     final username = authUser?.displayName.isNotEmpty == true
         ? authUser!.displayName
         : box.get('username', defaultValue: 'Love') as String;
 
     // Fetch all cycle entries to calculate real averages
+    debugPrint('📊 DashboardProvider: Fetching cycle entries for stats...');
     final allEntries = await ref.watch(cycleEntriesStreamProvider.future);
     final stats = CycleCalculator.calculateStats(allEntries);
 
     final int cycleLength = stats.averageCycleLength.round();
     final int periodDuration = stats.averagePeriodDuration.round();
-    
-    debugPrint('Dashboard: Calculated stats - avgCycle: $cycleLength, avgPeriod: $periodDuration, isIrregular: ${stats.isIrregular}');
+
+    debugPrint(
+      '📊 DashboardProvider: Calculated stats - avgCycle: $cycleLength, avgPeriod: $periodDuration, isIrregular: ${stats.isIrregular}',
+    );
 
     // Fetch real last period date from CycleRepository reactively
     final latestCycle = await ref.watch(cycleLatestEntryProvider.future);
-    
+
     // Fallback order:
     // 1. Latest cycle entry from DB
     // 2. Saved preference in Hive
@@ -70,26 +100,41 @@ class Dashboard extends _$Dashboard {
     DateTime lastPeriodDate;
     if (latestCycle != null) {
       lastPeriodDate = latestCycle.startDate;
-      debugPrint('Dashboard: Using latest cycle from DB: $lastPeriodDate');
+      debugPrint(
+        '📊 DashboardProvider: Using last period from DB: $lastPeriodDate',
+      );
     } else {
-      final savedDate = box.get('last_period_date');
-      if (savedDate != null) {
-        lastPeriodDate = DateTime.parse(savedDate);
-        debugPrint('Dashboard: Using last period from Hive: $lastPeriodDate');
+      final dateStr = box.get('last_period_date');
+      if (dateStr != null) {
+        lastPeriodDate = DateTime.parse(dateStr);
+        debugPrint(
+          '📊 DashboardProvider: Using last period from Hive: $lastPeriodDate',
+        );
       } else {
         lastPeriodDate = DateTime.now().subtract(const Duration(days: 10));
-        debugPrint('Dashboard: Using fallback 10 days ago: $lastPeriodDate');
+        debugPrint(
+          '📊 DashboardProvider: Using fallback last period (10 days ago)',
+        );
       }
     }
-    
+
     // Ensure lastPeriodDate has no time component for cleaner calculations
-    lastPeriodDate = DateTime(lastPeriodDate.year, lastPeriodDate.month, lastPeriodDate.day);
+    lastPeriodDate = DateTime(
+      lastPeriodDate.year,
+      lastPeriodDate.month,
+      lastPeriodDate.day,
+    );
 
     final today = DateTime.now();
-    final cycleDay =
-        CycleCalculator.calculateCycleDay(lastPeriodDate, today, cycleLength);
+    final cycleDay = CycleCalculator.calculateCycleDay(
+      lastPeriodDate,
+      today,
+      cycleLength,
+    );
 
-    debugPrint('Dashboard: Today: $today, lastPeriodDate: $lastPeriodDate, calculated cycleDay: $cycleDay');
+    debugPrint(
+      'Dashboard: Today: $today, lastPeriodDate: $lastPeriodDate, calculated cycleDay: $cycleDay',
+    );
 
     final phase = CycleCalculator.calculatePhase(
       cycleDay: cycleDay,
@@ -123,6 +168,8 @@ class Dashboard extends _$Dashboard {
       periodDuration: periodDuration,
       isIrregular: stats.isIrregular,
       cycleStdDev: stats.cycleStdDev,
+      isLinked: authUser?.isLinked ?? false,
+      myLoveCode: authUser?.myLoveCode,
     );
   }
 

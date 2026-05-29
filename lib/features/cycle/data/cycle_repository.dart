@@ -12,9 +12,9 @@ part 'cycle_repository.g.dart';
 
 @riverpod
 CycleRepository cycleRepository(CycleRepositoryRef ref) => CycleRepository(
-      ref.watch(appDatabaseProvider),
-      ref.watch(firestoreServiceProvider),
-    );
+  ref.watch(appDatabaseProvider),
+  ref.watch(firestoreServiceProvider),
+);
 
 class CycleRepository {
   CycleRepository(this._db, this._firestore);
@@ -27,45 +27,58 @@ class CycleRepository {
 
   Future<CycleEntry> startPeriod([DateTime? startDate]) async {
     final date = startDate ?? DateTime.now();
-    debugPrint('CycleRepository: startPeriod called with $date');
-    
+    debugPrint('🩸 CycleRepository: startPeriod called for date: $date');
+
     // Find if we already have an active cycle (no end date)
     final latest = await getLatestEntry();
-    
+
     if (latest != null && latest.endDate == null) {
       // If we have an active cycle, update its start date instead of creating a new one.
-      // This handles corrections from settings/onboarding.
-      debugPrint('CycleRepository: Updating existing active cycle ${latest.id} from ${latest.startDate} to $date');
+      debugPrint(
+        '🩸 CycleRepository: Found active cycle ${latest.id}, updating start date to $date',
+      );
       return updateLatestPeriodStart(date);
     }
 
     // Check if we already have an entry for this exact date to prevent duplicates
     final allEntries = await getAllEntries();
-    final duplicate = allEntries.where((e) => 
-      e.startDate.year == date.year && 
-      e.startDate.month == date.month && 
-      e.startDate.day == date.day
-    ).firstOrNull;
+    final duplicate = allEntries
+        .where(
+          (e) =>
+              e.startDate.year == date.year &&
+              e.startDate.month == date.month &&
+              e.startDate.day == date.day,
+        )
+        .firstOrNull;
 
     if (duplicate != null) {
-      debugPrint('CycleRepository: Entry already exists for $date, not creating duplicate.');
+      debugPrint(
+        '🩸 CycleRepository: Entry already exists for $date, skipping duplicate creation.',
+      );
       return duplicate;
     }
 
     final id = _uuid.v4();
-    debugPrint('CycleRepository: Creating new cycle entry $id for $date');
-    await _db.upsertCycleEntry(CycleEntriesCompanion.insert(
+    debugPrint('🩸 CycleRepository: Creating new cycle entry record: $id');
+    await _db.upsertCycleEntry(
+      CycleEntriesCompanion.insert(
+        id: id,
+        userId: _uid,
+        startDate: date,
+        endDate: const Value(null),
+        cycleLength: const Value(null),
+        synced: const Value(false),
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    final entry = CycleEntry(
       id: id,
       userId: _uid,
       startDate: date,
-      endDate: const Value(null),
-      cycleLength: const Value(null),
-      synced: const Value(false),
+      synced: false,
       createdAt: DateTime.now(),
-    ));
-
-    final entry = CycleEntry(
-        id: id, userId: _uid, startDate: date, synced: false, createdAt: DateTime.now());
+    );
     _syncEntry(entry);
     return entry;
   }
@@ -73,37 +86,40 @@ class CycleRepository {
   Future<CycleEntry> updateLatestPeriodStart(DateTime startDate) async {
     final latest = await getLatestEntry();
     if (latest == null) {
-      debugPrint('CycleRepository: No latest entry found to update, starting new.');
+      debugPrint(
+        '🩸 CycleRepository: No latest entry found, defaulting to startPeriod',
+      );
       return startPeriod(startDate);
     }
 
-    debugPrint('CycleRepository: Updating entry ${latest.id} start date to $startDate');
-    final updated = latest.copyWith(
-      startDate: startDate,
-      synced: false,
+    debugPrint(
+      '🩸 CycleRepository: Modifying entry ${latest.id} start date -> $startDate',
     );
+    final updated = latest.copyWith(startDate: startDate, synced: false);
 
-    // If there are other active cycles that now start AFTER this updated one, 
+    // If there are other active cycles that now start AFTER this updated one,
     // they are likely duplicates or invalid state from the previous date.
-    // We should probably remove them or mark them as ended to avoid "reverting" 
-    // to them when getLatestEntry is called.
     final allEntries = await getAllEntries();
-    final otherActive = allEntries.where((e) => e.id != updated.id && e.endDate == null).toList();
-    
+    final otherActive = allEntries
+        .where((e) => e.id != updated.id && e.endDate == null)
+        .toList();
+
     for (var other in otherActive) {
-      debugPrint('CycleRepository: Removing conflicting active cycle ${other.id} (Start: ${other.startDate})');
+      debugPrint(
+        '🩸 CycleRepository: Cleaning up conflicting active cycle: ${other.id}',
+      );
       await deleteCycleEntry(other.id);
     }
 
-    await _db.upsertCycleEntry(CycleEntriesCompanion(
-      id: Value(updated.id),
-      userId: Value(updated.userId),
-      startDate: Value(updated.startDate),
-      endDate: Value(updated.endDate),
-      cycleLength: Value(updated.cycleLength),
-      synced: const Value(false),
-      createdAt: Value(updated.createdAt),
-    ));
+    await _db.upsertCycleEntry(
+      CycleEntriesCompanion(
+        id: Value(updated.id),
+        userId: Value(updated.userId),
+        startDate: Value(updated.startDate),
+        endDate: const Value(null),
+        synced: const Value(false),
+      ),
+    );
 
     _syncEntry(updated);
     return updated;
@@ -116,15 +132,17 @@ class CycleRepository {
     final now = DateTime.now();
     final cycleLen = now.difference(latest.startDate).inDays;
 
-    await _db.upsertCycleEntry(CycleEntriesCompanion(
-      id: Value(latest.id),
-      userId: Value(latest.userId),
-      startDate: Value(latest.startDate),
-      endDate: Value(now),
-      cycleLength: Value(cycleLen),
-      synced: const Value(false),
-      createdAt: Value(latest.createdAt),
-    ));
+    await _db.upsertCycleEntry(
+      CycleEntriesCompanion(
+        id: Value(latest.id),
+        userId: Value(latest.userId),
+        startDate: Value(latest.startDate),
+        endDate: Value(now),
+        cycleLength: Value(cycleLen),
+        synced: const Value(false),
+        createdAt: Value(latest.createdAt),
+      ),
+    );
 
     final updated = CycleEntry(
       id: latest.id,
@@ -150,7 +168,9 @@ class CycleRepository {
   }
 
   Stream<CycleEntry?> watchLatestEntry() {
-    return _db.watchLatestCycleEntry().map((row) => row == null ? null : _fromRow(row));
+    return _db.watchLatestCycleEntry().map(
+      (row) => row == null ? null : _fromRow(row),
+    );
   }
 
   // ─── Real-time Listeners ───────────────────────────────────────────────────
@@ -163,48 +183,56 @@ class CycleRepository {
         .orderBy('startDate', descending: true)
         .snapshots()
         .map((snapshot) {
-      final entries = snapshot.docs.map((doc) {
-        final data = doc.data();
-        final entry = CycleEntry(
-          id: doc.id,
-          userId: data['userId'] ?? _uid,
-          startDate: FirestoreService.tsToDate(data['startDate']),
-          endDate: data['endDate'] != null
-              ? FirestoreService.tsToDate(data['endDate'])
-              : null,
-          cycleLength: data['cycleLength'],
-          synced: true,
-          createdAt: FirestoreService.tsToDate(data['createdAt']),
-        );
-        
-        // Background sync to local DB
-        _updateLocal(entry);
-        
-        return entry;
-      }).toList();
-      return entries;
-    });
+          final entries = snapshot.docs.map((doc) {
+            final data = doc.data();
+            final entry = CycleEntry(
+              id: doc.id,
+              userId: data['userId'] ?? _uid,
+              startDate: FirestoreService.tsToDate(data['startDate']),
+              endDate: data['endDate'] != null
+                  ? FirestoreService.tsToDate(data['endDate'])
+                  : null,
+              cycleLength: data['cycleLength'],
+              synced: true,
+              createdAt: FirestoreService.tsToDate(data['createdAt']),
+            );
+
+            // Background sync to local DB
+            _updateLocal(entry);
+
+            return entry;
+          }).toList();
+          return entries;
+        });
   }
 
   void _updateLocal(CycleEntry entry) async {
-    await _db.upsertCycleEntry(CycleEntriesCompanion(
-      id: Value(entry.id),
-      userId: Value(entry.userId),
-      startDate: Value(entry.startDate),
-      endDate: Value(entry.endDate),
-      cycleLength: Value(entry.cycleLength),
-      synced: const Value(true),
-      createdAt: Value(entry.createdAt),
-    ));
+    await _db.upsertCycleEntry(
+      CycleEntriesCompanion(
+        id: Value(entry.id),
+        userId: Value(entry.userId),
+        startDate: Value(entry.startDate),
+        endDate: Value(entry.endDate),
+        cycleLength: Value(entry.cycleLength),
+        synced: const Value(true),
+        createdAt: Value(entry.createdAt),
+      ),
+    );
   }
 
   void _syncEntry(CycleEntry entry) async {
     try {
       debugPrint('CycleRepository: Syncing entry ${entry.id} to Firestore');
+      // The collection used here is 'cycleEntries' defined in FirestoreService
       await _firestore.saveCycleEntry(entry.id, {
+        'id': entry.id, // Ensure ID is included in data
         'userId': entry.userId,
+        // Match the field names expected by partner_data_provider.dart
+        'date': Timestamp.fromDate(entry.startDate),
         'startDate': Timestamp.fromDate(entry.startDate),
-        'endDate': entry.endDate != null ? Timestamp.fromDate(entry.endDate!) : null,
+        'endDate': entry.endDate != null
+            ? Timestamp.fromDate(entry.endDate!)
+            : null,
         'cycleLength': entry.cycleLength,
         'createdAt': Timestamp.fromDate(entry.createdAt),
       });
@@ -231,12 +259,12 @@ class CycleRepository {
 
   // Convert Drift CycleRow → domain CycleEntry
   CycleEntry _fromRow(CycleRow row) => CycleEntry(
-        id: row.id,
-        userId: row.userId,
-        startDate: row.startDate,
-        endDate: row.endDate,
-        cycleLength: row.cycleLength,
-        synced: row.synced,
-        createdAt: row.createdAt,
-      );
+    id: row.id,
+    userId: row.userId,
+    startDate: row.startDate,
+    endDate: row.endDate,
+    cycleLength: row.cycleLength,
+    synced: row.synced,
+    createdAt: row.createdAt,
+  );
 }

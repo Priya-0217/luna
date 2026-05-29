@@ -13,22 +13,23 @@ import 'package:her/core/widgets/luna_card.dart';
 import 'package:her/core/router/app_routes.dart';
 import 'package:her/features/auth/providers/auth_provider.dart';
 
-class FromHimScreen extends ConsumerStatefulWidget {
-  const FromHimScreen({super.key});
+class FromHerScreen extends ConsumerStatefulWidget {
+  const FromHerScreen({super.key});
 
   @override
-  ConsumerState<FromHimScreen> createState() => _FromHimScreenState();
+  ConsumerState<FromHerScreen> createState() => _FromHerScreenState();
 }
 
-class _FromHimScreenState extends ConsumerState<FromHimScreen>
+class _FromHerScreenState extends ConsumerState<FromHerScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _hugController;
-  bool _isHugging = false;
+  late AnimationController _sparkleController;
+  bool _isAppreciating = false;
 
   @override
   void initState() {
     super.initState();
-    _hugController = AnimationController(
+    debugPrint('💙 FromHerScreen: Initialized');
+    _sparkleController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
@@ -36,30 +37,32 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
 
   @override
   void dispose() {
-    _hugController.dispose();
+    debugPrint('💙 FromHerScreen: Disposed');
+    _sparkleController.dispose();
     super.dispose();
   }
 
-  void _triggerHug() {
+  void _triggerAppreciation() {
+    debugPrint('💙 FromHerScreen: Triggering appreciation sparks');
     HapticFeedback.mediumImpact();
-    setState(() => _isHugging = true);
-    _hugController.repeat();
+    setState(() => _isAppreciating = true);
+    _sparkleController.repeat();
 
     Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
         setState(() {
-          _isHugging = false;
-          _hugController.stop();
-          _hugController.reset();
+          _isAppreciating = false;
+          _sparkleController.stop();
+          _sparkleController.reset();
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
-                const Text('🫂  ', style: TextStyle(fontSize: 18)),
+                const Text('✨  ', style: TextStyle(fontSize: 18)),
                 Expanded(
                   child: Text(
-                    'Held close, just for you 💕',
+                    'Appreciation sparks sent directly to her! 🌸',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.white,
                     ),
@@ -67,7 +70,7 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                 ),
               ],
             ),
-            backgroundColor: AppColors.rosePrimary,
+            backgroundColor: AppColors.slateBluePrimary,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
@@ -115,64 +118,52 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
     );
   }
 
-  // Sealed envelope letters
+  // Letters written by her
   final List<Map<String, String>> _letters = [
     {
-      'id': 'cramps',
-      'title': 'Read during cramps ⚡',
-      'desc': 'Open this when your body hurts and you need comfort.',
+      'id': 'him_stressed',
+      'title': 'Read when stressed 🌪️',
+      'desc': 'A gentle note to help you unwind and take a deep breath.',
       'seal': '🌸',
     },
     {
-      'id': 'sad',
-      'title': 'Read when down 🌧️',
-      'desc': 'A soft note to dry your tears and hold you tight.',
-      'seal': '💙',
+      'id': 'him_tired',
+      'title': 'Read when exhausted 😴',
+      'desc': 'A cozy reminder that I am proud of your hard work.',
+      'seal': '🌙',
     },
     {
-      'id': 'sunny',
-      'title': 'Read when happy ☀️',
-      'desc': 'Celebrate the sunshine together.',
+      'id': 'him_happy',
+      'title': 'Read when joyful 🎉',
+      'desc': 'Share the absolute sunshine of your day with me!',
       'seal': '✨',
     },
     {
-      'id': 'argument',
-      'title': 'Read after an argument 🌸',
-      'desc': 'Because nothing can stand between us.',
+      'id': 'him_missing',
+      'title': 'Read when you miss me 🫂',
+      'desc': 'Open this to feel like I am holding your hand.',
       'seal': '💕',
     },
-    {
-      'id': 'miss_me',
-      'title': 'Read when you miss me 💕',
-      'desc': 'To remind you how close I really am.',
-      'seal': '🫂',
-    },
   ];
 
-  // Polaroid memories — slightly rotated for authentic feel
+  // Polaroid memories shared by her
   final List<Map<String, dynamic>> _memories = [
-    {'title': 'Our first sunset 🌅', 'date': 'Oct 12, 2025', 'tilt': -2.0},
-    {'title': 'Rainy coffee day ☕', 'date': 'Nov 04, 2025', 'tilt': 1.5},
-    {'title': 'Walking in the park 🌳', 'date': 'Dec 25, 2025', 'tilt': -1.0},
-    {'title': 'Surprise dinner 🕯️', 'date': 'Jan 14, 2026', 'tilt': 2.5},
+    {'title': 'Beach picnic 🧺', 'date': 'Sep 08, 2025', 'tilt': 1.8},
+    {'title': 'Amusement park 🎡', 'date': 'Oct 22, 2025', 'tilt': -2.2},
+    {'title': 'Cozy winter cocoa ☕', 'date': 'Dec 18, 2025', 'tilt': 1.2},
   ];
 
-  // Comfort songs with "why he picked it" notes
+  // Songs she shared with him
   final List<Map<String, String>> _songs = [
     {
-      'title': 'Perfect',
+      'title': 'Thinking Out Loud',
       'artist': 'Ed Sheeran',
-      'why': 'because you are, to me.',
+      'why': 'This always makes me think of our slow dances.',
     },
     {
-      'title': 'Love Story',
-      'artist': 'Taylor Swift',
-      'why': 'because this is our story.',
-    },
-    {
-      'title': 'Say You Won\'t Let Go',
-      'artist': 'James Arthur',
-      'why': 'because I never will.',
+      'title': 'Make You Feel My Love',
+      'artist': 'Adele',
+      'why': 'To remind you I\'m always here standing by you.',
     },
   ];
 
@@ -180,12 +171,10 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final user = ref.watch(authProvider).valueOrNull;
-    final partnerName = user?.partnerDisplayName ?? 'Him';
+    final partnerName = user?.partnerDisplayName ?? 'Her';
 
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.slateBlueLight,
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.roseLight,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
@@ -208,12 +197,12 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                           style: AppTypography.displayLarge.copyWith(
                             color: isDark
                                 ? AppColors.darkText
-                                : AppColors.slateBlueDark,
+                                : AppColors.roseDark,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'Comfort, secret envelopes, and shared memories handpicked by him.',
+                          'Letters, playlists, and cozy surprises sent by Her, just for you.',
                           style: AppTypography.bodySmall.copyWith(
                             color: isDark
                                 ? AppColors.warmGray400
@@ -223,32 +212,28 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                       ],
                     ),
                   ),
-                  _buildMiniProfile(partnerName, AppColors.slateBluePrimary),
+                  _buildMiniProfile(partnerName, AppColors.rosePrimary),
                 ],
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // ── Virtual Hug Button ─────────────────────────────────────
+              // ── Quick Appreciation / Spark Widget ───────────────────────
               LunaCard(
                 color: isDark ? AppColors.darkCard : AppColors.white,
-                borderColor: isDark
-                    ? AppColors.darkBorder
-                    : AppColors.slateBlueSoft,
+                borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
                 child: Column(
                   children: [
                     Text(
-                      _isHugging
-                          ? 'Holding you close... 💕'
-                          : 'Need a squeeze? 🧸',
+                      _isAppreciating
+                          ? 'Sending warm sparks... ✨'
+                          : 'Show her some love! 🌸',
                       style: AppTypography.titleLarge.copyWith(
-                        color: isDark
-                            ? AppColors.darkText
-                            : AppColors.slateBlueDark,
+                        color: isDark ? AppColors.darkText : AppColors.roseDark,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Tap to trigger a warm virtual hug sent directly from him.',
+                      'Tap to send a sparkle overlay of appreciation directly to her device.',
                       textAlign: TextAlign.center,
                       style: AppTypography.bodySmall.copyWith(
                         color: isDark
@@ -261,26 +246,24 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Pulsing rings while hugging
-                          if (_isHugging)
+                          if (_isAppreciating)
                             AnimatedBuilder(
-                              animation: _hugController,
+                              animation: _sparkleController,
                               builder: (context, child) {
                                 return Container(
-                                  width: 90 + (70 * _hugController.value),
-                                  height: 90 + (70 * _hugController.value),
+                                  width: 90 + (70 * _sparkleController.value),
+                                  height: 90 + (70 * _sparkleController.value),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: AppColors.slateBluePrimary
-                                        .withOpacity(
-                                          0.3 * (1.0 - _hugController.value),
-                                        ),
+                                    color: AppColors.rosePrimary.withOpacity(
+                                      0.3 * (1.0 - _sparkleController.value),
+                                    ),
                                   ),
                                 );
                               },
                             ),
                           GestureDetector(
-                            onTap: _triggerHug,
+                            onTap: _triggerAppreciation,
                             child: Container(
                               width: 90,
                               height: 90,
@@ -288,7 +271,7 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                                 shape: BoxShape.circle,
                                 gradient: const LinearGradient(
                                   colors: [
-                                    AppColors.goldPrimary,
+                                    AppColors.slateBluePrimary,
                                     AppColors.rosePrimary,
                                   ],
                                   begin: Alignment.topLeft,
@@ -296,9 +279,8 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.goldPrimary.withOpacity(
-                                      0.35,
-                                    ),
+                                    color: AppColors.slateBluePrimary
+                                        .withOpacity(0.35),
                                     blurRadius: 16,
                                     spreadRadius: 2,
                                   ),
@@ -306,7 +288,7 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                               ),
                               alignment: Alignment.center,
                               child: const Text(
-                                '🫂',
+                                '🌸',
                                 style: TextStyle(fontSize: 38),
                               ),
                             ),
@@ -324,9 +306,11 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Sealed Envelopes ✉️',
+                    'Secret Letters ✉️',
                     style: AppTypography.titleLarge.copyWith(
-                      color: isDark ? AppColors.darkText : AppColors.roseDark,
+                      color: isDark
+                          ? AppColors.darkText
+                          : AppColors.slateBlueDark,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -359,18 +343,19 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                         margin: const EdgeInsets.only(right: 14),
                         padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
                         decoration: BoxDecoration(
-                          // Ivory envelope background
-                          color: isDark ? AppColors.darkCard : AppColors.ivory,
+                          color: isDark ? AppColors.darkCard : AppColors.white,
                           borderRadius: BorderRadius.circular(AppRadius.lg),
                           border: Border.all(
                             color: isDark
                                 ? AppColors.darkBorder
-                                : AppColors.goldMid.withOpacity(0.6),
+                                : AppColors.slateBlueSoft.withOpacity(0.6),
                             width: 0.8,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.goldPrimary.withOpacity(0.08),
+                              color: AppColors.slateBluePrimary.withOpacity(
+                                0.08,
+                              ),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -380,7 +365,6 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Top envelope flap icon
                             const Text('✉️', style: TextStyle(fontSize: 26)),
                             Text(
                               letter['title']!,
@@ -389,7 +373,7 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                               style: AppTypography.handwrittenLg.copyWith(
                                 color: isDark
                                     ? AppColors.goldMid
-                                    : AppColors.roseDark,
+                                    : AppColors.slateBlueDark,
                                 height: 1.2,
                               ),
                             ),
@@ -403,7 +387,6 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                                     : AppColors.warmGray600,
                               ),
                             ),
-                            // Wax seal dot at bottom center
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: Container(
@@ -411,12 +394,11 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                                 height: 24,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: AppColors.rosePrimary,
+                                  color: AppColors.slateBluePrimary,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.rosePrimary.withOpacity(
-                                        0.3,
-                                      ),
+                                      color: AppColors.slateBluePrimary
+                                          .withOpacity(0.3),
                                       blurRadius: 6,
                                     ),
                                   ],
@@ -444,19 +426,18 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                   Text(
                     'Polaroid Memories 📸',
                     style: AppTypography.titleLarge.copyWith(
-                      color: isDark ? AppColors.darkText : AppColors.roseDark,
+                      color: isDark
+                          ? AppColors.darkText
+                          : AppColors.slateBlueDark,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      context.pushNamed(AppRoutes.memoryGallery);
-                    },
+                    onTap: () => context.pushNamed(AppRoutes.memoryGallery),
                     child: Text(
                       'View all',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.rosePrimary,
+                        color: AppColors.slateBluePrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -478,7 +459,6 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                   final mem = _memories[index];
                   final tilt = mem['tilt'] as double;
 
-                  // Authentic polaroid with subtle rotation
                   return Transform.rotate(
                     angle: tilt * math.pi / 180,
                     child: Container(
@@ -492,50 +472,28 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
-                          BoxShadow(
-                            color: AppColors.roseSoft.withOpacity(0.3),
-                            blurRadius: 20,
-                            offset: const Offset(2, 8),
-                          ),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Photo placeholder — soft rose tint
                           Expanded(
                             child: Container(
                               decoration: BoxDecoration(
-                                color: AppColors.roseSoft.withOpacity(0.4),
+                                color: AppColors.slateBlueSoft.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(2),
                               ),
                               alignment: Alignment.center,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.photo_camera_outlined,
-                                    color: AppColors.rosePrimary.withOpacity(
-                                      0.6,
-                                    ),
-                                    size: 32,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Memory',
-                                    style: AppTypography.bodySmall.copyWith(
-                                      color: AppColors.rosePrimary.withOpacity(
-                                        0.6,
-                                      ),
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
+                              child: Icon(
+                                Icons.photo_camera_outlined,
+                                color: AppColors.slateBluePrimary.withOpacity(
+                                  0.6,
+                                ),
+                                size: 32,
                               ),
                             ),
                           ),
                           const SizedBox(height: 8),
-                          // Caption + date in Caveat handwriting
                           Text(
                             mem['title'] as String,
                             maxLines: 1,
@@ -561,35 +519,19 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // ── Comfort Playlist ───────────────────────────────────────
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Comfort Playlist 🎵',
-                    style: AppTypography.titleLarge.copyWith(
-                      color: isDark ? AppColors.darkText : AppColors.roseDark,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      context.pushNamed(AppRoutes.playlist);
-                    },
-                    child: Text(
-                      'Full playlist',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.rosePrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+              // ── Curated Playlists ──────────────────────────────────────
+              Text(
+                'Curated Playlists 🎵',
+                style: AppTypography.titleLarge.copyWith(
+                  color: isDark ? AppColors.darkText : AppColors.slateBlueDark,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: AppSpacing.sm),
               LunaCard(
-                borderColor: isDark ? AppColors.darkBorder : AppColors.roseSoft,
+                borderColor: isDark
+                    ? AppColors.darkBorder
+                    : AppColors.slateBlueSoft,
                 child: Column(
                   children: List.generate(_songs.length, (index) {
                     final song = _songs[index];
@@ -603,8 +545,8 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [
+                                  AppColors.slateBluePrimary,
                                   AppColors.rosePrimary,
-                                  AppColors.mauvePrimary,
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -629,13 +571,12 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                                 song['artist']!,
                                 style: AppTypography.bodySmall,
                               ),
-                              // "Why he picked it" note in Caveat
                               Text(
                                 song['why']!,
                                 style: AppTypography.handwrittenSm.copyWith(
                                   color: isDark
                                       ? AppColors.warmGray400
-                                      : AppColors.rosePrimary,
+                                      : AppColors.slateBluePrimary,
                                   fontStyle: FontStyle.italic,
                                 ),
                               ),
@@ -660,7 +601,7 @@ class _FromHimScreenState extends ConsumerState<FromHimScreen>
                           Divider(
                             color: isDark
                                 ? AppColors.darkBorder
-                                : AppColors.roseSoft,
+                                : AppColors.slateBlueSoft,
                             height: 1,
                           ),
                       ],

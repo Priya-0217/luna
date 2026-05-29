@@ -88,7 +88,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _generateLoveCodeIfNeeded() {
     if (_loveCode.isNotEmpty || _selectedRole == null) return;
-    
+
     final w1Her = ['ROSE', 'DAWN', 'SOFT', 'SILK', 'PETAL', 'BLUSH'];
     final w2Her = ['MOON', 'MIST', 'GLOW', 'HAZE', 'LACE', 'DUSK'];
     final w1Him = ['STAR', 'WAVE', 'PINE', 'STORM', 'FORGE', 'TIDE'];
@@ -96,24 +96,151 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     final w1 = _selectedRole == AppRole.her ? w1Her : w1Him;
     final w2 = _selectedRole == AppRole.her ? w2Her : w2Him;
-    
+
     final r = Random();
     final word1 = w1[r.nextInt(w1.length)];
     final word2 = w2[r.nextInt(w2.length)];
     final digits = r.nextInt(9000) + 1000;
-    
+
     setState(() {
       _loveCode = 'LUNA-$word1-$word2-$digits';
     });
+  }
+
+  /// Syncs enough data to Firestore so that linking can happen during onboarding.
+  Future<void> _partialSync() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null || _selectedRole == null) return;
+
+    final name = _selectedRole == AppRole.her
+        ? _herNameController.text.trim()
+        : _himNameController.text.trim();
+
+    final db = FirebaseFirestore.instance;
+
+    debugPrint(
+      '⏳ Onboarding: Performing partial sync (Role: ${_selectedRole?.name}, Name: $name)',
+    );
+
+    // 1. Sync User Profile (crucial for linking)
+    await db.collection('users').doc(firebaseUser.uid).set({
+      'role': _selectedRole?.name,
+      'displayName': name.isEmpty ? 'Love' : name,
+      'email': firebaseUser.email,
+    }, SetOptions(merge: true));
+
+    // 2. Sync Love Code (so partner can find it)
+    if (_loveCode.isNotEmpty) {
+      await db.collection('loveCodes').doc(_loveCode).set({
+        'code': _loveCode,
+        'ownerUid': firebaseUser.uid,
+        'ownerRole': _selectedRole?.name,
+        'ownerName': name.isEmpty ? 'Love' : name,
+        'linkedUid': null,
+        'linkedAt': null,
+        'createdAt': FieldValue.serverTimestamp(),
+        'isActive': true,
+      }, SetOptions(merge: true));
+    }
+
+    // Refresh auth provider so CodeEntryScreen sees the role
+    await ref.read(authProvider.notifier).refresh();
+  }
+
+  Future<void> _linkPartner(String code) async {
+    debugPrint('💖 Onboarding: Attempting to link with code: $code');
+
+    if (code.length < 10) {
+      throw Exception('Please enter a valid complete code.');
+    }
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception('No session.');
+
+      // 1. Partial sync first to ensure our own profile is ready
+      await _partialSync();
+
+      final appUser = ref.read(authProvider).valueOrNull;
+      if (appUser == null || appUser.role == null) {
+        throw Exception('Profile not ready. Please select your role first.');
+      }
+
+      final db = FirebaseFirestore.instance;
+
+      await db.runTransaction((transaction) async {
+        final codeRef = db.collection('loveCodes').doc(code);
+        final codeDoc = await transaction.get(codeRef);
+
+        if (!codeDoc.exists) throw Exception('Invalid code.');
+
+        final codeData = codeDoc.data()!;
+        final ownerUid = codeData['ownerUid'] as String;
+        final ownerRole = codeData['ownerRole'] as String;
+        final ownerName = codeData['ownerName'] as String;
+
+        if (codeData['linkedUid'] != null)
+          throw Exception('Code already used.');
+        if (ownerUid == user.uid)
+          throw Exception('Cannot link with your own code.');
+        if (appUser.role == ownerRole) throw Exception('Role mismatch.');
+
+        final uids = [user.uid, ownerUid]..sort();
+        final coupleId = '${uids[0]}_${uids[1]}';
+
+        // Update Code
+        transaction.update(codeRef, {
+          'linkedUid': user.uid,
+          'linkedAt': FieldValue.serverTimestamp(),
+          'isActive': false,
+        });
+
+        // Update Me
+        transaction.update(db.collection('users').doc(user.uid), {
+          'partnerUid': ownerUid,
+          'partnerRole': ownerRole,
+          'partnerDisplayName': ownerName,
+          'coupleId': coupleId,
+          'isLinked': true,
+          'isOnboarded': true,
+        });
+
+        // Update Partner
+        transaction.update(db.collection('users').doc(ownerUid), {
+          'partnerUid': user.uid,
+          'partnerRole': appUser.role,
+          'partnerDisplayName': appUser.displayName.isEmpty
+              ? 'Love'
+              : appUser.displayName,
+          'coupleId': coupleId,
+          'isLinked': true,
+          'isOnboarded': true,
+        });
+
+        // Shared Doc
+        transaction.set(db.collection('shared').doc(coupleId), {
+          'uids': uids,
+          'herUid': appUser.role == 'her' ? user.uid : ownerUid,
+          'himUid': appUser.role == 'him' ? user.uid : ownerUid,
+          'linkedAt': FieldValue.serverTimestamp(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'status': 'active',
+        }, SetOptions(merge: true));
+      });
+
+      await ref.read(authProvider.notifier).refresh();
+      if (mounted) context.goNamed(AppRoutes.home);
+    } catch (e) {
+      debugPrint('❌ Onboarding Link Error: $e');
+      rethrow;
+    }
   }
 
   List<Widget> get _pages {
     final pages = <Widget>[
       SplashPage(
         onBegin: _nextPage,
-        onConnect: () {
-          context.pushNamed(AppRoutes.codeEntry);
-        },
+        onConnect: _nextPage, // Jump to role selection
       ),
       RoleSelectPage(
         selectedRole: _selectedRole?.name,
@@ -141,15 +268,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         LoveCodePage(
           role: 'her',
           code: _loveCode,
-          onCopy: () {
+          onCopy: () async {
+            await _partialSync(); // Ensure code is in DB before they send it
             Clipboard.setData(ClipboardData(text: _loveCode));
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Copied! Send it to him 💙')),
-            );
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Copied! Send it to him 💙')),
+              );
+            }
           },
           onShare: () {}, // TODO: Native share
           onQR: () {}, // TODO: Show QR sheet
           onSkip: _nextPage,
+          onConnectCode: _linkPartner,
         ),
         HerNotificationsPage(
           selections: _herNotifications,
@@ -159,13 +290,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ]);
     } else if (_selectedRole == AppRole.him) {
       pages.addAll([
-        SplashPage(
-          isHim: true,
-          onBegin: _nextPage,
-          onConnect: () {
-            context.pushNamed(AppRoutes.codeEntry);
-          },
-        ),
+        SplashPage(isHim: true, onBegin: _nextPage, onConnect: _nextPage),
         HimNamePage(
           hisNameController: _himNameController,
           herNameController: _herNameForHimController,
@@ -179,18 +304,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         LoveCodePage(
           role: 'him',
           code: _loveCode,
-          onCopy: () {
+          onCopy: () async {
+            await _partialSync(); // Ensure code is in DB before they send it
             Clipboard.setData(ClipboardData(text: _loveCode));
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Copied! Send it to her 🌸')),
-            );
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Copied! Send it to her 🌸')),
+              );
+            }
           },
           onShare: () {}, // TODO: Native share
           onQR: () {}, // TODO: Show QR sheet
           onSkip: _nextPage,
-          onEnterPartnerCode: () {
-            context.pushNamed(AppRoutes.codeEntry);
-          },
+          onConnectCode: _linkPartner,
         ),
         HimNotificationsPage(
           selections: _himNotifications,
@@ -206,7 +332,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _nextPage() {
     if (_currentPage == 1 && _selectedRole == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select who you are to continue ✨')),
+        const SnackBar(
+          content: Text('Please select who you are to continue ✨'),
+        ),
       );
       return;
     }
@@ -234,8 +362,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     HapticFeedback.mediumImpact();
 
     final isHer = _selectedRole == AppRole.her;
-    final name = isHer ? _herNameController.text.trim() : _himNameController.text.trim();
-    
+    final name = isHer
+        ? _herNameController.text.trim()
+        : _himNameController.text.trim();
+
     // Save to Hive
     final box = Hive.box('settings');
     await box.putAll({
@@ -261,49 +391,70 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
       final authNotifier = ref.read(authProvider.notifier);
-      final appUser = ref.read(authProvider).valueOrNull ?? AppUser(
-        uid: firebaseUser.uid,
-        email: firebaseUser.email ?? '',
-        displayName: name,
-        isOnboarded: false,
-      );
+      final appUser =
+          ref.read(authProvider).valueOrNull ??
+          AppUser(
+            uid: firebaseUser.uid,
+            email: firebaseUser.email ?? '',
+            displayName: name,
+            isOnboarded: false,
+          );
 
       try {
         // Save Love Code locally & to Firestore
         try {
-          await FirebaseFirestore.instance.collection('loveCodes').doc(_loveCode).set({
-            'code': _loveCode,
-            'ownerUid': firebaseUser.uid,
-            'ownerRole': _selectedRole?.name,
-            'ownerName': name,
-            'linkedUid': null,
-            'linkedAt': null,
-            'createdAt': FieldValue.serverTimestamp(),
-            'isActive': true,
-          });
+          await FirebaseFirestore.instance
+              .collection('loveCodes')
+              .doc(_loveCode)
+              .set({
+                'code': _loveCode,
+                'ownerUid': firebaseUser.uid,
+                'ownerRole': _selectedRole?.name,
+                'ownerName': name,
+                'linkedUid': null,
+                'linkedAt': null,
+                'createdAt': FieldValue.serverTimestamp(),
+                'isActive': true,
+              });
         } catch (e) {
-          debugPrint('Warning: Could not save loveCode document to Firestore: $e');
+          debugPrint(
+            'Warning: Could not save loveCode document to Firestore: $e',
+          );
         }
 
+        debugPrint(
+          '🏁 Onboarding: Finalizing profile for $name (${_selectedRole?.name})',
+        );
+
         // Update User Profile
-        await authNotifier.updateProfile(appUser.copyWith(
-          displayName: name,
-          role: _selectedRole?.name,
-          myLoveCode: _loveCode,
-          isOnboarded: true,
-          cycleAverageLength: isHer ? _cycleLength.toInt() : 28,
-          periodAverageLength: isHer ? _periodDuration.toInt() : 5,
-        ));
+        await authNotifier.updateProfile(
+          appUser.copyWith(
+            displayName: name,
+            role: _selectedRole?.name,
+            myLoveCode: _loveCode,
+            isOnboarded: true,
+            cycleAverageLength: isHer ? _cycleLength.toInt() : 28,
+            periodAverageLength: isHer ? _periodDuration.toInt() : 5,
+          ),
+        );
+
+        debugPrint(
+          '✅ Onboarding: Profile saved with role: ${_selectedRole?.name}',
+        );
 
         if (isHer) {
+          debugPrint('🩸 Onboarding: Starting initial period cycle');
           final cycleRepo = ref.read(cycleRepositoryProvider);
           await cycleRepo.startPeriod(_lastPeriodDate);
           ref.invalidate(dashboardProvider);
         }
 
-        if (mounted) context.goNamed(AppRoutes.home);
+        if (mounted) {
+          debugPrint('🚀 Onboarding: Success, redirecting to home');
+          context.goNamed(AppRoutes.home);
+        }
       } catch (e) {
-        debugPrint('Error during onboarding completion: $e');
+        debugPrint('❌ Onboarding Error: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to save your details: $e')),
@@ -320,7 +471,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isHim = _selectedRole == AppRole.him;
     final pages = _pages;
-    
+
     // Determine if we show bottom nav on this page
     // Splash pages (0, and potentially 2 if Him) usually have their own buttons
     // Ready pages (last) have their own finish buttons
@@ -336,7 +487,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: isHim
-                    ? [AppColors.slateBlue, AppColors.slateBlueSoft, AppColors.ivory]
+                    ? [
+                        AppColors.slateBlue,
+                        AppColors.slateBlueSoft,
+                        AppColors.ivory,
+                      ]
                     : [AppColors.roseDark, AppColors.roseSoft, AppColors.ivory],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -345,7 +500,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
           FloatingParticles(
             count: 20,
-            color: isHim ? AppColors.slateBluePrimary.withOpacity(0.3) : AppColors.rosePrimary.withOpacity(0.3),
+            color: isHim
+                ? AppColors.slateBluePrimary.withOpacity(0.3)
+                : AppColors.rosePrimary.withOpacity(0.3),
           ),
           SafeArea(
             child: Column(
@@ -353,7 +510,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 // Minimal Progress Indicator
                 if (_currentPage > 0)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xl,
+                      vertical: AppSpacing.md,
+                    ),
                     child: Row(
                       children: List.generate(pages.length - 1, (index) {
                         final active = index < _currentPage;
@@ -364,8 +524,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             height: 3,
                             decoration: BoxDecoration(
                               color: active
-                                  ? (isHim ? AppColors.slateBluePrimary : AppColors.rosePrimary)
-                                  : (isDark ? AppColors.darkBorder : AppColors.warmGray200),
+                                  ? (isHim
+                                        ? AppColors.slateBluePrimary
+                                        : AppColors.rosePrimary)
+                                  : (isDark
+                                        ? AppColors.darkBorder
+                                        : AppColors.warmGray200),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -398,7 +562,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           child: Text(
                             'Back',
                             style: AppTypography.bodyMedium.copyWith(
-                              color: isDark ? AppColors.warmGray400 : AppColors.charcoal,
+                              color: isDark
+                                  ? AppColors.warmGray400
+                                  : AppColors.charcoal,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -406,7 +572,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         LunaButton(
                           text: 'Continue',
                           width: 160,
-                          backgroundColor: isHim ? AppColors.slateBluePrimary : AppColors.rosePrimary,
+                          backgroundColor: isHim
+                              ? AppColors.slateBluePrimary
+                              : AppColors.rosePrimary,
                           onPressed: _nextPage,
                         ),
                       ],

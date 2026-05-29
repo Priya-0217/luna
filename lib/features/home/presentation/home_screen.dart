@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:her/core/constants/app_colors.dart';
@@ -32,10 +33,11 @@ class HomeScreen extends ConsumerWidget {
       if (location.startsWith('/from-him')) return 3;
       if (location.startsWith('/profile')) return 4;
     } else {
-      if (location.startsWith('/from-her')) return 1;
-      if (location.startsWith('/him/care')) return 2;
-      if (location.startsWith('/us')) return 3;
-      if (location.startsWith('/profile')) return 4; // Or /him/me
+      if (location.startsWith('/him/care')) return 1;
+      if (location.startsWith('/garden')) return 2;
+      if (location.startsWith('/from-her')) return 3;
+      if (location.startsWith('/us')) return 4;
+      if (location.startsWith('/profile')) return 5;
     }
     return 0;
   }
@@ -43,19 +45,42 @@ class HomeScreen extends ConsumerWidget {
   void _onItemTapped(int index, BuildContext context, AppRole role) {
     if (role == AppRole.her) {
       switch (index) {
-        case 0: context.goNamed(AppRoutes.home); break;
-        case 1: context.goNamed(AppRoutes.cycle); break;
-        case 2: context.goNamed(AppRoutes.garden); break;
-        case 3: context.goNamed(AppRoutes.fromHim); break;
-        case 4: context.goNamed(AppRoutes.profile); break;
+        case 0:
+          context.goNamed(AppRoutes.home);
+          break;
+        case 1:
+          context.goNamed(AppRoutes.cycle);
+          break;
+        case 2:
+          context.goNamed(AppRoutes.garden);
+          break;
+        case 3:
+          context.goNamed(AppRoutes.fromHim);
+          break;
+        case 4:
+          context.goNamed(AppRoutes.profile);
+          break;
       }
     } else {
       switch (index) {
-        case 0: context.goNamed(AppRoutes.home); break;
-        case 1: context.goNamed(AppRoutes.fromHer); break;
-        case 2: context.goNamed(AppRoutes.himCare); break;
-        case 3: context.goNamed(AppRoutes.us); break;
-        case 4: context.goNamed(AppRoutes.profile); break;
+        case 0:
+          context.goNamed(AppRoutes.home);
+          break;
+        case 1:
+          context.goNamed(AppRoutes.himCare);
+          break;
+        case 2:
+          context.goNamed(AppRoutes.garden);
+          break;
+        case 3:
+          context.goNamed(AppRoutes.fromHer);
+          break;
+        case 4:
+          context.goNamed(AppRoutes.us);
+          break;
+        case 5:
+          context.goNamed(AppRoutes.profile);
+          break;
       }
     }
   }
@@ -63,18 +88,24 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Default to Her if undefined
-    final role = ref.watch(authProvider).valueOrNull?.role == 'him' 
-        ? AppRole.him 
-        : AppRole.her;
-        
+    final user = ref.watch(authProvider).valueOrNull;
+    final role = user?.role == 'him' ? AppRole.him : AppRole.her;
+
     final currentIndex = _calculateSelectedIndex(context, role);
     final isHim = role == AppRole.him;
 
+    // Use specific loading states or error boundaries if profile is still loading
+    if (user == null) {
+      return const Scaffold(
+        body: Center(child: LunaLoading(width: 250, height: 180)),
+      );
+    }
+
     return Scaffold(
-      backgroundColor: isDark 
-          ? AppColors.darkBackground 
+      backgroundColor: isDark
+          ? AppColors.darkBackground
           : (isHim ? AppColors.slateBlueLight : AppColors.roseLight),
       body: child,
       bottomNavigationBar: Container(
@@ -82,8 +113,8 @@ class HomeScreen extends ConsumerWidget {
           color: isDark ? AppColors.darkSurface : AppColors.white,
           border: Border(
             top: BorderSide(
-              color: isDark 
-                  ? AppColors.darkBorder 
+              color: isDark
+                  ? AppColors.darkBorder
                   : (isHim ? AppColors.slateBlueSoft : AppColors.roseSoft),
               width: 1.0,
             ),
@@ -93,7 +124,9 @@ class HomeScreen extends ConsumerWidget {
           currentIndex: currentIndex,
           onTap: (index) => _onItemTapped(index, context, role),
           backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
-          selectedItemColor: isHim ? AppColors.slateBluePrimary : AppColors.rosePrimary,
+          selectedItemColor: isHim
+              ? AppColors.slateBluePrimary
+              : AppColors.rosePrimary,
           unselectedItemColor: isDark
               ? AppColors.warmGray600
               : AppColors.warmGray400,
@@ -103,59 +136,66 @@ class HomeScreen extends ConsumerWidget {
           unselectedLabelStyle: AppTypography.bodySmall,
           type: BottomNavigationBarType.fixed,
           elevation: 0,
-          items: isHim ? const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.mail_outline),
-              activeIcon: Icon(Icons.mail),
-              label: 'From Her',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              activeIcon: Icon(Icons.favorite),
-              label: 'Her',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline),
-              activeIcon: Icon(Icons.people),
-              label: 'Us',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Me',
-            ),
-          ] : const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              activeIcon: Icon(Icons.favorite),
-              label: 'Today',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today_outlined),
-              activeIcon: Icon(Icons.calendar_today),
-              label: 'Cycle',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.spa_outlined),
-              activeIcon: Icon(Icons.spa),
-              label: 'Garden',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.mail_outline),
-              activeIcon: Icon(Icons.mail),
-              label: 'From Him',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Me',
-            ),
-          ],
+          items: isHim
+              ? const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    activeIcon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.favorite_outline),
+                    activeIcon: Icon(Icons.favorite),
+                    label: 'Her',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.spa_outlined),
+                    activeIcon: Icon(Icons.spa),
+                    label: 'Garden',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.mail_outline),
+                    activeIcon: Icon(Icons.mail),
+                    label: 'From Her',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.people_outline),
+                    activeIcon: Icon(Icons.people),
+                    label: 'Us',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person_outline),
+                    activeIcon: Icon(Icons.person),
+                    label: 'Me',
+                  ),
+                ]
+              : const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.favorite_outline),
+                    activeIcon: Icon(Icons.favorite),
+                    label: 'Today',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_today_outlined),
+                    activeIcon: Icon(Icons.calendar_today),
+                    label: 'Cycle',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.spa_outlined),
+                    activeIcon: Icon(Icons.spa),
+                    label: 'Garden',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.mail_outline),
+                    activeIcon: Icon(Icons.mail),
+                    label: 'From Him',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person_outline),
+                    activeIcon: Icon(Icons.person),
+                    label: 'Me',
+                  ),
+                ],
         ),
       ),
       floatingActionButton: (currentIndex == 0 && !isHim)
@@ -343,8 +383,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     Text(
                       'Someone made this to care for you',
                       style: AppTypography.titleMedium.copyWith(
-                        color:
-                            isDark ? AppColors.darkText : AppColors.roseDark,
+                        color: isDark ? AppColors.darkText : AppColors.roseDark,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -403,6 +442,88 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           subtitle: 'Open messages, memories, and warm surprises.',
           illustration: AppIllustrations.inLove,
         ),
+        if (!data.isLinked && data.myLoveCode != null) ...[
+          const SizedBox(height: AppSpacing.xl),
+          LunaCard(
+            borderColor: AppColors.roseMid.withOpacity(0.3),
+            color: isDark ? AppColors.darkCard : Colors.white.withOpacity(0.9),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.link, color: AppColors.rosePrimary),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Link with your partner',
+                      style: AppTypography.titleMedium.copyWith(
+                        color: AppColors.rosePrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Share your code so he can see your cycle and support you:',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodySmall,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.roseSoft.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.roseSoft),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        data.myLoveCode!,
+                        style: AppTypography.titleLarge.copyWith(
+                          letterSpacing: 2,
+                          color: AppColors.rosePrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.copy, size: 20),
+                        onPressed: () {
+                          Clipboard.setData(
+                            ClipboardData(text: data.myLoveCode!),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Code copied! 💕'),
+                              backgroundColor: AppColors.rosePrimary,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => context.push('/code-entry'),
+                  child: Text(
+                    "Have his code? Enter it here",
+                    style: AppTypography.labelSmall.copyWith(
+                      color: AppColors.rosePrimary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: AppSpacing.xxl),
       ],
     );
@@ -438,9 +559,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     Text(
                       'Hello, ${data.username} 💕',
                       style: AppTypography.displayMedium.copyWith(
-                        color: isDark
-                            ? AppColors.darkText
-                            : AppColors.roseDark,
+                        color: isDark ? AppColors.darkText : AppColors.roseDark,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -505,7 +624,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       Text(
                         'Period Day',
                         style: AppTypography.bodySmall.copyWith(
-                          color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
+                          color: isDark
+                              ? AppColors.warmGray400
+                              : AppColors.warmGray600,
                         ),
                       ),
                       Text(
@@ -513,14 +634,20 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                         style: AppTypography.displayMedium.copyWith(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? AppColors.darkText : AppColors.roseDark,
+                          color: isDark
+                              ? AppColors.darkText
+                              : AppColors.roseDark,
                         ),
                       ),
                     ] else ...[
                       Text(
-                        data.daysUntilPeriod >= 0 ? 'Next Period in' : 'Overdue by',
+                        data.daysUntilPeriod >= 0
+                            ? 'Next Period in'
+                            : 'Overdue by',
                         style: AppTypography.bodySmall.copyWith(
-                          color: isDark ? AppColors.warmGray400 : AppColors.warmGray600,
+                          color: isDark
+                              ? AppColors.warmGray400
+                              : AppColors.warmGray600,
                         ),
                       ),
                       Text(
@@ -528,7 +655,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                         style: AppTypography.displayMedium.copyWith(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? AppColors.darkText : AppColors.roseDark,
+                          color: isDark
+                              ? AppColors.darkText
+                              : AppColors.roseDark,
                         ),
                       ),
                     ],

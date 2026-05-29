@@ -81,14 +81,17 @@ class LoveCodeRepository {
     if (loveCode.ownerUid == uid)
       throw Exception("You cannot link with yourself");
 
+    final uids = [uid, loveCode.ownerUid]..sort();
+    final coupleId = '${uids[0]}_${uids[1]}';
+
     final batch = _firestore.batch();
-    final coupleId = 'couple_${loveCode.ownerUid}_$uid';
 
     // 1. Update current user
     batch.update(_firestore.collection('users').doc(uid), {
       'coupleId': coupleId,
       'isLinked': true,
       'partnerUid': loveCode.ownerUid,
+      'partnerRole': loveCode.ownerRole, // added consistency
     });
 
     // 2. Update partner

@@ -1,86 +1,685 @@
-Running Gradle task 'assembleDebug'...                            275.5s
-Error: Gradle task assembleDebug failed with exit code 1
-PS D:\flutter_projects\her> flutter run
-Launching lib\main.dart on RMX5250 (wireless) in debug mode...
-lib/core/router/app_router.dart:5:8: Error: Error when reading 'lib/features/auth/presentation/screens/auth_screen.dart': The system cannot find the path specified
-import 'package:her/features/auth/presentation/screens/auth_screen.dart';
-       ^
-lib/core/router/app_router.dart:6:8: Error: Error when reading 'lib/features/auth/presentation/screens/onboarding_screen.dart': The system cannot find the path specified
-import 'package:her/features/auth/presentation/screens/onboarding_screen.dart';
-       ^
-lib/core/router/app_router.dart:7:8: Error: Error when reading 'lib/features/home/presentation/screens/main_layout.dart': The system cannot find the path specified
-import 'package:her/features/home/presentation/screens/main_layout.dart';
-       ^
-lib/core/router/app_router.dart:10:6: Error: Error when reading 'lib/core/router/app_router.g.dart': The system cannot find the file specified
-part 'app_router.g.dart';
+lib/features/cycle/data/cycle_repository.dart:106:7: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+      startDate: Value(updated.startDate),
+      ^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:7: Error: Expected ';' after this.
+      startDate: Value(updated.startDate),
+      ^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:16: Error: Expected a class member, but got ':'.
+      startDate: Value(updated.startDate),
+               ^
+lib/features/cycle/data/cycle_repository.dart:106:41: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+      startDate: Value(updated.startDate),
+                                        ^
+lib/features/cycle/data/cycle_repository.dart:106:42: Error: Expected '{' before this.
+      startDate: Value(updated.startDate),
+                                         ^
+lib/features/cycle/data/cycle_repository.dart:106:42: Error: Expected a class member, but got ','.
+      startDate: Value(updated.startDate),
+                                         ^
+lib/features/cycle/data/cycle_repository.dart:107:7: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+      endDate: Value(updated.endDate),
+      ^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:107:7: Error: Expected ';' after this.
+      endDate: Value(updated.endDate),
+      ^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:107:14: Error: Expected a class member, but got ':'.
+      endDate: Value(updated.endDate),
+             ^
+lib/features/cycle/data/cycle_repository.dart:107:37: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+      endDate: Value(updated.endDate),
+                                    ^
+lib/features/cycle/data/cycle_repository.dart:107:38: Error: Expected '{' before this.
+      endDate: Value(updated.endDate),
+                                     ^
+lib/features/cycle/data/cycle_repository.dart:107:38: Error: Expected a class member, but got ','.
+      endDate: Value(updated.endDate),
+                                     ^
+lib/features/cycle/data/cycle_repository.dart:108:7: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+      cycleLength: Value(updated.cycleLength),
+      ^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:108:7: Error: Expected ';' after this.
+      cycleLength: Value(updated.cycleLength),
+      ^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:108:18: Error: Expected a class member, but got ':'.
+      cycleLength: Value(updated.cycleLength),
+                 ^
+lib/features/cycle/data/cycle_repository.dart:108:45: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+      cycleLength: Value(updated.cycleLength),
+                                            ^
+lib/features/cycle/data/cycle_repository.dart:108:46: Error: Expected '{' before this.
+      cycleLength: Value(updated.cycleLength),
+                                             ^
+lib/features/cycle/data/cycle_repository.dart:108:46: Error: Expected a class member, but got ','.
+      cycleLength: Value(updated.cycleLength),
+                                             ^
+lib/features/cycle/data/cycle_repository.dart:109:7: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+      synced: const Value(false),
+      ^^^^^^
+lib/features/cycle/data/cycle_repository.dart:109:7: Error: Expected ';' after this.
+      synced: const Value(false),
+      ^^^^^^
+lib/features/cycle/data/cycle_repository.dart:109:13: Error: Expected a class member, but got ':'.
+      synced: const Value(false),
+            ^
+lib/features/cycle/data/cycle_repository.dart:109:27: Error: 'false' can't be used as an identifier because it's a
+keyword.
+Try renaming this to be an identifier that isn't a keyword.
+      synced: const Value(false),
+                          ^^^^^
+lib/features/cycle/data/cycle_repository.dart:109:33: Error: Expected '{' before this.
+      synced: const Value(false),
+                                ^
+lib/features/cycle/data/cycle_repository.dart:109:15: Error: Getters, setters and methods can't be declared to be
+'const'.
+Try removing the 'const' keyword.
+      synced: const Value(false),
+              ^^^^^
+lib/features/cycle/data/cycle_repository.dart:109:33: Error: Expected a class member, but got ','.
+      synced: const Value(false),
+                                ^
+lib/features/cycle/data/cycle_repository.dart:110:7: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+      createdAt: Value(updated.createdAt),
+      ^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:110:7: Error: Expected ';' after this.
+      createdAt: Value(updated.createdAt),
+      ^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:110:16: Error: Expected a class member, but got ':'.
+      createdAt: Value(updated.createdAt),
+               ^
+lib/features/cycle/data/cycle_repository.dart:110:41: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+      createdAt: Value(updated.createdAt),
+                                        ^
+lib/features/cycle/data/cycle_repository.dart:110:42: Error: Expected '{' before this.
+      createdAt: Value(updated.createdAt),
+                                         ^
+lib/features/cycle/data/cycle_repository.dart:110:42: Error: Expected a class member, but got ','.
+      createdAt: Value(updated.createdAt),
+                                         ^
+lib/features/cycle/data/cycle_repository.dart:111:5: Error: Expected a class member, but got ')'.
+    ));
+    ^
+lib/features/cycle/data/cycle_repository.dart:111:6: Error: Expected a class member, but got ')'.
+    ));
      ^
-lib/core/router/app_router.dart:10:6: Error: Can't use 'lib/core/router/app_router.g.dart' as a part, because it has no 'part of' declaration.
-part 'app_router.g.dart';
-     ^
-lib/core/router/app_router.dart:13:20: Error: Type 'AppRouterRef' not found.
-GoRouter appRouter(AppRouterRef ref) {
-                   ^^^^^^^^^^^^
-lib/core/theme/app_theme.dart:7:1: Error: 'CyclePhase' is imported from both 'package:her/features/cycle/domain/cycle_phase.dart' and 'package:her/features/cycle/utils/cycle_calculator.dart'.
-import 'package:her/features/cycle/domain/cycle_phase.dart';
-^^^^^^^^^^
-lib/features/cycle/domain/cycle_entry.dart:16:8: Error: The constructor function type '_CycleEntry Function({DateTime createdAt, int? cycleLength, DateTime? endDate, String id, DateTime startDate, bool synced, String userId})' isn't a subtype of 'CycleEntry Function({DateTime createdAt, DateTime date, String id, bool isPeriodEnd, bool isPeriodStart, bool synced, String userId})'.
- - '_CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
- - 'DateTime' is from 'dart:core'.
- - 'CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
-  }) = _CycleEntry;
-       ^
-lib/app.dart:11:30: Error: The getter 'appRouterProvider' isn't defined for the type 'LunaApp'.
- - 'LunaApp' is from 'package:her/app.dart' ('lib/app.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'appRouterProvider'.
-    final router = ref.watch(appRouterProvider);
-                             ^^^^^^^^^^^^^^^^^
-lib/core/router/app_router.dart:13:20: Error: 'AppRouterRef' isn't a type.
-GoRouter appRouter(AppRouterRef ref) {
-                   ^^^^^^^^^^^^
-lib/core/router/app_router.dart:38:44: Error: Couldn't find constructor 'MainLayout'.
-        builder: (context, state) => const MainLayout(),
-                                           ^^^^^^^^^^
-lib/core/router/app_router.dart:42:44: Error: Couldn't find constructor 'AuthScreen'.
-        builder: (context, state) => const AuthScreen(),
-                                           ^^^^^^^^^^
-lib/core/router/app_router.dart:46:44: Error: Couldn't find constructor 'OnboardingScreen'.
-        builder: (context, state) => const OnboardingScreen(),
-                                           ^^^^^^^^^^^^^^^^
-lib/features/cycle/utils/cycle_calculator.dart:40:16: Error: The getter 'isPeriodStart' isn't defined for the type 'CycleEntry'.
- - 'CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'isPeriodStart'.
-      (e) => e.isPeriodStart,
-               ^^^^^^^^^^^^^
-lib/features/cycle/utils/cycle_calculator.dart:44:53: Error: The getter 'date' isn't defined for the type 'CycleEntry'.
- - 'CycleEntry' is from 'package:her/features/cycle/domain/cycle_entry.dart' ('lib/features/cycle/domain/cycle_entry.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'date'.
-    final dayOfCycle = calculateCycleDay(lastPeriod.date, DateTime.now(), 28);
-                                                    ^^^^
-lib/features/auth/providers/auth_provider.dart:96:46: Error: The method 'createUserProfile' isn't defined for the type 'AuthRepository'.
- - 'AuthRepository' is from 'package:her/features/auth/data/auth_repository.dart' ('lib/features/auth/data/auth_repository.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'createUserProfile'.
-      await ref.read(authRepositoryProvider).createUserProfile(user);
-                                             ^^^^^^^^^^^^^^^^^
-lib/features/auth/providers/auth_provider.dart:106:44: Error: The method 'updateUserProfile' isn't defined for the type 'AuthRepository'.
- - 'AuthRepository' is from 'package:her/features/auth/data/auth_repository.dart' ('lib/features/auth/data/auth_repository.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'updateUserProfile'.
-    await ref.read(authRepositoryProvider).updateUserProfile(updated);
-                                           ^^^^^^^^^^^^^^^^^
-Target kernel_snapshot_program failed: Exception
-
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:compileFlutterBuildDebug'.
-> Process 'command 'C:\Users\Dell\Downloads\flutter_windows_3.35.3-stable\flutter\bin\flutter.bat'' finished with non-zero exit value 1
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 1m 1s
-Running Gradle task 'assembleDebug'...                             62.1s
-Error: Gradle task assembleDebug failed with exit code 1
+lib/features/cycle/data/cycle_repository.dart:111:7: Error: Expected a class member, but got ';'.
+    ));
+      ^
+lib/features/cycle/data/cycle_repository.dart:114:5: Error: Expected a class member, but got 'return'.
+    return updated;
+    ^^^^^^
+lib/features/cycle/data/cycle_repository.dart:114:12: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+    return updated;
+           ^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:251:1: Error: Expected a declaration, but got '}'.
+}
+^
+lib/features/home/providers/dashboard_provider.dart:113:7: Error: Expected a class member, but got 'else'.
+    } else {
+      ^^^^
+lib/features/home/providers/dashboard_provider.dart:113:12: Error: Expected an identifier, but got '{'.
+Try inserting an identifier before '{'.
+    } else {
+           ^
+lib/features/home/providers/dashboard_provider.dart:113:12: Error: A method declaration needs an explicit list of
+parameters.
+Try adding a parameter list to the method declaration.
+    } else {
+           ^
+lib/features/home/providers/dashboard_provider.dart:125:5: Error: Variables must be declared using the keywords 'const',
+'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+    lastPeriodDate = DateTime(
+    ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:139:7: Error: Expected an identifier, but got ''Dashboard: Today: '.
+Try inserting an identifier before ''Dashboard: Today: '.
+      'Dashboard: Today: $today, lastPeriodDate: $lastPeriodDate, calculated cycleDay: $cycleDay',
+      ^^^^^^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:139:26: Error: Expected ')' before this.
+      'Dashboard: Today: $today, lastPeriodDate: $lastPeriodDate, calculated cycleDay: $cycleDay',
+                         ^
+lib/features/home/providers/dashboard_provider.dart:160:22: Error: 'await' can only be used in 'async' or 'async*'
+methods.
+    final selfCare = await ref.watch(selfCareNotifierProvider.future);
+                     ^^^^^
+lib/features/home/providers/dashboard_provider.dart:162:5: Error: Expected a class member, but got 'return'.
+    return DashboardData(
+    ^^^^^^
+lib/features/home/providers/dashboard_provider.dart:163:15: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      username: username,
+              ^
+lib/features/home/providers/dashboard_provider.dart:164:15: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      cycleDay: cycleDay,
+              ^
+lib/features/home/providers/dashboard_provider.dart:165:12: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      phase: phase,
+           ^
+lib/features/home/providers/dashboard_provider.dart:166:22: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      daysUntilPeriod: daysUntilPeriod,
+                     ^
+lib/features/home/providers/dashboard_provider.dart:167:16: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      isFertile: isFertile,
+               ^
+lib/features/home/providers/dashboard_provider.dart:168:16: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      hydration: selfCare.hydrationMl,
+               ^
+lib/features/home/providers/dashboard_provider.dart:169:12: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      sleep: selfCare.sleepHours,
+           ^
+lib/features/home/providers/dashboard_provider.dart:170:18: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      cycleLength: cycleLength,
+                 ^
+lib/features/home/providers/dashboard_provider.dart:171:21: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      periodDuration: periodDuration,
+                    ^
+lib/features/home/providers/dashboard_provider.dart:172:18: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      isIrregular: stats.isIrregular,
+                 ^
+lib/features/home/providers/dashboard_provider.dart:173:18: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      cycleStdDev: stats.cycleStdDev,
+                 ^
+lib/features/home/providers/dashboard_provider.dart:174:15: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      isLinked: authUser?.isLinked ?? false,
+              ^
+lib/features/home/providers/dashboard_provider.dart:175:17: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+      myLoveCode: authUser?.myLoveCode,
+                ^
+lib/features/home/providers/dashboard_provider.dart:188:1: Error: Expected a declaration, but got '}'.
+}
+^
+lib/features/cycle/data/cycle_repository.dart:107:16: Error: 'Value' is already declared in this scope.
+      endDate: Value(updated.endDate),
+               ^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:18: Context: Previous declaration of 'Value'.
+      startDate: Value(updated.startDate),
+                 ^^^^^
+lib/features/cycle/data/cycle_repository.dart:108:20: Error: 'Value' is already declared in this scope.
+      cycleLength: Value(updated.cycleLength),
+                   ^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:18: Context: Previous declaration of 'Value'.
+      startDate: Value(updated.startDate),
+                 ^^^^^
+lib/features/cycle/data/cycle_repository.dart:109:21: Error: 'Value' is already declared in this scope.
+      synced: const Value(false),
+                    ^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:18: Context: Previous declaration of 'Value'.
+      startDate: Value(updated.startDate),
+                 ^^^^^
+lib/features/cycle/data/cycle_repository.dart:110:18: Error: 'Value' is already declared in this scope.
+      createdAt: Value(updated.createdAt),
+                 ^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:18: Context: Previous declaration of 'Value'.
+      startDate: Value(updated.startDate),
+                 ^^^^^
+lib/features/cycle/data/cycle_repository.dart:106:24: Error: 'updated.startDate' can't be used as a type because
+'updated' doesn't refer to an import prefix.
+      startDate: Value(updated.startDate),
+                       ^^^^^^^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:107:22: Error: 'updated.endDate' can't be used as a type because 'updated'
+doesn't refer to an import prefix.
+      endDate: Value(updated.endDate),
+                     ^^^^^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:108:26: Error: 'updated.cycleLength' can't be used as a type because
+'updated' doesn't refer to an import prefix.
+      cycleLength: Value(updated.cycleLength),
+                         ^^^^^^^^^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:110:24: Error: 'updated.createdAt' can't be used as a type because
+'updated' doesn't refer to an import prefix.
+      createdAt: Value(updated.createdAt),
+                       ^^^^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:48:12: Error: 'DashboardData' isn't a type.
+  FutureOr<DashboardData> build() async {
+           ^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:162:12: Context: This isn't a type.
+    return DashboardData(
+           ^^^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:19:7: Error: The non-abstract class 'CycleRepository' is missing
+implementations for these members:
+ - CycleRepository._syncEntry
+Try to either
+ - provide an implementation,
+ - inherit an implementation from a superclass or mixin,
+ - mark the class as abstract, or
+ - provide a 'noSuchMethod' implementation.
+class CycleRepository {
+      ^^^^^^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:113:5: Context: 'CycleRepository._syncEntry' is defined here.
+    _syncEntry(updated);
+    ^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:46:7: Error: The non-abstract class 'Dashboard' is missing
+implementations for these members:
+ - Dashboard.DashboardData
+ - Dashboard.debugPrint
+Try to either
+ - provide an implementation,
+ - inherit an implementation from a superclass or mixin,
+ - mark the class as abstract, or
+ - provide a 'noSuchMethod' implementation.
+class Dashboard extends _$Dashboard {
+      ^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:162:12: Context: 'Dashboard.DashboardData' is defined here.
+    return DashboardData(
+           ^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:138:5: Context: 'Dashboard.debugPrint' is defined here.
+    debugPrint(
+    ^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:126:7: Error: Can't access 'this' in a field initializer to read
+'lastPeriodDate'.
+      lastPeriodDate.year,
+      ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:127:7: Error: Can't access 'this' in a field initializer to read
+'lastPeriodDate'.
+      lastPeriodDate.month,
+      ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:128:7: Error: Can't access 'this' in a field initializer to read
+'lastPeriodDate'.
+      lastPeriodDate.day,
+      ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:133:7: Error: Can't access 'this' in a field initializer to read
+'lastPeriodDate'.
+      lastPeriodDate,
+      ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:134:7: Error: Can't access 'this' in a field initializer to read
+'today'.
+      today,
+      ^^^^^
+lib/features/home/providers/dashboard_provider.dart:135:7: Error: Undefined name 'cycleLength'.
+      cycleLength,
+      ^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:143:17: Error: Can't access 'this' in a field initializer to read
+'cycleDay'.
+      cycleDay: cycleDay,
+                ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:144:20: Error: Undefined name 'cycleLength'.
+      cycleLength: cycleLength,
+                   ^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:145:23: Error: Undefined name 'periodDuration'.
+      periodDuration: periodDuration,
+                      ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:149:24: Error: Can't access 'this' in a field initializer to read
+'lastPeriodDate'.
+      lastPeriodStart: lastPeriodDate,
+                       ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:150:20: Error: Can't access 'this' in a field initializer to read
+'today'.
+      currentDate: today,
+                   ^^^^^
+lib/features/home/providers/dashboard_provider.dart:151:20: Error: Undefined name 'cycleLength'.
+      cycleLength: cycleLength,
+                   ^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:155:17: Error: Can't access 'this' in a field initializer to read
+'cycleDay'.
+      cycleDay: cycleDay,
+                ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:156:20: Error: Undefined name 'cycleLength'.
+      cycleLength: cycleLength,
+                   ^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:160:28: Error: Undefined name 'ref'.
+    final selfCare = await ref.watch(selfCareNotifierProvider.future);
+                           ^^^
+lib/features/home/providers/dashboard_provider.dart:48:27: Error: The return type of the method 'Dashboard.build' is
+'FutureOr<invalid-type>', which does not match the return type, 'FutureOr<DashboardData>', of the overridden method,
+'AutoDisposeAsyncNotifier.build'.
+ - 'DashboardData' is from 'package:her/features/home/providers/dashboard_provider.dart'
+ ('lib/features/home/providers/dashboard_provider.dart').
+Change to a subtype of 'FutureOr<DashboardData>'.
+  FutureOr<DashboardData> build() async {
+                          ^
+/C:/Users/Dell/AppData/Local/Pub/Cache/hosted/pub.dev/riverpod-2.6.1/lib/src/async_notifier/auto_dispose.dart:31:19:
+Context: This is the overridden method ('build').
+  FutureOr<State> build();
+                  ^
+lib/features/home/providers/dashboard_provider.dart:163:17: Error: Undefined name 'username'.
+      username: username,
+                ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:164:17: Error: Not a constant expression.
+      cycleDay: cycleDay,
+                ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:165:14: Error: Not a constant expression.
+      phase: phase,
+             ^^^^^
+lib/features/home/providers/dashboard_provider.dart:166:24: Error: Not a constant expression.
+      daysUntilPeriod: daysUntilPeriod,
+                       ^^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:167:18: Error: Not a constant expression.
+      isFertile: isFertile,
+                 ^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:168:18: Error: Not a constant expression.
+      hydration: selfCare.hydrationMl,
+                 ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:169:14: Error: Not a constant expression.
+      sleep: selfCare.sleepHours,
+             ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:170:20: Error: Undefined name 'cycleLength'.
+      cycleLength: cycleLength,
+                   ^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:171:23: Error: Undefined name 'periodDuration'.
+      periodDuration: periodDuration,
+                      ^^^^^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:172:20: Error: Undefined name 'stats'.
+      isIrregular: stats.isIrregular,
+                   ^^^^^
+lib/features/home/providers/dashboard_provider.dart:173:20: Error: Undefined name 'stats'.
+      cycleStdDev: stats.cycleStdDev,
+                   ^^^^^
+lib/features/home/providers/dashboard_provider.dart:174:17: Error: Undefined name 'authUser'.
+      isLinked: authUser?.isLinked ?? false,
+                ^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:175:19: Error: Undefined name 'authUser'.
+      myLoveCode: authUser?.myLoveCode,
+                  ^^^^^^^^
+lib/features/home/presentation/home_screen.dart:745:56: Error: The method 'addHydration' isn't defined for the type
+'Dashboard'.
+ - 'Dashboard' is from 'package:her/features/home/providers/dashboard_provider.dart'
+ ('lib/features/home/providers/dashboard_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'addHydration'.
+                  ref.read(dashboardProvider.notifier).addHydration(250.0);
+                                                       ^^^^^^^^^^^^
+lib/features/home/presentation/home_screen.dart:790:56: Error: The method 'setSleep' isn't defined for the type
+'Dashboard'.
+ - 'Dashboard' is from 'package:her/features/home/providers/dashboard_provider.dart'
+ ('lib/features/home/providers/dashboard_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'setSleep'.
+                  ref.read(dashboardProvider.notifier).setSleep(7.5);
+                                                       ^^^^^^^^
+lib/features/settings/presentation/settings_screen.dart:51:40: Error: The method 'getAllEntries' isn't defined for the
+type 'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getAllEntries'.
+    final allEntries = await cycleRepo.getAllEntries();
+                                       ^^^^^^^^^^^^^
+lib/features/settings/presentation/settings_screen.dart:57:41: Error: The method 'getLatestEntry' isn't defined for the
+type 'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getLatestEntry'.
+    final latestCycle = await cycleRepo.getLatestEntry();
+                                        ^^^^^^^^^^^^^^
+lib/features/settings/presentation/settings_screen.dart:75:25: Error: The method 'deleteCycleEntry' isn't defined for
+the type 'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'deleteCycleEntry'.
+        await cycleRepo.deleteCycleEntry(active[i].id);
+                        ^^^^^^^^^^^^^^^^
+lib/features/settings/presentation/settings_screen.dart:147:48: Error: The method 'getAllEntries' isn't defined for the
+type 'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getAllEntries'.
+        final currentEntries = await cycleRepo.getAllEntries();
+                                               ^^^^^^^^^^^^^
+lib/features/settings/presentation/settings_screen.dart:150:27: Error: The method 'deleteCycleEntry' isn't defined for
+the type 'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'deleteCycleEntry'.
+          await cycleRepo.deleteCycleEntry(e.id);
+                          ^^^^^^^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:44:5: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+    debugPrint('⏳ AuthProvider: Initializing auth state...');
+    ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:49:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('👤 AuthProvider: No active session (logged out)');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:53:5: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+    debugPrint('👤 AuthProvider: Active Firebase user: ${firebaseUser.uid} (${firebaseUser.email})');
+    ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:62:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('🔄 AuthProvider: Firestore profile updated: $data');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:69:5: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+    debugPrint('🔑 AuthProvider: Login attempt for $email');
+    ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:75:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('✅ AuthProvider: Firebase sign in success: ${firebaseUser.uid}');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:84:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('✅ AuthProvider: Profile loaded for role: ${appUser.role}');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:90:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('❌ AuthProvider: Login failed: $e');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:97:5: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+    debugPrint('🆕 AuthProvider: Signup attempt for $email ($name)');
+    ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:107:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('✅ AuthProvider: Firebase account created: ${firebaseUser.uid}');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:114:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('✅ AuthProvider: Initial profile stored');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:121:5: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+    debugPrint('🧼 AuthProvider: Performing deep wipe and logout...');
+    ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:127:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('🗄️ AuthProvider: Drift local database wiped');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:131:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('📦 AuthProvider: Hive settings cleared');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:135:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('🔑 AuthProvider: Encryption keys removed');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:139:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('✅ AuthProvider: Firebase session terminated');
+      ^^^^^^^^^^
+lib/features/auth/providers/auth_provider.dart:143:7: Error: The method 'debugPrint' isn't defined for the type 'Auth'.
+ - 'Auth' is from 'package:her/features/auth/providers/auth_provider.dart'
+ ('lib/features/auth/providers/auth_provider.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'debugPrint'.
+      debugPrint('❌ AuthProvider: Logout cleanup failed: $e');
+      ^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:118:26: Error: Undefined name '_db'.
+    final latest = await _db.getLatestCycleEntry();
+                         ^^^
+lib/features/cycle/data/cycle_repository.dart:124:11: Error: Undefined name '_db'.
+    await _db.upsertCycleEntry(CycleEntriesCompanion(
+          ^^^
+lib/features/cycle/data/cycle_repository.dart:148:24: Error: Undefined name '_db'.
+    final rows = await _db.getAllCycleEntries();
+                       ^^^
+lib/features/cycle/data/cycle_repository.dart:153:23: Error: Undefined name '_db'.
+    final row = await _db.getLatestCycleEntry();
+                      ^^^
+lib/features/cycle/data/cycle_repository.dart:158:12: Error: Undefined name '_db'.
+    return _db.watchLatestCycleEntry().map((row) => row == null ? null : _fromRow(row));
+           ^^^
+lib/features/cycle/data/cycle_repository.dart:166:14: Error: Undefined name '_uid'.
+        .doc(_uid)
+             ^^^^
+lib/features/cycle/data/cycle_repository.dart:175:37: Error: Undefined name '_uid'.
+          userId: data['userId'] ?? _uid,
+                                    ^^^^
+lib/features/cycle/data/cycle_repository.dart:195:11: Error: Undefined name '_db'.
+    await _db.upsertCycleEntry(CycleEntriesCompanion(
+          ^^^
+lib/features/cycle/data/cycle_repository.dart:210:13: Error: Undefined name '_firestore'.
+      await _firestore.saveCycleEntry(entry.id, {
+            ^^^^^^^^^^
+lib/features/cycle/data/cycle_repository.dart:220:13: Error: Undefined name '_db'.
+      await _db.markCycleEntrySynced(entry.id);
+            ^^^
+lib/features/cycle/data/cycle_repository.dart:228:11: Error: Undefined name '_db'.
+    await _db.deleteCycleEntry(id);
+          ^^^
+lib/features/cycle/data/cycle_repository.dart:235:13: Error: Undefined name '_firestore'.
+      await _firestore.deleteCycleEntry(id);
+            ^^^^^^^^^^
+lib/features/home/providers/dashboard_provider.dart:50:15: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    debugPrint('📊 DashboardProvider: Rebuilding dashboard data...');
+              ^
+lib/features/home/providers/dashboard_provider.dart:57:17: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+      debugPrint('🛡️ DashboardProvider: User is HIM, returning partner-only dashboard state');
+                ^
+lib/features/home/providers/dashboard_provider.dart:58:27: Error: Too few positional arguments: 13 required, 0 given.
+      return DashboardData(
+                          ^
+lib/features/home/providers/dashboard_provider.dart:80:15: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    debugPrint('📊 DashboardProvider: Fetching cycle entries for stats...');
+              ^
+lib/features/home/providers/dashboard_provider.dart:87:15: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    debugPrint(
+              ^
+lib/features/home/providers/dashboard_provider.dart:101:17: Error: Too many positional arguments: 0 allowed, but 1
+found.
+Try removing the extra positional arguments.
+      debugPrint('📊 DashboardProvider: Using last period from DB: $lastPeriodDate');
+                ^
+lib/features/home/providers/dashboard_provider.dart:106:19: Error: Too many positional arguments: 0 allowed, but 1
+found.
+Try removing the extra positional arguments.
+        debugPrint('📊 DashboardProvider: Using last period from Hive: $lastPeriodDate');
+                  ^
+lib/features/home/providers/dashboard_provider.dart:109:19: Error: Too many positional arguments: 0 allowed, but 1
+found.
+Try removing the extra positional arguments.
+        debugPrint('📊 DashboardProvider: Using fallback last period (10 days ago)');
+                  ^
+lib/features/home/providers/dashboard_provider.dart:112:17: Error: Too many positional arguments: 0 allowed, but 1
+found.
+Try removing the extra positional arguments.
+      debugPrint('Dashboard: Using latest cycle from DB: $lastPeriodDate');
+                ^
+lib/features/home/providers/dashboard_provider.dart:180:11: Error: Undefined name 'ref'.
+    await ref.read(selfCareNotifierProvider.notifier).addHydration(amount);
+          ^^^
+lib/features/home/providers/dashboard_provider.dart:181:5: Error: Undefined name 'ref'.
+    ref.invalidateSelf();
+    ^^^
+lib/features/home/providers/dashboard_provider.dart:185:11: Error: Undefined name 'ref'.
+    await ref.read(selfCareNotifierProvider.notifier).setSleep(hours);
+          ^^^
+lib/features/home/providers/dashboard_provider.dart:186:5: Error: Undefined name 'ref'.
+    ref.invalidateSelf();
+    ^^^
+lib/features/cycle/providers/cycle_provider.dart:11:47: Error: The method 'getAllEntries' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getAllEntries'.
+    return ref.watch(cycleRepositoryProvider).getAllEntries();
+                                              ^^^^^^^^^^^^^
+lib/features/cycle/providers/cycle_provider.dart:18:48: Error: The method 'getAllEntries' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getAllEntries'.
+      return ref.read(cycleRepositoryProvider).getAllEntries();
+                                               ^^^^^^^^^^^^^
+lib/features/cycle/providers/cycle_provider.dart:25:47: Error: The method 'endPeriod' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'endPeriod'.
+      await ref.read(cycleRepositoryProvider).endPeriod();
+                                              ^^^^^^^^^
+lib/features/cycle/providers/cycle_provider.dart:26:48: Error: The method 'getAllEntries' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getAllEntries'.
+      return ref.read(cycleRepositoryProvider).getAllEntries();
+                                               ^^^^^^^^^^^^^
+lib/features/cycle/providers/cycle_provider.dart:33:45: Error: The method 'getLatestEntry' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getLatestEntry'.
+  return ref.watch(cycleRepositoryProvider).getLatestEntry();
+                                            ^^^^^^^^^^^^^^
+lib/features/cycle/providers/cycle_provider.dart:38:45: Error: The method 'watchLatestEntry' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'watchLatestEntry'.
+  return ref.watch(cycleRepositoryProvider).watchLatestEntry();
+                                            ^^^^^^^^^^^^^^^^
+lib/features/cycle/providers/cycle_provider.dart:43:45: Error: The method 'watchCycleEntries' isn't defined for the type
+'CycleRepository'.
+ - 'CycleRepository' is from 'package:her/features/cycle/data/cycle_repository.dart'
+ ('lib/features/cycle/data/cycle_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'watchCycleEntries'.
+  return ref.watch(cycleRepositoryProvider).watchCycleEntries();
+                                            ^^^^^^^^^^^^^^^^^

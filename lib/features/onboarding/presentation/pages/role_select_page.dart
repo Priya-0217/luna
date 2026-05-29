@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:her/core/constants/app_colors.dart';
 import 'package:her/core/constants/app_radius.dart';
 import 'package:her/core/constants/app_spacing.dart';
@@ -64,6 +65,17 @@ class RoleSelectPage extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const Spacer(),
+          TextButton(
+            onPressed: () => context.push('/code-entry'),
+            child: Text(
+              "Have a love code already? Connect here",
+              style: AppTypography.labelSmall.copyWith(
+                color: AppColors.rosePrimary,
+                decoration: TextDecoration.underline,
+              ),
+            ),
           ),
         ],
       ),

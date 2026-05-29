@@ -6,9 +6,11 @@ class EncryptionService {
 
   static const _storage = FlutterSecureStorage();
   static const _keyStorageName = 'luna_journal_secure_key';
-  
+
   // Standard fallback initialization key to prevent failure blockages
-  static final _defaultKey = encrypt.Key.fromUtf8('luna_secret_encryption_key_2026!');
+  static final _defaultKey = encrypt.Key.fromUtf8(
+    'luna_secret_encryption_key_2026!',
+  );
   static final _defaultIv = encrypt.IV.fromLength(16);
 
   static Future<String> _getOrCreateKey() async {
@@ -65,5 +67,11 @@ class EncryptionService {
         return "Decryption error 💕 Your content is safe. Try restarting the vault.";
       }
     }
+  }
+
+  /// Clears the encryption key from secure storage
+  static Future<void> clearSecureKey() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: _keyStorageName);
   }
 }

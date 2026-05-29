@@ -10,9 +10,9 @@ part 'auth_repository.g.dart';
 
 @riverpod
 AuthRepository authRepository(AuthRepositoryRef ref) => AuthRepository(
-      ref.watch(authServiceProvider),
-      ref.watch(firestoreServiceProvider),
-    );
+  ref.watch(authServiceProvider),
+  ref.watch(firestoreServiceProvider),
+);
 
 class AuthRepository {
   AuthRepository(this._auth, this._firestore);
@@ -23,48 +23,89 @@ class AuthRepository {
   User? get currentFirebaseUser => _auth.currentUser;
 
   Future<AppUser> signIn(String email, String password) async {
-    debugPrint('AuthRepository: Signing in $email');
-    final cred = await _auth.signIn(email: email, password: password);
-    final fbUser = cred.user!;
-    final data = await _firestore.getUserProfile();
-    debugPrint('AuthRepository: Firestore data for $email: $data');
-    return AppUser(
-      uid: fbUser.uid,
-      email: fbUser.email ?? '',
-      displayName: fbUser.displayName ?? data?['displayName'] ?? '',
-      cycleAverageLength: (data?['cycleAverageLength'] as int?) ?? 28,
-      periodAverageLength: (data?['periodAverageLength'] as int?) ?? 5,
-      isOnboarded: (data?['isOnboarded'] as bool?) ?? false,
-    );
+    debugPrint('🔐 AuthRepository: Attempting sign in for $email');
+    try {
+      final cred = await _auth.signIn(email: email, password: password);
+      final fbUser = cred.user!;
+      debugPrint(
+        '✅ AuthRepository: Firebase sign in success for ${fbUser.uid}',
+      );
+
+      final data = await _firestore.getUserProfile();
+      debugPrint('📄 AuthRepository: Fetched Firestore profile: $data');
+
+      return AppUser(
+        uid: fbUser.uid,
+        email: fbUser.email ?? '',
+        displayName: data?['displayName'] ?? fbUser.displayName ?? '',
+        cycleAverageLength: (data?['cycleAverageLength'] as int?) ?? 28,
+        periodAverageLength: (data?['periodAverageLength'] as int?) ?? 5,
+        isOnboarded: (data?['isOnboarded'] as bool?) ?? false,
+        role: data?['role'] as String?,
+        partnerUid: data?['partnerUid'] as String?,
+        coupleId: data?['coupleId'] as String?,
+        isLinked: (data?['isLinked'] as bool?) ?? false,
+        myLoveCode: data?['myLoveCode'] as String?,
+        partnerRole: data?['partnerRole'] as String?,
+        partnerDisplayName: data?['partnerDisplayName'] as String?,
+      );
+    } catch (e) {
+      debugPrint('❌ AuthRepository: Sign in failed for $email: $e');
+      rethrow;
+    }
   }
 
-  Future<AppUser> signUp(
-      String name, String email, String password) async {
-    debugPrint('AuthRepository: Signing up $email as $name');
-    final cred = await _auth.createAccount(
-        name: name, email: email, password: password);
-    final fbUser = cred.user!;
-    return AppUser(
-      uid: fbUser.uid,
-      email: email,
-      displayName: name,
-    );
+  Future<AppUser> signUp(String name, String email, String password) async {
+    debugPrint('🆕 AuthRepository: Creating account for $email ($name)');
+    try {
+      final cred = await _auth.createAccount(
+        name: name,
+        email: email,
+        password: password,
+      );
+      final fbUser = cred.user!;
+      debugPrint('✅ AuthRepository: Account created for ${fbUser.uid}');
+      return AppUser(uid: fbUser.uid, email: email, displayName: name);
+    } catch (e) {
+      debugPrint('❌ AuthRepository: Sign up failed for $email: $e');
+      rethrow;
+    }
   }
 
   Future<void> updateProfile(AppUser user) async {
-    debugPrint('AuthRepository: Updating profile for ${user.email} in Firestore');
-    await _firestore.saveUserProfile({
-      'uid': user.uid,
-      'email': user.email,
-      'displayName': user.displayName,
-      'cycleAverageLength': user.cycleAverageLength,
-      'periodAverageLength': user.periodAverageLength,
-      'isOnboarded': user.isOnboarded,
-    });
-    await FirebaseAuth.instance.currentUser
-        ?.updateDisplayName(user.displayName);
-    debugPrint('AuthRepository: Profile update complete for ${user.email}');
+    debugPrint(
+      '💾 AuthRepository: Syncing profile for ${user.email} to Firestore',
+    );
+    try {
+      await _firestore.saveUserProfile({
+        'uid': user.uid,
+        'email': user.email,
+        'displayName': user.displayName,
+        'cycleAverageLength': user.cycleAverageLength,
+        'periodAverageLength': user.periodAverageLength,
+        'isOnboarded': user.isOnboarded,
+        'role': user.role,
+        'partnerUid': user.partnerUid,
+        'coupleId': user.coupleId,
+        'isLinked': user.isLinked,
+        'myLoveCode': user.myLoveCode,
+        'partnerRole': user.partnerRole,
+        'partnerDisplayName': user.partnerDisplayName,
+      });
+      await FirebaseAuth.instance.currentUser?.updateDisplayName(
+        user.displayName,
+      );
+      debugPrint('✅ AuthRepository: Profile persisted for ${user.email}');
+    } catch (e) {
+      debugPrint(
+        '❌ AuthRepository: Profile persistence failed for ${user.email}: $e',
+      );
+      rethrow;
+    }
   }
 
-  Future<void> signOut() => _auth.signOut();
+  Future<void> signOut() {
+    debugPrint('🚪 AuthRepository: Signing out current user');
+    return _auth.signOut();
+  }
 }

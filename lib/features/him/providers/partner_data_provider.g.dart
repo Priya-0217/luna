@@ -6,7 +6,7 @@ part of 'partner_data_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$partnerDataHash() => r'5e25d52e83c6b5b20314b206639cd53300f7cfbb';
+String _$partnerDataHash() => r'79c09c023a1ae84b62f7ad74c5ac3258a91e2b17';
 
 /// See also [partnerData].
 @ProviderFor(partnerData)
@@ -24,7 +24,7 @@ final partnerDataProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PartnerDataRef = AutoDisposeStreamProviderRef<Map<String, dynamic>>;
-String _$partnerProfileHash() => r'537a8e6e59ee5b23168d789e5182d43eefcf2b66';
+String _$partnerProfileHash() => r'd8e2bb2e0e0db373f1f74d3c2551a0131a1b4489';
 
 /// See also [partnerProfile].
 @ProviderFor(partnerProfile)
@@ -42,7 +42,7 @@ final partnerProfileProvider = AutoDisposeStreamProvider<AppUser?>.internal(
 // ignore: unused_element
 typedef PartnerProfileRef = AutoDisposeStreamProviderRef<AppUser?>;
 String _$partnerCycleEntriesHash() =>
-    r'ea27a7cbb22343a37d9cc02764dc5b71e39688c6';
+    r'0167a58c30fbeefe9a0088da770006a944e2cfa4';
 
 /// See also [partnerCycleEntries].
 @ProviderFor(partnerCycleEntries)

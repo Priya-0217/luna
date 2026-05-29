@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'firestore_service.g.dart';
@@ -30,128 +31,139 @@ class FirestoreService {
       _db.collection('fromHim').doc(_uid).collection(sub);
 
   // ── User profile ─────────────────────────────────────────────────────────────
-  Future<void> saveUserProfile(Map<String, dynamic> data) =>
-      _userDoc.set({...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+  Future<void> saveUserProfile(Map<String, dynamic> data) {
+    debugPrint('🔥 FirestoreService: Saving user profile for $_uid');
+    return _userDoc.set({
+      ...data,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 
   Future<Map<String, dynamic>?> getUserProfile() async {
+    debugPrint('🔥 FirestoreService: Fetching user profile for $_uid');
     final snap = await _userDoc.get();
     return snap.data();
   }
 
   // ── Daily Logs ───────────────────────────────────────────────────────────────
-  Future<void> saveDailyLog(String dateKey, Map<String, dynamic> data) =>
-      _userCol('dailyLogs').doc(dateKey).set(
-          {...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+  Future<void> saveDailyLog(String dateKey, Map<String, dynamic> data) {
+    debugPrint('🔥 FirestoreService: Saving daily log for $dateKey');
+    return _userCol('dailyLogs').doc(dateKey).set({
+      ...data,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 
   Future<List<Map<String, dynamic>>> getDailyLogs({int limit = 90}) async {
-    final snap = await _userCol('dailyLogs')
-        .orderBy('date', descending: true)
-        .limit(limit)
-        .get();
+    debugPrint('🔥 FirestoreService: Getting daily logs (limit: $limit)');
+    final snap = await _userCol(
+      'dailyLogs',
+    ).orderBy('date', descending: true).limit(limit).get();
     return snap.docs.map((d) => d.data()).toList();
   }
 
   Future<Map<String, dynamic>?> getDailyLog(String dateKey) async {
+    debugPrint('🔥 FirestoreService: Getting daily log for $dateKey');
     final snap = await _userCol('dailyLogs').doc(dateKey).get();
     return snap.data();
   }
 
   // ── Cycle Entries ────────────────────────────────────────────────────────────
-  Future<void> saveCycleEntry(String entryId, Map<String, dynamic> data) =>
-      _userCol('cycleEntries').doc(entryId).set(
-          {...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+  Future<void> saveCycleEntry(String entryId, Map<String, dynamic> data) {
+    debugPrint('🔥 FirestoreService: Saving cycle entry $entryId');
+    return _userCol('cycleEntries').doc(entryId).set({
+      ...data,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 
-  Future<void> deleteCycleEntry(String entryId) =>
-      _userCol('cycleEntries').doc(entryId).delete();
+  Future<void> deleteCycleEntry(String entryId) {
+    debugPrint('🔥 FirestoreService: Deleting cycle entry $entryId');
+    return _userCol('cycleEntries').doc(entryId).delete();
+  }
 
   Future<List<Map<String, dynamic>>> getCycleEntries({int limit = 24}) async {
-    final snap = await _userCol('cycleEntries')
-        .orderBy('startDate', descending: true)
-        .limit(limit)
-        .get();
+    debugPrint('🔥 FirestoreService: Getting cycle entries (limit: $limit)');
+    final snap = await _userCol(
+      'cycleEntries',
+    ).orderBy('startDate', descending: true).limit(limit).get();
     return snap.docs.map((d) => d.data()).toList();
   }
 
   // ── Journal Entries ──────────────────────────────────────────────────────────
   Future<void> saveJournalEntry(String entryId, Map<String, dynamic> data) =>
-      _userCol('journalEntries').doc(entryId).set(
-          {...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+      _userCol('journalEntries').doc(entryId).set({
+        ...data,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
   Future<void> deleteJournalEntry(String entryId) =>
       _userCol('journalEntries').doc(entryId).delete();
 
   Future<List<Map<String, dynamic>>> getJournalEntries({int limit = 50}) async {
-    final snap = await _userCol('journalEntries')
-        .orderBy('date', descending: true)
-        .limit(limit)
-        .get();
+    final snap = await _userCol(
+      'journalEntries',
+    ).orderBy('date', descending: true).limit(limit).get();
     return snap.docs.map((d) => d.data()).toList();
   }
 
   // ── Self-Care Logs ───────────────────────────────────────────────────────────
   Future<void> saveSelfCareLog(String dateKey, Map<String, dynamic> data) =>
-      _userCol('selfCareLogs').doc(dateKey).set(
-          {...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+      _userCol('selfCareLogs').doc(dateKey).set({
+        ...data,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
   Future<List<Map<String, dynamic>>> getSelfCareLogs({int limit = 30}) async {
-    final snap = await _userCol('selfCareLogs')
-        .orderBy('date', descending: true)
-        .limit(limit)
-        .get();
+    final snap = await _userCol(
+      'selfCareLogs',
+    ).orderBy('date', descending: true).limit(limit).get();
     return snap.docs.map((d) => d.data()).toList();
   }
 
   // ── Garden State ─────────────────────────────────────────────────────────────
   Future<void> saveGardenState(Map<String, dynamic> data) =>
-      _userDoc.collection('meta').doc('gardenState').set(
-          {...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+      _userDoc.collection('meta').doc('gardenState').set({
+        ...data,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
   Future<Map<String, dynamic>?> getGardenState() async {
-    final snap =
-        await _userDoc.collection('meta').doc('gardenState').get();
+    final snap = await _userDoc.collection('meta').doc('gardenState').get();
     return snap.data();
   }
 
   // ── Settings ─────────────────────────────────────────────────────────────────
   Future<void> saveSettings(Map<String, dynamic> data) =>
-      _userDoc.collection('meta').doc('settings').set(
-          {...data, 'updatedAt': FieldValue.serverTimestamp()},
-          SetOptions(merge: true));
+      _userDoc.collection('meta').doc('settings').set({
+        ...data,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
   Future<Map<String, dynamic>?> getSettings() async {
-    final snap =
-        await _userDoc.collection('meta').doc('settings').get();
+    final snap = await _userDoc.collection('meta').doc('settings').get();
     return snap.data();
   }
 
   // ── From Him (read-only for user) ─────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> getFromHimMessages() async {
-    final snap =
-        await _fromHimCol('messages').orderBy('createdAt').get();
+    final snap = await _fromHimCol('messages').orderBy('createdAt').get();
     return snap.docs.map((d) => {...d.data(), 'id': d.id}).toList();
   }
 
-  Future<void> markMessageUnlocked(String messageId) =>
-      _fromHimCol('messages').doc(messageId).update({
-        'isUnlocked': true,
-        'unlockedAt': FieldValue.serverTimestamp(),
-      });
+  Future<void> markMessageUnlocked(String messageId) => _fromHimCol('messages')
+      .doc(messageId)
+      .update({'isUnlocked': true, 'unlockedAt': FieldValue.serverTimestamp()});
 
   Future<List<Map<String, dynamic>>> getVoiceNotes() async {
-    final snap =
-        await _fromHimCol('voiceNotes').orderBy('createdAt').get();
+    final snap = await _fromHimCol('voiceNotes').orderBy('createdAt').get();
     return snap.docs.map((d) => {...d.data(), 'id': d.id}).toList();
   }
 
   Future<List<Map<String, dynamic>>> getMemoryPhotos() async {
-    final snap =
-        await _fromHimCol('photos').orderBy('takenAt', descending: true).get();
+    final snap = await _fromHimCol(
+      'photos',
+    ).orderBy('takenAt', descending: true).get();
     return snap.docs.map((d) => {...d.data(), 'id': d.id}).toList();
   }
 

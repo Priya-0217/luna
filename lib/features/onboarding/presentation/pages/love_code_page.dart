@@ -5,6 +5,7 @@ import 'package:her/core/constants/app_spacing.dart';
 import 'package:her/core/constants/app_typography.dart';
 import 'package:her/core/constants/app_illustrations.dart';
 import 'package:her/core/widgets/luna_card.dart';
+import 'package:her/core/widgets/luna_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class LoveCodePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class LoveCodePage extends StatefulWidget {
   final VoidCallback onShare;
   final VoidCallback onQR;
   final VoidCallback? onSkip;
-  final VoidCallback? onEnterPartnerCode;
+  final Future<void> Function(String code)? onConnectCode;
 
   const LoveCodePage({
     super.key,
@@ -24,7 +25,7 @@ class LoveCodePage extends StatefulWidget {
     required this.onShare,
     required this.onQR,
     this.onSkip,
-    this.onEnterPartnerCode,
+    this.onConnectCode,
   });
 
   @override
@@ -33,13 +34,23 @@ class LoveCodePage extends StatefulWidget {
 
 class _LoveCodePageState extends State<LoveCodePage> {
   bool _revealed = false;
+  bool _isInputMode = false;
+  bool _isConnecting = false;
+  final TextEditingController _partnerCodeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _partnerCodeController.text = 'LUNA-';
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) setState(() => _revealed = true);
     });
+  }
+
+  @override
+  void dispose() {
+    _partnerCodeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,47 +67,135 @@ class _LoveCodePageState extends State<LoveCodePage> {
         children: [
           const SizedBox(height: AppSpacing.xxl),
           Text(
-            "Your love code",
+            _isInputMode
+                ? (isHer ? "Enter His Code 💙" : "Enter Her Code 🌸")
+                : "Your love code",
             style: AppTypography.h1.copyWith(
               fontFamily: 'Cormorant Garamond',
               fontSize: 32,
             ),
           ),
           Text(
-            isHer
-                ? "Share this with him so he can find you"
-                : "Share this with her so she can find you",
+            _isInputMode
+                ? (isHer ? "Ask him for his code" : "Ask her for her code")
+                : (isHer
+                      ? "Share this with him so he can find you"
+                      : "Share this with her so she can find you"),
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.warmGray600,
             ),
           ),
           const SizedBox(height: AppSpacing.xxl),
-
-          if (_revealed)
-            _CodeCard(
-                  segments: segments,
-                  isHer: isHer,
-                  accentColor: accentColor,
-                  onCopy: widget.onCopy,
-                  onShare: widget.onShare,
-                  onQR: widget.onQR,
-                )
-                .animate()
-                .fadeIn(duration: 800.ms)
-                .scale(begin: const Offset(0.9, 0.9)),
-
-          if (widget.onEnterPartnerCode != null) ...[
-            const SizedBox(height: AppSpacing.md),
+          if (!_isInputMode) ...[
+            if (_revealed)
+              _CodeCard(
+                    segments: segments,
+                    isHer: isHer,
+                    accentColor: accentColor,
+                    onCopy: widget.onCopy,
+                    onShare: widget.onShare,
+                    onQR: widget.onQR,
+                  )
+                  .animate()
+                  .fadeIn(duration: 800.ms)
+                  .scale(begin: const Offset(0.9, 0.9)),
+            if (widget.onConnectCode != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              TextButton(
+                onPressed: () => setState(() => _isInputMode = true),
+                child: Text(
+                  isHer ? "Enter his code instead" : "Enter her code instead",
+                  style: AppTypography.labelSmall.copyWith(color: accentColor),
+                ),
+              ),
+            ],
+          ] else ...[
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.charcoal.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(
+                  color: accentColor.withOpacity(0.5),
+                  width: 1.5,
+                ),
+              ),
+              child: TextField(
+                controller: _partnerCodeController,
+                textAlign: TextAlign.center,
+                style: AppTypography.h3.copyWith(
+                  fontFamily: 'Cormorant Garamond',
+                  letterSpacing: 2,
+                  color: AppColors.charcoal,
+                ),
+                textCapitalization: TextCapitalization.characters,
+                decoration: InputDecoration(
+                  hintText: "LUNA-XXXX-XXXX-XXXX",
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.all(AppSpacing.xl),
+                ),
+                onChanged: (value) {
+                  final upperValue = value.toUpperCase();
+                  if (upperValue.contains('LUNA-')) {
+                    if (!upperValue.startsWith('LUNA-')) {
+                      final index = upperValue.indexOf('LUNA-');
+                      _partnerCodeController.text = upperValue.substring(index);
+                      _partnerCodeController.selection =
+                          TextSelection.fromPosition(
+                            TextPosition(
+                              offset: _partnerCodeController.text.length,
+                            ),
+                          );
+                    }
+                  } else if (upperValue.length >= 4 &&
+                      !upperValue.startsWith('LUNA')) {
+                    _partnerCodeController.text = 'LUNA-$upperValue';
+                    _partnerCodeController
+                        .selection = TextSelection.fromPosition(
+                      TextPosition(offset: _partnerCodeController.text.length),
+                    );
+                  } else if (upperValue.isEmpty) {
+                    _partnerCodeController.text = 'LUNA-';
+                    _partnerCodeController
+                        .selection = TextSelection.fromPosition(
+                      TextPosition(offset: _partnerCodeController.text.length),
+                    );
+                  }
+                },
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            LunaButton(
+              text: "Connect Hearts",
+              isLoading: _isConnecting,
+              onPressed: () async {
+                setState(() => _isConnecting = true);
+                try {
+                  await widget.onConnectCode?.call(
+                    _partnerCodeController.text.trim(),
+                  );
+                } finally {
+                  if (mounted) setState(() => _isConnecting = false);
+                }
+              },
+            ),
             TextButton(
-              onPressed: widget.onEnterPartnerCode,
+              onPressed: () => setState(() => _isInputMode = false),
               child: Text(
-                "Enter her code instead",
-                style: AppTypography.labelSmall.copyWith(color: accentColor),
+                "Back to my code",
+                style: AppTypography.labelSmall.copyWith(
+                  color: AppColors.warmGray600,
+                ),
               ),
             ),
           ],
-
-          if (widget.onSkip != null) ...[
+          if (widget.onSkip != null && !_isInputMode) ...[
             const SizedBox(height: AppSpacing.xs),
             TextButton(
               onPressed: widget.onSkip,
@@ -108,10 +207,13 @@ class _LoveCodePageState extends State<LoveCodePage> {
               ),
             ),
           ],
-
           const Spacer(),
           Image.asset(
-                _revealed ? AppIllustrations.excited : AppIllustrations.shy,
+                _isInputMode
+                    ? AppIllustrations.hello
+                    : (_revealed
+                          ? AppIllustrations.excited
+                          : AppIllustrations.shy),
                 height: 140,
               )
               .animate(target: _revealed ? 1 : 0)
