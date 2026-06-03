@@ -30,14 +30,16 @@ class HomeScreen extends ConsumerWidget {
     if (role == AppRole.her) {
       if (location.startsWith('/cycle')) return 1;
       if (location.startsWith('/garden')) return 2;
-      if (location.startsWith('/from-him')) return 3;
-      if (location.startsWith('/profile')) return 4;
+      if (location.startsWith('/music')) return 3;
+      if (location.startsWith('/from-him')) return 4;
+      if (location.startsWith('/profile')) return 5;
     } else {
       if (location.startsWith('/him/care')) return 1;
       if (location.startsWith('/garden')) return 2;
-      if (location.startsWith('/from-her')) return 3;
-      if (location.startsWith('/us')) return 4;
-      if (location.startsWith('/profile')) return 5;
+      if (location.startsWith('/music')) return 3;
+      if (location.startsWith('/from-her')) return 4;
+      if (location.startsWith('/us')) return 5;
+      if (location.startsWith('/profile')) return 6;
     }
     return 0;
   }
@@ -55,9 +57,12 @@ class HomeScreen extends ConsumerWidget {
           context.goNamed(AppRoutes.garden);
           break;
         case 3:
-          context.goNamed(AppRoutes.fromHim);
+          context.goNamed(AppRoutes.music);
           break;
         case 4:
+          context.goNamed(AppRoutes.fromHim);
+          break;
+        case 5:
           context.goNamed(AppRoutes.profile);
           break;
       }
@@ -73,12 +78,15 @@ class HomeScreen extends ConsumerWidget {
           context.goNamed(AppRoutes.garden);
           break;
         case 3:
-          context.goNamed(AppRoutes.fromHer);
+          context.goNamed(AppRoutes.music);
           break;
         case 4:
-          context.goNamed(AppRoutes.us);
+          context.goNamed(AppRoutes.fromHer);
           break;
         case 5:
+          context.goNamed(AppRoutes.us);
+          break;
+        case 6:
           context.goNamed(AppRoutes.profile);
           break;
       }
@@ -154,6 +162,11 @@ class HomeScreen extends ConsumerWidget {
                     label: 'Garden',
                   ),
                   BottomNavigationBarItem(
+                    icon: Icon(Icons.music_note_outlined),
+                    activeIcon: Icon(Icons.music_note),
+                    label: 'Music',
+                  ),
+                  BottomNavigationBarItem(
                     icon: Icon(Icons.mail_outline),
                     activeIcon: Icon(Icons.mail),
                     label: 'From Her',
@@ -184,6 +197,11 @@ class HomeScreen extends ConsumerWidget {
                     icon: Icon(Icons.spa_outlined),
                     activeIcon: Icon(Icons.spa),
                     label: 'Garden',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.music_note_outlined),
+                    activeIcon: Icon(Icons.music_note),
+                    label: 'Music',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.mail_outline),

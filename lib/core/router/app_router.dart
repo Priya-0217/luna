@@ -13,6 +13,7 @@ import 'package:her/features/love_code/presentation/code_entry_screen.dart';
 import 'package:her/features/home/presentation/home_screen.dart';
 import 'package:her/features/cycle/presentation/cycle_screen.dart';
 import 'package:her/features/mood_garden/presentation/mood_garden_screen.dart';
+import 'package:her/features/music/screens/music_search_screen.dart';
 import 'package:her/features/from_him/presentation/from_him_screen.dart';
 import 'package:her/features/settings/presentation/profile_tab.dart';
 import 'package:her/core/role/app_role.dart';
@@ -149,6 +150,11 @@ final appRouterHelperProvider = Provider<GoRouter>((ref) {
             path: '/garden',
             name: AppRoutes.garden,
             builder: (context, state) => const MoodGardenScreen(),
+          ),
+          GoRoute(
+            path: '/music',
+            name: AppRoutes.music,
+            builder: (context, state) => const MusicSearchScreen(),
           ),
           GoRoute(
             path: '/from-him',

@@ -1,0 +1,337 @@
+D/FlutterRenderer(24745): Width is zero. 0,0
+D/FlutterJNI(24745): Sending viewport metrics to the engine.
+D/FlutterJNI(24745): Sending viewport metrics to the engine.
+I/flutter (24745): Firebase initialized 🌸
+I/flutter (24745): ⏳ AuthProvider: Initializing auth state...
+I/flutter (24745): 👤 AuthProvider: No active session (logged out)
+Syncing files to device RMX5250 (wireless)...                      485ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on RMX5250 is available at: http://127.0.0.1:52031/BKxVDryTaPw=/
+The Flutter DevTools debugger and profiler on RMX5250 is available at:
+http://127.0.0.1:52031/BKxVDryTaPw=/devtools/?uri=ws://127.0.0.1:52031/BKxVDryTaPw=/ws
+
+lib/features/music/screens/music_search_screen.dart:288:39: Error: Expected a declaration, but got ')'.
+                                      ),
+                                      ^
+lib/features/music/screens/music_search_screen.dart:288:40: Error: Expected a declaration, but got ','.
+                                      ),
+                                       ^
+lib/features/music/screens/music_search_screen.dart:289:39: Error: Can't have modifier 'const' here.
+Try removing 'const'.
+                                      const SizedBox(height: 12),
+                                      ^^^^^
+lib/features/music/screens/music_search_screen.dart:289:60: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                      const SizedBox(height: 12),
+                                                           ^
+lib/features/music/screens/music_search_screen.dart:289:65: Error: Expected '{' before this.
+                                      const SizedBox(height: 12),
+                                                                ^
+lib/features/music/screens/music_search_screen.dart:289:65: Error: Expected a declaration, but got ','.
+                                      const SizedBox(height: 12),
+                                                                ^
+lib/features/music/screens/music_search_screen.dart:291:46: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                        queue: state.queue,
+                                             ^
+lib/features/music/screens/music_search_screen.dart:292:47: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                        accent: _accent,
+                                              ^
+lib/features/music/screens/music_search_screen.dart:293:48: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                        accent2: _accent2,
+                                               ^
+lib/features/music/screens/music_search_screen.dart:294:40: Error: Expected '{' before this.
+                                      ),
+                                       ^
+lib/features/music/screens/music_search_screen.dart:294:40: Error: Expected a declaration, but got ','.
+                                      ),
+                                       ^
+lib/features/music/screens/music_search_screen.dart:295:37: Error: Expected a declaration, but got ']'.
+                                    ],
+                                    ^
+lib/features/music/screens/music_search_screen.dart:295:38: Error: Expected a declaration, but got ','.
+                                    ],
+                                     ^
+lib/features/music/screens/music_search_screen.dart:296:35: Error: Expected a declaration, but got ')'.
+                                  ),
+                                  ^
+lib/features/music/screens/music_search_screen.dart:296:36: Error: Expected a declaration, but got ','.
+                                  ),
+                                   ^
+lib/features/music/screens/music_search_screen.dart:297:33: Error: Expected a declaration, but got ')'.
+                                ),
+                                ^
+lib/features/music/screens/music_search_screen.dart:297:34: Error: Expected a declaration, but got ','.
+                                ),
+                                 ^
+lib/features/music/screens/music_search_screen.dart:298:33: Error: Can't have modifier 'const' here.
+Try removing 'const'.
+                                const SizedBox(height: 24),
+                                ^^^^^
+lib/features/music/screens/music_search_screen.dart:298:54: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                const SizedBox(height: 24),
+                                                     ^
+lib/features/music/screens/music_search_screen.dart:298:59: Error: Expected '{' before this.
+                                const SizedBox(height: 24),
+                                                          ^
+lib/features/music/screens/music_search_screen.dart:298:59: Error: Expected a declaration, but got ','.
+                                const SizedBox(height: 24),
+                                                          ^
+lib/features/music/screens/music_search_screen.dart:300:41: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                  accent: _accent,
+                                        ^
+lib/features/music/screens/music_search_screen.dart:301:42: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                  accent2: _accent2,
+                                         ^
+lib/features/music/screens/music_search_screen.dart:302:42: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                  onQueue: () => _openQueueSheet(context),
+                                         ^
+lib/features/music/screens/music_search_screen.dart:303:43: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                  onSearch: () => _openSearchSheet(context),
+                                          ^
+lib/features/music/screens/music_search_screen.dart:304:41: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+                                  onFull: () =>
+                                        ^
+lib/features/music/screens/music_search_screen.dart:306:34: Error: Expected '{' before this.
+                                ),
+                                 ^
+lib/features/music/screens/music_search_screen.dart:306:34: Error: Expected a declaration, but got ','.
+                                ),
+                                 ^
+lib/features/music/screens/music_search_screen.dart:307:31: Error: Expected a declaration, but got ']'.
+                              ],
+                              ^
+lib/features/music/screens/music_search_screen.dart:307:32: Error: Expected a declaration, but got ','.
+                              ],
+                               ^
+lib/features/music/screens/music_search_screen.dart:308:29: Error: Expected a declaration, but got ')'.
+                            ),
+                            ^
+lib/features/music/screens/music_search_screen.dart:308:30: Error: Expected a declaration, but got ','.
+                            ),
+                             ^
+lib/features/music/screens/music_search_screen.dart:309:21: Error: Expected a declaration, but got ')'.
+                    ),
+                    ^
+lib/features/music/screens/music_search_screen.dart:309:22: Error: Expected a declaration, but got ','.
+                    ),
+                     ^
+lib/features/music/screens/music_search_screen.dart:310:19: Error: Expected a declaration, but got ')'.
+                  ),
+                  ^
+lib/features/music/screens/music_search_screen.dart:310:20: Error: Expected a declaration, but got ','.
+                  ),
+                   ^
+lib/features/music/screens/music_search_screen.dart:311:17: Error: Expected a declaration, but got ']'.
+                ],
+                ^
+lib/features/music/screens/music_search_screen.dart:311:18: Error: Expected a declaration, but got ','.
+                ],
+                 ^
+lib/features/music/screens/music_search_screen.dart:312:15: Error: Expected a declaration, but got ')'.
+              ),
+              ^
+lib/features/music/screens/music_search_screen.dart:312:16: Error: Expected a declaration, but got ','.
+              ),
+               ^
+lib/features/music/screens/music_search_screen.dart:313:13: Error: Expected a declaration, but got ')'.
+            ),
+            ^
+lib/features/music/screens/music_search_screen.dart:313:14: Error: Expected a declaration, but got ','.
+            ),
+             ^
+lib/features/music/screens/music_search_screen.dart:314:11: Error: Expected a declaration, but got ']'.
+          ],
+          ^
+lib/features/music/screens/music_search_screen.dart:314:12: Error: Expected a declaration, but got ','.
+          ],
+           ^
+lib/features/music/screens/music_search_screen.dart:315:9: Error: Expected a declaration, but got ')'.
+        ),
+        ^
+lib/features/music/screens/music_search_screen.dart:315:10: Error: Expected a declaration, but got ','.
+        ),
+         ^
+lib/features/music/screens/music_search_screen.dart:316:7: Error: Expected a declaration, but got ')'.
+      ),
+      ^
+lib/features/music/screens/music_search_screen.dart:316:8: Error: Expected a declaration, but got ','.
+      ),
+       ^
+lib/features/music/screens/music_search_screen.dart:317:5: Error: Expected a declaration, but got ')'.
+    );
+    ^
+lib/features/music/screens/music_search_screen.dart:317:6: Error: Unexpected token ';'.
+    );
+     ^
+lib/features/music/screens/music_search_screen.dart:318:3: Error: Expected a declaration, but got '}'.
+  }
+  ^
+lib/features/music/screens/music_search_screen.dart:391:1: Error: Expected a declaration, but got '}'.
+}
+^
+lib/features/music/screens/music_search_screen.dart:298:39: Error: 'SizedBox' is already declared in this scope.
+                                const SizedBox(height: 24),
+                                      ^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:289:45: Context: Previous declaration of 'SizedBox'.
+                                      const SizedBox(height: 12),
+                                            ^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:947:7: Error: '_QueuePreview' is already declared in this scope.
+class _QueuePreview extends StatelessWidget {
+      ^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:290:39: Context: Previous declaration of '_QueuePreview'.
+                                      _QueuePreview(
+                                      ^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:878:7: Error: '_BottomActionRow' is already declared in this scope.
+class _BottomActionRow extends StatelessWidget {
+      ^^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:299:33: Context: Previous declaration of '_BottomActionRow'.
+                                _BottomActionRow(
+                                ^^^^^^^^^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:347:135: Error: Type 'MusicState' not found.
+  void _openLyricsSheet(BuildContext context, MusicTrack track, Color accent, YoutubePlayerController yt,
+  MusicController controller, MusicState state) {
+                                                                                                              ^^^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:533:9: Error: Type 'MusicState' not found.
+  final MusicState musicState;
+        ^^^^^^^^^^
+lib/features/music/widgets/music_global_layer.dart:81:23: Error: Member not found: 'none'.
+      case PlayerMode.none:
+                      ^^^^
+lib/features/music/widgets/music_global_layer.dart:83:63: Error: Member not found: 'none'.
+        return const SizedBox.shrink(key: ValueKey(PlayerMode.none));
+                                                              ^^^^
+lib/features/music/screens/music_search_screen.dart:82:84: Error: Member not found: 'black05'.
+                        border: Border.all(color: isDark ? Colors.white12 : Colors.black05),
+                                                                                   ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:291:48: Error: Undefined name 'state'.
+                                        queue: state.queue,
+                                               ^^^^^
+lib/features/music/screens/music_search_screen.dart:292:49: Error: Undefined name '_accent'.
+                                        accent: _accent,
+                                                ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:293:50: Error: Undefined name '_accent2'.
+                                        accent2: _accent2,
+                                                 ^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:300:43: Error: Undefined name '_accent'.
+                                  accent: _accent,
+                                          ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:301:44: Error: Undefined name '_accent2'.
+                                  accent2: _accent2,
+                                           ^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:302:66: Error: Undefined name 'context'.
+                                  onQueue: () => _openQueueSheet(context),
+                                                                 ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:302:50: Error: Method invocation is not a constant expression.
+                                  onQueue: () => _openQueueSheet(context),
+                                                 ^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:302:44: Error: Not a constant expression.
+                                  onQueue: () => _openQueueSheet(context),
+                                           ^^
+lib/features/music/screens/music_search_screen.dart:303:68: Error: Undefined name 'context'.
+                                  onSearch: () => _openSearchSheet(context),
+                                                                   ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:303:51: Error: Method invocation is not a constant expression.
+                                  onSearch: () => _openSearchSheet(context),
+                                                  ^^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:303:45: Error: Not a constant expression.
+                                  onSearch: () => _openSearchSheet(context),
+                                            ^^
+lib/features/music/screens/music_search_screen.dart:305:39: Error: Undefined name 'controller'.
+                                      controller.setMode(PlayerMode.fullScreen),
+                                      ^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:305:50: Error: Method invocation is not a constant expression.
+                                      controller.setMode(PlayerMode.fullScreen),
+                                                 ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:304:43: Error: Not a constant expression.
+                                  onFull: () =>
+                                          ^^
+lib/features/music/screens/music_search_screen.dart:321:9: Error: Undefined name '_paletteLoading'.
+    if (_paletteLoading) return;
+        ^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:324:5: Error: Setter not found: '_paletteLoading'.
+    _paletteLoading = true;
+    ^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:326:29: Error: Undefined name 'PaletteGenerator'.
+      final palette = await PaletteGenerator.fromImageProvider(
+                            ^^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:342:43: Error: Undefined name '_bgPrimary'.
+      _bgPrimaryTween = ColorTween(begin: _bgPrimary, end: nextPrimary);
+                                          ^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:342:7: Error: Setter not found: '_bgPrimaryTween'.
+      _bgPrimaryTween = ColorTween(begin: _bgPrimary, end: nextPrimary);
+      ^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:343:45: Error: Undefined name '_bgSecondary'.
+      _bgSecondaryTween = ColorTween(begin: _bgSecondary, end: nextSecondary);
+                                            ^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:343:7: Error: Setter not found: '_bgSecondaryTween'.
+      _bgSecondaryTween = ColorTween(begin: _bgSecondary, end: nextSecondary);
+      ^^^^^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:344:40: Error: Undefined name '_accent'.
+      _accentTween = ColorTween(begin: _accent, end: nextAccent);
+                                       ^^^^^^^
+lib/features/music/screens/music_search_screen.dart:344:7: Error: Setter not found: '_accentTween'.
+      _accentTween = ColorTween(begin: _accent, end: nextAccent);
+      ^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:345:41: Error: Undefined name '_accent2'.
+      _accent2Tween = ColorTween(begin: _accent2, end: nextAccent2);
+                                        ^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:345:7: Error: Setter not found: '_accent2Tween'.
+      _accent2Tween = ColorTween(begin: _accent2, end: nextAccent2);
+      ^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:347:7: Error: Undefined name '_bgController'.
+      _bgController.forward(from: 0);
+      ^^^^^^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:348:7: Error: Method not found: 'setState'.
+      setState(() {});
+      ^^^^^^^^
+lib/features/music/screens/music_search_screen.dart:352:7: Error: Setter not found: '_paletteLoading'.
+      _paletteLoading = false;
+      ^^^^^^^^^^^^^^^
+lib/features/music/widgets/mini_player_bar.dart:45:70: Error: Member not found: 'black05'.
+          border: Border.all(color: isDark ? Colors.white12 : Colors.black05, width: 0.5),
+                                                                     ^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:94:44: Error: The getter 'photoUrl' isn't defined for the type
+'AppUser'.
+ - 'AppUser' is from 'package:her/features/auth/domain/app_user.dart' ('lib/features/auth/domain/app_user.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'photoUrl'.
+                    backgroundImage: user?.photoUrl != null
+                                           ^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:95:60: Error: The getter 'photoUrl' isn't defined for the type
+'AppUser'.
+ - 'AppUser' is from 'package:her/features/auth/domain/app_user.dart' ('lib/features/auth/domain/app_user.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'photoUrl'.
+                        ? CachedNetworkImageProvider(user!.photoUrl!)
+                                                           ^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:97:34: Error: The getter 'photoUrl' isn't defined for the type
+'AppUser'.
+ - 'AppUser' is from 'package:her/features/auth/domain/app_user.dart' ('lib/features/auth/domain/app_user.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'photoUrl'.
+                    child: user?.photoUrl == null ? const Icon(Icons.person, size: 20) : null,
+                                 ^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:347:135: Error: 'MusicState' isn't a type.
+  void _openLyricsSheet(BuildContext context, MusicTrack track, Color accent, YoutubePlayerController yt,
+  MusicController controller, MusicState state) {
+                                                                                                              ^^^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:533:9: Error: 'MusicState' isn't a type.
+  final MusicState musicState;
+        ^^^^^^^^^^
+lib/features/music/widgets/full_screen_player.dart:714:82: Error: Member not found: 'white55'.
+              color: isActive ? Colors.white : (isPast ? Colors.white24 : Colors.white55),
+                                                                                 ^^^^^^^

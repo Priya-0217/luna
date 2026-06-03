@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:her/core/constants/app_colors.dart';
 import 'package:her/core/router/app_router.dart';
+import 'package:her/features/music/widgets/music_global_layer.dart';
 
 class LunaApp extends ConsumerWidget {
   const LunaApp({super.key});
@@ -15,6 +16,20 @@ class LunaApp extends ConsumerWidget {
       title: 'Luna',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child!,
+            Overlay(
+              initialEntries: [
+                OverlayEntry(
+                  builder: (context) => const MusicGlobalLayer(),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
 
       // === LIGHT THEME SPECIFICATION ===
       theme: ThemeData(

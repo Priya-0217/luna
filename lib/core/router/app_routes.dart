@@ -10,6 +10,7 @@ class AppRoutes {
   static const String home = 'home';
   static const String cycle = 'cycle';
   static const String garden = 'garden';
+  static const String music = 'music';
   static const String fromHim = 'fromHim';
   static const String fromHer = 'fromHer';
   static const String himCare = 'himCare';
